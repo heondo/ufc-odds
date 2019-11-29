@@ -31,10 +31,6 @@ module.exports = {
       }
     ]
   },
-  node: {
-    net: 'empty',
-    http2: 'empty'
-  },
   devtool: 'source-map',
   devServer: {
     host: '0.0.0.0',
@@ -45,7 +41,7 @@ module.exports = {
     stats: 'minimal',
     proxy: {
       '/api': {
-        target: 'http://localhost:2190',
+        target: 'http://localhost:2191',
         headers: {
           Host: 'ufc.localhost'
         }
