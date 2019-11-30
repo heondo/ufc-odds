@@ -2,7 +2,7 @@ const CronJob = require('cron').CronJob;
 const dotenv = require('dotenv');
 const path = require('path');
 const fetchInsert = require('./fetch-insert');
-const { getSummaries, getSeasons } = require('./get-summ-seas');
+const { getInsertSummaries, getInsertSeasons } = require('./get-summ-seas');
 
 dotenv.config({ path: path.resolve(__dirname, '..', '..', '..', '..', '.env') });
 
@@ -11,11 +11,11 @@ const competitionsJob = new CronJob('00 00 * * Sun', () => {
 }, null, false, 'America/Los_Angeles');
 
 const seasonsJob = new CronJob('05 00 * * Sun', () => {
-  getSeasons();
+  getInsertSeasons();
 }, null, false, 'America/Los_Angeles');
 
 const summariesJob = new CronJob('10 0 * * 0,3', () => {
-  getSummaries();
+  getInsertSummaries();
 }, null, false, 'America/Los_Angeles');
 
 module.exports = {

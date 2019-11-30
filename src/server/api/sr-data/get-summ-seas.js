@@ -9,7 +9,7 @@ client.connect();
 
 const fetchTimeout = 1200;
 
-async function getSeasons() {
+async function getInsertSeasons() {
   try {
     const queryResult = await client.query('select * from competitions order by id desc limit 10');
     queryResult.rows.forEach((r, i) => {
@@ -23,7 +23,7 @@ async function getSeasons() {
   }
 }
 
-async function getSummaries() {
+async function getInsertSummaries() {
   try {
     const queryResult = await client.query('select * from seasons order by id desc limit 10');
     queryResult.rows.forEach((r, i) => {
@@ -38,6 +38,6 @@ async function getSummaries() {
 }
 
 module.exports = {
-  getSeasons,
-  getSummaries
+  getInsertSeasons,
+  getInsertSummaries
 };

@@ -2,11 +2,14 @@ const http = require('http');
 const express = require('express');
 const dotenv = require('dotenv');
 const path = require('path');
-const { competitionsJob, summariesJob, seasonsJob } = require('./api/sr-data/cron-jobs');
-
 dotenv.config({ path: path.resolve(__dirname, '..', '..', '.env') });
 
+const { competitionsJob, summariesJob, seasonsJob } = require('./api/sr-data/cron-jobs');
+const seasonsRoute = require('./api/routes/seasons');
+
 const app = express();
+
+app.use('/api/seasons', seasonsRoute);
 
 app.use((err, req, res, next) => {
   res.send({
