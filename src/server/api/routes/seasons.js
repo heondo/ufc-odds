@@ -30,7 +30,6 @@ router.get('/', (req, res, next) => {
       success: true,
       seasons: seasonData.rows
     });
-    // console.log(seasonData);
   });
 });
 
