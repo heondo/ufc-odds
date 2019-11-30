@@ -17,12 +17,12 @@ async function insertQuery(query) {
   }
 }
 
-const createPreparedStatements = (table, data) => {
+const createPreparedStatements = (table, data, index) => {
   let prepareIndexer = 1;
   const query = {
-    name: `add-${table}`,
+    name: `add-${table}-${index}`,
     // will have to grab the sport event id in the data.forEach below
-    text: (table === 'summaries') ? `INSERT INTO ${table}(id, ` : `INSERT INTO ${table}(`,
+    text: `INSERT INTO ${table}(`,
     values: []
   };
   if (!data.length) {
@@ -30,32 +30,44 @@ const createPreparedStatements = (table, data) => {
   }
   // create which values to insert
   // if the returned data is... fights. It doesnt have the summary id so that has to be inserted? in side each dataObjcts sport_event.id;
-  Object.keys(data[0]).forEach((key, i, arr) => {
+  if (table === 'summaries') {
+    data[0].id = data[0].sport_event.id || null;
+    data[0].sport_event = data[0].sport_event || null;
+    data[0].sport_event_status = data[0].sport_event_status || null;
+    data[0].statistics = data[0].statistics || null;
+  }
+  Object.keys(data[0]).sort().forEach((key, i, arr) => {
     query.text += (i === arr.length - 1) ? `${key}) VALUES` : `${key}, `;
   });
   // columns are created. then for each piece of the data, insert the values....
   data.forEach((dataObject, i, arr) => {
     // then for each value in the object add ? and the value
-    //
     if (table === 'competitions') {
       dataObject.parent_id = dataObject.parent_id || null;
     }
-    Object.values(dataObject).forEach((val, i, arr) => {
-      if (!i) {
-        query.text += (table === 'summaries') ? `($${prepareIndexer++},` : `(`;
-        if (table === 'summaries') {
-          query.values.push(dataObject.sport_event.id);
-        }
+    if (table === 'summaries') {
+      dataObject.id = dataObject.sport_event.id || null;
+      dataObject.sport_event = JSON.stringify(dataObject.sport_event) || null;
+      dataObject.sport_event_status = JSON.stringify(dataObject.sport_event_status) || null;
+      dataObject.statistics = JSON.stringify(dataObject.statistics) || null;
+    }
+    Object.keys(dataObject).sort().forEach((key, j, arr2) => {
+      if (!j) {
+        query.text += `(`;
       }
-      query.text += (i === arr.length - 1) ? `$${prepareIndexer++}),` : `$${prepareIndexer++},`;
-      query.values.push(val);
+      query.text += (j === arr2.length - 1) ? `$${prepareIndexer++}),` : `$${prepareIndexer++},`;
+      query.values.push(dataObject[key]);
     });
   });
   query.text = query.text.substring(0, query.text.length - 1);
+  query.text += ` ON CONFLICT (id) DO UPDATE set `;
+  Object.keys(data[0]).sort().forEach((key, i, arr) => {
+    query.text += (i === arr.length - 1) ? `${key} = EXCLUDED.${key}` : `${key} = EXCLUDED.${key}, `;
+  });
   return query;
 };
 
-const fetchInsert = async url => {
+const fetchInsert = async (url, index) => {
   try {
     const res = await fetch(url);
     if (res.error) {
@@ -63,19 +75,16 @@ const fetchInsert = async url => {
     }
     const json = await res.json();
 
-    // console.log('hello');
-
     let pgQuery;
     if (json.competitions) { // fight nights, PPV events, single nights essentially. Some Dana white contender series. etc.
       json.competitions = json.competitions.filter(c => c.name.search(/dana.white/i) === -1);
-      pgQuery = createPreparedStatements('competitions', json.competitions);
+      pgQuery = createPreparedStatements('competitions', json.competitions, index);
     } else if (json.seasons) { // seasons means fights the night of the card (competition)
-      pgQuery = createPreparedStatements('seasons', json.seasons);
+      pgQuery = createPreparedStatements('seasons', json.seasons, index);
     } else if (json.summaries) { // fight summaries with lots of reptitive info but idk how else to get it.
-      pgQuery = createPreparedStatements('summaries', json.summaries);
+      pgQuery = createPreparedStatements('summaries', json.summaries, index);
     }
     insertQuery(pgQuery);
-    // return json;
   } catch (err) {
     console.error(err);
   }
