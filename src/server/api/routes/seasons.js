@@ -19,7 +19,18 @@ router.get('/', (req, res, next) => {
       res.status(500);
       return next(err);
     }
-    console.log(seasonData);
+    if (!seasonData.rowCount) {
+      res.status(403);
+      return next({
+        message: 'No data available'
+      });
+    }
+    res.status(200);
+    res.json({
+      success: true,
+      seasons: seasonData.rows
+    });
+    // console.log(seasonData);
   });
 });
 
