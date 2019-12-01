@@ -11,7 +11,7 @@ export default function UpcomingSeasonItem(props) {
 }
 
 const SeasonItemContainer = styled.div`
-
+  border: 1px solid red;
 `;
 
 UpcomingSeasonItem.propTypes = {

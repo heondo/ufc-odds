@@ -32,6 +32,7 @@ const createPreparedStatements = (table, data, index) => {
   // if the returned data is... fights. It doesnt have the summary id so that has to be inserted? in side each dataObjcts sport_event.id;
   if (table === 'summaries') {
     data[0].id = data[0].sport_event.id || null;
+    data[0].seasons_id = data[0].sport_event.sport_event_context.season.id || null;
     data[0].sport_event = data[0].sport_event || null;
     data[0].sport_event_status = data[0].sport_event_status || null;
     data[0].statistics = data[0].statistics || null;
@@ -47,6 +48,7 @@ const createPreparedStatements = (table, data, index) => {
     }
     if (table === 'summaries') {
       dataObject.id = dataObject.sport_event.id || null;
+      dataObject.seasons_id = dataObject.sport_event.sport_event_context.season.id || null;
       dataObject.sport_event = JSON.stringify(dataObject.sport_event) || null;
       dataObject.sport_event_status = JSON.stringify(dataObject.sport_event_status) || null;
       dataObject.statistics = JSON.stringify(dataObject.statistics) || null;
