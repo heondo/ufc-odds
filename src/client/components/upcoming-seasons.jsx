@@ -5,21 +5,39 @@ import UpcomingSeasonItem from '../container/upcoming-season-item';
 
 export default function UpcomingSeasons(props) {
   const [seasons, setSeasons] = useState(null);
-  // const [seasonsLoaded, setLoaded] = useState(false);
+
+  const getSeasons = async () => {
+    const response = await axios.get('api/seasons');
+    setSeasons(response.data.seasons);
+  };
 
   useEffect(() => {
-    (async () => {
-      const response = await axios.get('api/seasons');
-      console.log(response);
-      setSeasons(response.data.seasons);
-    })();
+    // probably shouldnt do this
+    getSeasons();
   }, []);
+
+  const sortEvents = arr => {
+    const sorted = arr.sort((a, b) => (a.sport_event.start_time) < (b.sport_event.start_time) ? -1 : 1);
+    return sorted;
+  };
 
   return seasons ? (
     <SeasonsListContainer>
-      {seasons.map(s => <UpcomingSeasonItem key={s.id} id={s.id} name={s.name} startDate={s.start_date} endDate={s.end_date} />)}
+      {seasons.map(s => (
+        <UpcomingSeasonItem
+          key={s.id}
+          id={s.id}
+          name={s.name}
+          startDate={s.start_date}
+          eventsArray={sortEvents(s.five_round_events)}
+        />
+      ))}
     </SeasonsListContainer>
-  ) : <div>Not loaded yet</div>;
+  ) : (
+    <div>
+    Not loaded yet
+    </div>
+  );
 }
 
 const SeasonsListContainer = styled.div`

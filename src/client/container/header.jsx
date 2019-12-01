@@ -22,7 +22,7 @@ const LogoContainer = styled.div`
 export default function Header(props) {
   return (
     <HeaderContainer>
-      <LogoContainer />
+      <LogoContainer /> Guesser
     </HeaderContainer>
   );
 }
