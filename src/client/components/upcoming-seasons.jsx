@@ -12,7 +12,6 @@ export default function UpcomingSeasons(props) {
   };
 
   useEffect(() => {
-    // probably shouldnt do this
     getSeasons();
   }, []);
 
