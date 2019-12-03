@@ -30,6 +30,11 @@ const createPreparedStatements = (table, data, index) => {
   }
   // create which values to insert
   // if the returned data is... fights. It doesnt have the summary id so that has to be inserted? in side each dataObjcts sport_event.id;
+  if (table === 'competitions') {
+    data[0].id = data[0].id || null;
+    data[0].name = data[0].name || null;
+    data[0].parent_id = data[0].parent_id || null;
+  }
   if (table === 'summaries') {
     data[0].id = data[0].sport_event.id || null;
     data[0].seasons_id = data[0].sport_event.sport_event_context.season.id || null;
@@ -37,6 +42,15 @@ const createPreparedStatements = (table, data, index) => {
     data[0].sport_event_status = data[0].sport_event_status || null;
     data[0].statistics = data[0].statistics || null;
   }
+  if (table === 'seasons') {
+    data[0].id = data[0].id || null;
+    data[0].name = data[0].name || null;
+    data[0].start_date = data[0].start_date || null;
+    data[0].end_date = data[0].end_date || null;
+    data[0].year = data[0].year || null;
+    data[0].competition_id = data[0].competition_id || null;
+  }
+
   Object.keys(data[0]).sort().forEach((key, i, arr) => {
     query.text += (i === arr.length - 1) ? `${key}) VALUES` : `${key}, `;
   });
@@ -44,7 +58,17 @@ const createPreparedStatements = (table, data, index) => {
   data.forEach((dataObject, i, arr) => {
     // then for each value in the object add ? and the value
     if (table === 'competitions') {
+      dataObject.id = dataObject.id || null;
+      dataObject.name = dataObject.name || null;
       dataObject.parent_id = dataObject.parent_id || null;
+    }
+    if (table === 'seasons') {
+      dataObject.id = dataObject.id || null;
+      dataObject.name = dataObject.name || null;
+      dataObject.start_date = dataObject.start_date || null;
+      dataObject.end_date = dataObject.end_date || null;
+      dataObject.year = dataObject.year || null;
+      dataObject.competition_id = dataObject.competition_id || null;
     }
     if (table === 'summaries') {
       dataObject.id = dataObject.sport_event.id || null;

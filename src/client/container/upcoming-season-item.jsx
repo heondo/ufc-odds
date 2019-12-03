@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import moment from 'moment';
 
-const convertName = name => {
-  const split = name.split(', ');
-  return [split[1], split[0]].join(' ');
-};
-
 export default function UpcomingSeasonItem(props) {
+  const convertName = name => {
+    const split = name.split(', ');
+    return [split[1], split[0]].join(' ');
+  };
 
   const Fights = fightProps => {
     return (
@@ -24,20 +24,34 @@ export default function UpcomingSeasonItem(props) {
   };
 
   return (
-    <SeasonItemContainer>
+    <SeasonItemContainer onClick={() => props.history.push(`/season/${props.id}`)}>
       <SeasonName>{props.name.replace(/\d{4}\s*$/, '')}</SeasonName>
-      <div>
-        {moment(props.startDate).format('MMM Do YY')}
-      </div>
-      <div>Five Round Events</div>
+      <SeasonDate>{moment(props.startDate).format('MMM Do YY')}</SeasonDate>
+      <FiveRoundHeader>5 Round Fights</FiveRoundHeader>
       <Fights />
+      <Arrow />
     </SeasonItemContainer>
   );
 }
 
+const Arrow = styled(ArrowRightIcon)`
+  position: absolute;
+  right: .3rem;
+`;
+
 const SeasonName = styled.div`
   font-size: 1.2em;
   font-weight: bold;
+`;
+
+const FiveRoundHeader = styled.div`
+  font-size: .85em;
+  font-weight: bold;
+`;
+
+const SeasonDate = styled.div`
+  font-size: .95em;
+  font-style: italic;
 `;
 
 const SeasonItemContainer = styled.div`
@@ -46,7 +60,8 @@ const SeasonItemContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   padding: .3rem;
-  border: 1px solid red;
+  border: 1px solid lightgrey;
+  position: relative;
 `;
 
 const FighterNames = styled.div`

@@ -6,15 +6,15 @@ const { getInsertSummaries, getInsertSeasons } = require('./get-summ-seas');
 
 dotenv.config({ path: path.resolve(__dirname, '..', '..', '..', '..', '.env') });
 
-const competitionsJob = new CronJob('00 00 * * Sun', () => {
+const competitionsJob = new CronJob('00 12 * * Sun', () => {
   fetchInsert(`https://api.sportradar.us/ufc/trial/v2/en/competitions.json?api_key=${process.env.SR_UFC_KEY}`);
 }, null, false, 'America/Los_Angeles');
 
-const seasonsJob = new CronJob('05 00 * * Sun', () => {
+const seasonsJob = new CronJob('05 12 * * Sun', () => {
   getInsertSeasons();
 }, null, false, 'America/Los_Angeles');
 
-const summariesJob = new CronJob('10 0 * * 0,3', () => {
+const summariesJob = new CronJob('10 12 * * 0,3', () => {
   getInsertSummaries();
 }, null, false, 'America/Los_Angeles');
 

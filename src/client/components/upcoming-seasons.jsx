@@ -24,6 +24,7 @@ export default function UpcomingSeasons(props) {
     <SeasonsListContainer>
       {seasons.map(s => (
         <UpcomingSeasonItem
+          {...props}
           key={s.id}
           id={s.id}
           name={s.name}
@@ -42,4 +43,6 @@ export default function UpcomingSeasons(props) {
 const SeasonsListContainer = styled.div`
   display: flex;
   flex-direction: column;
+  margin: auto;
+  max-width: 768px;
 `;
