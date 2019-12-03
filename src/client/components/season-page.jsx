@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import SummaryListItem from './summary-list-item';
 import styled from 'styled-components';
+// import { UserContext } from '../context/user-context';
 
 export default function SeasonPage(props) {
   const { id: seasonID } = props.match.params;
   const [summaries, setSummaries] = useState(null);
+  // const { user, setUser } = useContext(UserContext);
 
   useEffect(() => {
+    // setUser('this is a new user ');
     getSeasonData();
   }, []);
 
@@ -27,18 +30,24 @@ export default function SeasonPage(props) {
         {summaries[0].sport_event.sport_event_context.season.name.replace(/\d{4}\s*$/, '')}
       </SeasonTitle>
       <div>{createVenueLocation(summaries[0].sport_event.venue)}</div>
+      <Divider />
       {summaries.map(s => (
         <SummaryListItem
           key={s.id}
           {...props}
           id={s.id}
           competitors={s.sport_event.competitors}
-
         />
       ))}
     </SummariesContainer>
   ) : null;
 }
+
+const Divider = styled.div`
+  border-bottom: 2px solid grey;
+  width: 85%;
+  margin: .3rem auto;
+`;
 
 const SeasonTitle = styled.div`
   text-align: center;
@@ -52,4 +61,5 @@ const SummariesContainer = styled.div`
   flex-direction: column;
   margin: auto;
   max-width: 768px;
+  padding: .3rem;
 `;
