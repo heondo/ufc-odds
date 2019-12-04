@@ -10,6 +10,6 @@ Why not use what I've learned to make this....along with some data gathering alo
 * Styled Components, Axios, Hooks
 * React
 * CRON jobs to gather/update data on a schedule will have to tweak fights that are more recent so on and so forth, but every sunday morning should be fine.
-* Trying out Async/Await, implementing PropTypes, and hoping to do one more thing...
+* Trying out Async/Await, implementing PropTypes, useContext, cookies for JWT
 
 
