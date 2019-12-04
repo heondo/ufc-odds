@@ -1,7 +1,6 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import PropTypes, { arrayOf } from 'prop-types';
 import styled from 'styled-components';
-import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import moment from 'moment';
 
 export default function UpcomingSeasonItem(props) {
@@ -29,12 +28,12 @@ export default function UpcomingSeasonItem(props) {
       <SeasonDate>{moment(props.startDate).format('MMM Do YY')}</SeasonDate>
       <FiveRoundHeader>5 Round Fights</FiveRoundHeader>
       <Fights />
-      <Arrow />
+      <Arrow>></Arrow>
     </SeasonItemContainer>
   );
 }
 
-const Arrow = styled(ArrowRightIcon)`
+const Arrow = styled.div`
   position: absolute;
   right: .3rem;
 `;

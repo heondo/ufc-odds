@@ -6,15 +6,17 @@ dotenv.config({ path: path.resolve(__dirname, '..', '..', '.env') });
 
 const { competitionsJob, summariesJob, seasonsJob } = require('./api/sr-data/cron-jobs');
 const seasonsRoute = require('./api/routes/seasons');
+const usersRoute = require('./api/routes/users');
 
 const app = express();
 
+app.use('/api/users', usersRoute);
 app.use('/api/seasons', seasonsRoute);
 
 app.use((err, req, res, next) => {
   res.send({
-    type: err.type,
-    error: err.message
+    error: err.error,
+    message: err.message
   });
 });
 

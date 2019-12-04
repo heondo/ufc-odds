@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import UpcomingSeasons from './upcoming-seasons';
 import SeasonPage from './season-page';
 import Header from '../container/header';
+import SignUp from './signup';
 import { UserContext } from '../context/user-context';
 
 export default function App(props) {
@@ -12,11 +13,12 @@ export default function App(props) {
 
   return (
     <Router>
-      <Header />
+      <Header user={user}/>
       <Switch>
         <UserContext.Provider value={userProviderVal}>
           <Route exact path="/" render={props => <UpcomingSeasons {...props} />} />
           <Route exact path="/season/:id" render={props => <SeasonPage {...props} />} />
+          <Route exact path="/signup" render={props => <SignUp {...props} />} />
         </UserContext.Provider>
       </Switch>
     </Router>

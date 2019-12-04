@@ -61,5 +61,5 @@ const SummariesContainer = styled.div`
   flex-direction: column;
   margin: auto;
   max-width: 768px;
-  padding: .3rem;
+  padding: .5rem;
 `;

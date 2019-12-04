@@ -1,10 +1,6 @@
-const dotenv = require('dotenv');
-const path = require('path');
-dotenv.config({ path: path.resolve(__dirname, '..', '..', '..', '..', '.env') });
 const express = require('express');
 const router = express.Router();
-const { Client } = require('pg');
-const client = new Client();
+const client = require('../db_connect');
 client.connect();
 
 router.use(express.json());

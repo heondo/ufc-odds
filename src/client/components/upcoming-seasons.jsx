@@ -45,4 +45,5 @@ const SeasonsListContainer = styled.div`
   flex-direction: column;
   margin: auto;
   max-width: 768px;
+  padding: .5rem;
 `;

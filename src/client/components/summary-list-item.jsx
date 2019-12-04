@@ -39,6 +39,9 @@ const SummaryContainer = styled.div`
   display: flex;
   justify-content: center;
   padding: .3rem .7rem;
+  @media(max-width: 767px) {
+    font-size: .95em;
+  }
 `;
 
 SummaryListItem.propTypes = {
