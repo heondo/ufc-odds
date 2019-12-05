@@ -57,10 +57,9 @@ const SummaryDragItem = React.forwardRef(
     }));
     return (
       <SummaryContainer ref={elementRef} style={{ ...style, opacity }}>
-        {/* <FighterOne>{convertName(competitors[0].name)}</FighterOne>
+        <FighterOne>{convertName(competitors[0].name)}</FighterOne>
         <Middle>vs</Middle>
-        <FighterTwo>{convertName(competitors[1].name)}</FighterTwo> */}
-        wtf {index}
+        <FighterTwo>{convertName(competitors[1].name)}</FighterTwo>
       </SummaryContainer>
     );
   }

@@ -38,7 +38,7 @@ router.post('/login', async (req, res, next) => {
     const token = await jwt.sign({
       userID: userQueryData.rows[0].id,
       username: username
-    }, process.env.JWT_KEY, { expiresIn: '7 days' });
+    }, process.env.JWT_KEY, { expiresIn: '14 days' });
     res.status(200);
     res.cookie('token', token);
     res.json({
@@ -65,7 +65,7 @@ router.post('/signup', async (req, res, next) => {
     const token = await jwt.sign({
       userID,
       username: username
-    }, process.env.JWT_KEY, { expiresIn: '7 days' });
+    }, process.env.JWT_KEY, { expiresIn: '14 days' });
     res.status(200);
     res.cookie('token', token);
     res.json({

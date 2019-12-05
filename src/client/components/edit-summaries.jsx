@@ -7,53 +7,57 @@ import styled from 'styled-components';
 import update from 'immutability-helper';
 import SummaryDragItem from '../container/summary-drag-item';
 
-export default function EditSummaries(props) {
-  const { id: seasonID } = props.match.params;
-  const [summaries, setSummaries] = useState(null);
-  const { user, setUser } = useContext(UserContext);
+const EditSummaries = props => {
+  {
+    const { id: seasonID } = props.match.params;
+    const [summaries, setSummaries] = useState(null);
+    const { user, setUser } = useContext(UserContext);
 
-  useEffect(() => {
-    getSeasonData();
-  }, []);
+    useEffect(() => {
+      getSeasonData();
+    }, []);
 
-  const getSeasonData = async () => {
-    const response = await axios.get(`/api/seasons/${seasonID}`);
-    setSummaries(response.data.summaries);
-  };
+    const getSeasonData = async () => {
+      const response = await axios.get(`/api/seasons/${seasonID}`);
+      setSummaries(response.data.summaries);
+    };
 
-  const moveCard = (dragIndex, hoverIndex) => {
-    const dragCard = summaries[dragIndex];
-    setSummaries(
-      update(summaries, {
-        $splice: [
-          [dragIndex, 1],
-          [hoverIndex, 0, dragCard]
-        ]
-      })
-    );
-  };
+    const moveCard = (dragIndex, hoverIndex) => {
+      const dragCard = summaries[dragIndex];
+      setSummaries(
+        update(summaries, {
+          $splice: [
+            [dragIndex, 1],
+            [hoverIndex, 0, dragCard]
+          ]
+        })
+      );
+    };
 
-  return summaries ? (
-    <DndProvider backend={HTML5Backend}>
+    return summaries ? (
       <SummariesContainer>
         <div>
           {summaries[0].sport_event.sport_event_context.season.name.replace(/\d{4}\s*$/, '')}
         </div>
         <Divider />
-        {summaries.map((s, index) => (
-          <SummaryDragItem
-            key={s.id}
-            id={s.id}
-            index={index}
-            moveCard={moveCard}
-            competitors={s.sport_event.competitors}
-            summaryOrder={s.s_order}
-          />
-        ))}
+        <DndProvider backend={HTML5Backend}>
+          <div>
+            {summaries.map((s, index) => (
+              <SummaryDragItem
+                key={s.id}
+                id={s.id}
+                index={index}
+                moveCard={moveCard}
+                competitors={s.sport_event.competitors}
+                summaryOrder={s.s_order}
+              />
+            ))}
+          </div>
+        </DndProvider>
       </SummariesContainer>
-    </DndProvider>
-  ) : null;
-}
+    ) : null;
+  }
+};
 
 const Divider = styled.div`
   border-bottom: 2px solid grey;
@@ -69,3 +73,5 @@ const SummariesContainer = styled.div`
   max-width: 768px;
   padding: .5rem;
 `;
+
+export default EditSummaries;
