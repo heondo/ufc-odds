@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { UserContext } from '../context/user-context';
 
 const LogoAndText = styled.div`
   display: flex;
@@ -30,20 +31,31 @@ const LogoContainer = styled.div`
 `;
 
 export default function Header(props) {
+  const { user, setUser } = useContext(UserContext);
   return (
     <HeaderContainer>
-      <LogoAndText>
-        <LogoContainer />
-        <div>Guesser</div>
-      </LogoAndText>
-      {props.user ? (
-        <div>
-        Account
+      <Link to="/">
+        <LogoAndText>
+          <LogoContainer />
+          <div>Guesser</div>
+        </LogoAndText>
+      </Link>
+      {user ? (
+        <div onClick={() => {
+          window.localStorage.removeItem('userData');
+          setUser(null);
+        }}>
+            Signout
         </div>
       ) : (
-        <Link to="/signup">
-          <div>Signup</div>
-        </Link>
+        <LogoAndText>
+          <Link to="/login">
+            <div>Login</div>
+          </Link>
+          <Link to="/signup" style={{ marginLeft: '1rem' }}>
+            <div>Signup</div>
+          </Link>
+        </LogoAndText>
       )}
     </HeaderContainer>
   );

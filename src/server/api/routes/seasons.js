@@ -9,7 +9,7 @@ router.get('/:id', (req, res, next) => {
   const seasonID = req.params.id;
   const getSeasonQuery = {
     name: 'get-season',
-    text: 'select * from summaries where seasons_id = $1',
+    text: 'select * from summaries where seasons_id = $1 order by s_order desc',
     values: [seasonID]
   };
   client.query(getSeasonQuery, (err, seasonData) => {

@@ -2,9 +2,54 @@ const express = require('express');
 const router = express.Router();
 const client = require('../db_connect');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
+const path = require('path');
+dotenv.config({ path: path.resolve(__dirname, '..', '..', '.env') });
+
 // client.connect();
 
 router.use(express.json());
+
+router.post('/login', async (req, res, next) => {
+  const { username, password } = req.body;
+  try {
+    const getUserQuery = {
+      name: 'user-login',
+      text: 'SELECT * from users where username = $1',
+      values: [username]
+    };
+    const userQueryData = await client.query(getUserQuery);
+    if (!userQueryData.rowCount) {
+      res.status(404);
+      return next({
+        error: 'failed_credentials',
+        message: `Could not login with user ${username}`
+      });
+    }
+    const comparePasswords = await bcrypt.compare(password, userQueryData.rows[0].password);
+    if (!comparePasswords) {
+      res.status(405);
+      return next({
+        error: 'failed_credentials',
+        message: `Could not login with user ${username}`
+      });
+    }
+    const token = await jwt.sign({
+      userID: userQueryData.rows[0].id,
+      username: username
+    }, process.env.JWT_KEY, { expiresIn: '7 days' });
+    res.status(200);
+    res.cookie('token', token);
+    res.json({
+      succcess: true,
+      userID: userQueryData.rows[0].id,
+      username: username
+    });
+  } catch (err) {
+    console.error(err);
+  }
+});
 
 router.post('/signup', async (req, res, next) => {
   const { username, password } = req.body;
@@ -16,10 +61,17 @@ router.post('/signup', async (req, res, next) => {
       values: [username, hashPassword]
     };
     const queryData = await client.query(signUpQuery);
+    const userID = queryData.rows[0].id;
+    const token = await jwt.sign({
+      userID,
+      username: username
+    }, process.env.JWT_KEY, { expiresIn: '7 days' });
     res.status(200);
+    res.cookie('token', token);
     res.json({
       success: true,
-      userID: queryData.rows[0].id
+      userID,
+      username
     });
   } catch (err) {
     // console.log(err);

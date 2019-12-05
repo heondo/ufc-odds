@@ -1,26 +1,30 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useContext } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import UpcomingSeasons from './upcoming-seasons';
 import SeasonPage from './season-page';
 import Header from '../container/header';
 import SignUp from './signup';
+import Login from './login';
 import { UserContext } from '../context/user-context';
+import EditSummaries from './edit-summaries';
 
 export default function App(props) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(JSON.parse(window.localStorage.getItem('userData')) || null);
 
   const userProviderVal = useMemo(() => ({ user, setUser }), [user, setUser]);
 
   return (
     <Router>
-      <Header user={user}/>
-      <Switch>
-        <UserContext.Provider value={userProviderVal}>
+      <UserContext.Provider value={userProviderVal}>
+        <Header />
+        <Switch>
           <Route exact path="/" render={props => <UpcomingSeasons {...props} />} />
           <Route exact path="/season/:id" render={props => <SeasonPage {...props} />} />
+          <Route exact path="/edit/:id" render={props => <EditSummaries {...props} />} />
           <Route exact path="/signup" render={props => <SignUp {...props} />} />
-        </UserContext.Provider>
-      </Switch>
+          <Route exact path="/login" render={props => <Login {...props} />} />
+        </Switch>
+      </UserContext.Provider>
     </Router>
   );
 }
