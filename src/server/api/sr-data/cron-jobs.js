@@ -10,11 +10,11 @@ const competitionsJob = new CronJob('00 12 * * Sun', () => {
   fetchInsert(`https://api.sportradar.us/ufc/trial/v2/en/competitions.json?api_key=${process.env.SR_UFC_KEY}`);
 }, null, false, 'America/Los_Angeles');
 
-const seasonsJob = new CronJob('05 12 * * Sun', () => {
+const seasonsJob = new CronJob('05 12,14 * * 0,3,5', () => {
   getInsertSeasons();
 }, null, false, 'America/Los_Angeles');
 
-const summariesJob = new CronJob('10 12 * * 0,3', () => {
+const summariesJob = new CronJob('10 12,14 * * 0,3,5', () => {
   getInsertSummaries();
 }, null, false, 'America/Los_Angeles');
 

@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import React, { useImperativeHandle, useRef } from 'react';
 import { DragSource, DropTarget } from 'react-dnd';
 import styled from 'styled-components';
@@ -28,9 +29,14 @@ const SummaryContainer = styled.div`
   display: flex;
   justify-content: center;
   padding: .3rem .7rem;
+  text-decoration: ${props => props.canceled ? 'line-through' : null};
   @media(max-width: 767px) {
     font-size: .95em;
   }
+`;
+
+const CanceledCheck = styled.input`
+  margin-right: 8px;
 `;
 
 const style = {
@@ -47,7 +53,7 @@ const convertName = name => {
 };
 
 const SummaryDragItem = React.forwardRef(
-  ({ index, competitors, isDragging, connectDragSource, connectDropTarget }, ref) => {
+  ({ index, canceled, editFightCancel, competitors, isDragging, connectDragSource, connectDropTarget }, ref) => {
     const elementRef = useRef(null);
     connectDragSource(elementRef);
     connectDropTarget(elementRef);
@@ -55,8 +61,12 @@ const SummaryDragItem = React.forwardRef(
     useImperativeHandle(ref, () => ({
       getNode: () => elementRef.current
     }));
+    const editHandle = () => {
+      editFightCancel(index, canceled);
+    };
     return (
-      <SummaryContainer ref={elementRef} style={{ ...style, opacity }}>
+      <SummaryContainer canceled={canceled} ref={elementRef} style={{ ...style, opacity }}>
+        <CanceledCheck onChange={editHandle} type="checkbox" checked={canceled} />
         <FighterOne>{convertName(competitors[0].name)}</FighterOne>
         <Middle>vs</Middle>
         <FighterTwo>{convertName(competitors[1].name)}</FighterTwo>

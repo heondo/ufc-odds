@@ -9,7 +9,7 @@ router.get('/:id', (req, res, next) => {
   const seasonID = req.params.id;
   const getSeasonQuery = {
     name: 'get-season',
-    text: 'select * from summaries where seasons_id = $1 order by s_order desc',
+    text: 'select * from summaries where seasons_id = $1 order by s_order asc',
     values: [seasonID]
   };
   client.query(getSeasonQuery, (err, seasonData) => {
@@ -23,6 +23,7 @@ router.get('/:id', (req, res, next) => {
         message: 'No data available'
       });
     }
+    seasonData.rows.sort((a, b) => a.sport_event_status.match_status === 'cancelled' ? 1 : -1);
     res.status(200);
     res.json({
       success: true,

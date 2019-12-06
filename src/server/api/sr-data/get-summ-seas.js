@@ -25,7 +25,7 @@ async function getInsertSeasons() {
 
 async function getInsertSummaries() {
   try {
-    const queryResult = await client.query('select * from seasons order by id desc limit 10');
+    const queryResult = await client.query('select * from seasons order by id desc limit 15');
     queryResult.rows.forEach((r, i) => {
       const url = `https://api.sportradar.us/ufc/trial/v2/en/seasons/${r.id}/summaries.json?api_key=${process.env.SR_UFC_KEY}`;
       setTimeout(() => {

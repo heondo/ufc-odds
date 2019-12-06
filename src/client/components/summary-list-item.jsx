@@ -9,7 +9,7 @@ export default function SummaryListItem(props) {
   };
 
   return (
-    <SummaryContainer>
+    <SummaryContainer canceled={props.canceled}>
       <FighterOne>{convertName(props.competitors[0].name)}</FighterOne>
       <Middle>vs</Middle>
       <FighterTwo>{convertName(props.competitors[1].name)}</FighterTwo>
@@ -39,6 +39,7 @@ const SummaryContainer = styled.div`
   display: flex;
   justify-content: center;
   padding: .3rem .7rem;
+  text-decoration: ${props => props.canceled ? 'line-through' : null};
   @media(max-width: 767px) {
     font-size: .95em;
   }
@@ -46,5 +47,7 @@ const SummaryContainer = styled.div`
 
 SummaryListItem.propTypes = {
   id: PropTypes.string,
-  competitors: PropTypes.array
+  competitors: PropTypes.array,
+  summaryOrder: PropTypes.number,
+  canceled: PropTypes.bool
 };

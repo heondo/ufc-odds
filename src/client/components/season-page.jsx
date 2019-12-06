@@ -24,6 +24,10 @@ export default function SeasonPage(props) {
     return venueString;
   };
 
+  const isCanceled = statusObject => {
+    return (!!(statusObject.status === 'closed' && statusObject.match_status === 'cancelled'));
+  };
+
   return summaries && summaries.length ? (
     <SummariesContainer>
       <SeasonTitle>
@@ -45,6 +49,7 @@ export default function SeasonPage(props) {
           id={s.id}
           competitors={s.sport_event.competitors}
           summaryOrder={s.s_order}
+          canceled={isCanceled(s.sport_event_status)}
         />
       ))}
     </SummariesContainer>

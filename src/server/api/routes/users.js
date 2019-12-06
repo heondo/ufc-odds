@@ -47,7 +47,7 @@ router.post('/login', async (req, res, next) => {
       username: username
     });
   } catch (err) {
-    console.error(err);
+    return next(err);
   }
 });
 
