@@ -13,10 +13,12 @@ export default function UpcomingSeasonItem(props) {
     return (
       <div>
         {props.eventsArray.map(e => {
-          return (
-            <FighterNames key={e.id}>
-              {convertName(e.sport_event.competitors[0].name)} vs {convertName(e.sport_event.competitors[1].name)}
-            </FighterNames>);
+          if (e.match_status !== 'cancelled') {
+            return (
+              <FighterNames key={e.id}>
+                {convertName(e.sport_event.competitors[0].name)} vs {convertName(e.sport_event.competitors[1].name)}
+              </FighterNames>);
+          }
         })}
       </div>
     );

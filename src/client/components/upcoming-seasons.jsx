@@ -15,10 +15,10 @@ export default function UpcomingSeasons(props) {
     getSeasons();
   }, []);
 
-  const sortEvents = arr => {
-    const sorted = arr.sort((a, b) => (a.sport_event.start_time) < (b.sport_event.start_time) ? -1 : 1);
-    return sorted;
-  };
+  // const sortEvents = arr => {
+  //   const sorted = arr.sort((a, b) => (a.sport_event.start_time) < (b.sport_event.start_time) ? -1 : 1);
+  //   return sorted;
+  // };
 
   return seasons ? (
     <SeasonsListContainer>
@@ -29,7 +29,7 @@ export default function UpcomingSeasons(props) {
           id={s.id}
           name={s.name}
           startDate={s.start_date}
-          eventsArray={sortEvents(s.five_round_events)}
+          eventsArray={s.five_round_events}
         />
       ))}
     </SeasonsListContainer>

@@ -50,6 +50,7 @@ export default function SeasonPage(props) {
           competitors={s.sport_event.competitors}
           summaryOrder={s.s_order}
           canceled={isCanceled(s.sport_event_status)}
+          weightClass={s.sport_event_status.weight_class}
         />
       ))}
     </SummariesContainer>
