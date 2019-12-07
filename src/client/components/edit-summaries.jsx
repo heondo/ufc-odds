@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
-import { UserContext } from '../context/user-context';
 import styled from 'styled-components';
 import update from 'immutability-helper';
 import SummaryDragItem from '../container/summary-drag-item';
@@ -12,7 +11,6 @@ const EditSummaries = props => {
     const { id: seasonID } = props.match.params;
     const [summaries, setSummaries] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const { user, setUser } = useContext(UserContext);
 
     useEffect(() => {
       getSeasonData();

@@ -10,12 +10,13 @@ router.post('/reorder', checkAuth, async (req, res, next) => {
     const userData = req.userData;
     if (userData.userID !== 35) {
       res.status(404);
-      return next({
-        error: 'falied_creds',
-        message: 'could not reorder summaries'
-      });
+      throw new Error("I\'m afraid I can\'t let you do that Stan, I\'m going to have to put you in the game grid.")
     }
     const { seasonID, newOrder } = req.body;
+    if (!seasonID || !newOrder) {
+      res.status(404);
+      throw new Error('invalid_inputs')
+    }
     const reorderQuery = {
       name: `reorder-${seasonID}`,
       text: 'update summaries set s_order = (case',
@@ -42,9 +43,43 @@ router.post('/reorder', checkAuth, async (req, res, next) => {
       message: `Summaries for ${seasonID} were changed`
     });
   } catch (err) {
-    return next(err);
+    if (!res.statusCode) {
+      res.status(500)
+    }
+    next(err);
   }
-  // res.json({ success: true });
 });
+
+router.post('/predict', checkAuth, async (req, res, next) => {
+  const {seasonID, summaryID, fighterID} = req.body;
+  const {userID} = req.userData;
+  try {
+    if (!seasonID || !summaryID || !fighterID) {
+      res.status(404);
+      return next({
+        error: 'invalid_inputs',
+        message: 'Missing a season ID, summary ID, or fighter ID to predict on'
+      })
+    }
+    const insertPredictionQuery = {
+      name: `predict-${fighterID}`,
+      text: 'insert into predictions(user_id, seasons_id, summary_id, fighter_id, placed_date) VALUES ($1, $2, $3, now()) on conflict (summary_id, fighter_id) do update set fighter_id = $4 returning id',
+      values: [userID, seasonID, summaryID, fighterID, fighterID]
+    }
+    const insertResponse = await client.query(insertPredictionQuery);
+    if (insertResponse.error) {
+      throw new Error(insertResponse.error)
+    }
+    console.log(insertResponse)
+    res.status(200);
+    res.json({
+      success: true,
+      message: `Prediction placed with ID: ${insertResponse.rows[0].id} for fight ${summaryID}`
+    })
+  } catch (err) {
+    res.status(500);
+    return next(err)
+  }
+})
 
 module.exports = router;

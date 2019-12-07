@@ -83,6 +83,8 @@
         "error",
         "always"
       ],
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn",
       "padded-blocks": 0,
       "arrow-parens": [
         "error",
@@ -102,7 +104,10 @@
       ],
       "react/prop-types": 0,
       "react/react-in-jsx-scope": 0
-    }
+    },
+    "plugins": [
+      "react-hooks"
+    ]
   },
   "keywords": [],
   "author": "heondo",

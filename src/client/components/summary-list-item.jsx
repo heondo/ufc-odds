@@ -1,77 +1,174 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { UserContext } from '../context/user-context';
+import axios from 'axios';
+
+const ResultContainer = styled.span`
+    margin-right: ${props => props.leftRight === 'l' ? '.5rem' : null};
+    color: ${props => props.winStatus === 'W' ? 'darkgreen' : 'darkred'}
+    margin-left: ${props => props.leftRight === 'r' ? '.5rem' : null};
+    /* border: 3px solid ${props => props.winStatus === 'W' ? 'darkgreen' : 'darkred'}; */
+  `;
 
 const convertWeightClass = weightClass => {
   const charsOnly = weightClass.match(/[a-z_]+/)[0];
-  console.log(charsOnly);
   let newString;
   switch (charsOnly) {
     case 'bantamweight':
-      newString = 'BW - 135lbs';
+      newString = ['BW', '135lbs'];
       break;
     case 'featherweight':
-      newString = 'FW - 145lbs';
+      newString = ['FW', '145lbs'];
       break;
     case 'lightweight':
-      newString = 'LW - 155lbs';
+      newString = ['LW', '155lbs'];
       break;
     case 'welterweight':
-      newString = 'WW = 170lbs';
+      newString = ['WW', '170lbs'];
       break;
     case 'light_heavyweight':
-      newString = 'LHW - 205lbs';
+      newString = ['LHW', '205lbs'];
       break;
     case 'middleweight':
-      newString = 'MW - 185lbs';
+      newString = ['MW', '185lbs'];
       break;
     case 'heavyweight':
-      newString = 'HW - 265lbs';
+      newString = ['HW', '265lbs'];
       break;
     case 'flyweight':
-      newString = 'FLW - 125lbs';
+      newString = ['FLW', '125lbs'];
       break;
     case 'strawweight':
-      newString = 'SW - 115lbs';
+      newString = ['SW', '115lbs'];
       break;
   }
   return newString;
-  // if (weightClass.includes('146'))
+};
+
+const WinnerLoser = props => {
+  const { winner, competitors, leftRight } = props;
+  const winStatus = !winner ? null : (winner && winner === competitors[props.leftRight === 'l' ? 0 : 1].id) ? 'W' : 'L';
+  return (
+    <ResultContainer leftRight={leftRight} winStatus={winStatus}>
+      {winStatus}
+    </ResultContainer>
+  );
 };
 
 export default function SummaryListItem(props) {
+  // const [isPredicting, setIsPredicting] = useState(false);
   const convertName = name => {
     const split = name.split(', ');
     return [split[1], split[0]].join(' ');
   };
 
+  const { user } = useContext(UserContext);
+
+  const submitPrediction = async index => {
+    // setIsPredicting(true)
+    const fighterID = props.competitors[index].id;
+    // necessary things for the database. its own predictionID, summaryID, seasonsID, fighterID,
+    try {
+      const insertResponse = await axios.post('/api/summaries/predict', {
+        seasonID: props.seasonID,
+        summaryID: props.id,
+        fighterID: props.competitors[0].id
+      })
+      if (insertResponse.data.success)  {
+        // setIsPredicting(false)
+      }
+    }
+    catch (err) {
+      // setIsPredicting(false);
+      console.error(err)
+    }
+  };
+
+  const weightArray = convertWeightClass(props.weightClass);
+
+  const PredictButton = (innerProps) => {
+    if (props.isDayBefore) {
+      return (
+        <div>
+          date passed
+        </div>
+      )
+    }
+    if (user && !props.canceled && !props.isHistory) {
+      return (
+        <PredictButtonContainer onClick={() => submitPrediction(innerProps.index)}>
+          Predict
+        </PredictButtonContainer>
+      )
+    } else {
+      return null;
+    }
+  }
+
   return (
     <SummaryContainer canceled={props.canceled}>
-      <FighterOne>{convertName(props.competitors[0].name)}</FighterOne>
-      <Middle>{convertWeightClass(props.weightClass)}</Middle>
-      <FighterTwo>{convertName(props.competitors[1].name)}</FighterTwo>
+      <FighterOne winner={props.winner} fighter={props.competitors[0].id}>
+        <div>
+          {props.isHistory ? <WinnerLoser winner={props.winner} competitors={props.competitors} leftRight="l"/> : null}
+          {convertName(props.competitors[0].name)}
+        </div>
+        <PredictButton index={0}>
+          Predict
+        </PredictButton>
+      </FighterOne>
+      <Middle>
+        <span>
+          {weightArray[0]}
+        </span>
+        <PoundsContainer>
+          {` - ` + weightArray[1]}
+        </PoundsContainer>
+      </Middle>
+      <FighterTwo winner={props.winner} fighter={props.competitors[1].id}>
+        <div>
+          {convertName(props.competitors[1].name)}
+          {props.isHistory ? <WinnerLoser winner={props.winner} competitors={props.competitors} leftRight="r"/> : null}
+        </div>
+        <PredictButton index={1}>
+          Predict
+        </PredictButton>
+      </FighterTwo>
     </SummaryContainer>
   );
 }
 
+const PredictButtonContainer = styled.button`
+  max-width: 7rem;
+  padding: .3rem;
+`;
+
+const PoundsContainer = styled.span`
+  @media (max-width: 576px) {
+    display: none;
+  }
+`;
+
 const Middle = styled.div`
-  /* flex-basis: 1; */
+  font-size: .85em;
   width: 15%;
   margin: auto;
 `;
 
 const Fighter = styled.div`
-  /* flex-basis: 1; */
+  border: ${props => props.winner === props.fighter ? '2px solid darkgreen' : !props.winner ? null : '2px solid darkred'};
+  font-size: .95em;
   width: 42.5%
   display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 `;
 
 const FighterOne = styled(Fighter)`
-  justify-content: start;
 `;
 
 const FighterTwo = styled(Fighter)`
-  justify-content: end;
 `;
 
 const SummaryContainer = styled.div`
@@ -87,8 +184,11 @@ const SummaryContainer = styled.div`
 
 SummaryListItem.propTypes = {
   id: PropTypes.string,
+  seasonID: PropTypes.string,
   competitors: PropTypes.array,
   summaryOrder: PropTypes.number,
   canceled: PropTypes.bool,
-  weightClass: PropTypes.string
+  weightClass: PropTypes.string,
+  isHistory: PropTypes.bool,
+  winner: PropTypes.string
 };

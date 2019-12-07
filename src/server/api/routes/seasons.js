@@ -1,35 +1,42 @@
 const express = require('express');
 const router = express.Router();
+const jwt = require('jsonwebtoken')
 const client = require('../db_connect');
 client.connect();
 
 router.use(express.json());
 
-router.get('/:id', (req, res, next) => {
-  const seasonID = req.params.id;
-  const getSeasonQuery = {
-    name: 'get-season',
-    text: 'select * from summaries where seasons_id = $1 order by s_order',
-    values: [seasonID]
-  };
-  client.query(getSeasonQuery, (err, seasonData) => {
-    if (err) {
-      res.status(500);
-      return next(err);
+router.get('/:id', async (req, res, next) => {
+  try {
+    const seasonID = req.params.id;
+    const { token } = req.cookies;
+    const userData = token ? await jwt.verify(token, process.env.JWT_KEY) : null;
+    const getSeasonQuery = {
+      name: 'get-season',
+      text: 'select * from summaries where seasons_id = $1 order by s_order',
+      values: [seasonID]
+    };
+    if (userData) {
+      getSeasonQuery.text = "select summ.*, pred.id as prediction_id, pred.fighter_id as predicted_fighter, pred.user_id as user_id from summaries as summ left join (select * from predictions where seasons_id=$1 and user_id=$2) as pred on pred.summary_id = summ.id where summ.seasons_id = $3 order by summ.s_order";
+      getSeasonQuery.values.push(userData.userID, seasonID);
     }
-    if (!seasonData.rowCount) {
+    const queryResponse = await client.query(getSeasonQuery)
+    if (!queryResponse.rowCount) {
       res.status(403);
-      return next({
-        message: 'No data available'
-      });
+      throw new Error('No data available')
     }
-    // seasonData.rows.sort((a, b) => a.sport_event_status.match_status === 'cancelled' ? 1 : -1);
+    // queryResponse.rows.sort((a, b) => a.sport_event_status.match_status === 'cancelled' ? 1 : -1);
     res.status(200);
     res.json({
       success: true,
-      summaries: seasonData.rows
+      summaries: queryResponse.rows
     });
-  });
+  } catch (err) {
+    if (!res.statusCode)  {
+      res.status(500);
+    }
+    next(err)
+  }
 });
 
 router.get('/', (req, res, next) => {

@@ -22,18 +22,12 @@ router.post('/login', async (req, res, next) => {
     const userQueryData = await client.query(getUserQuery);
     if (!userQueryData.rowCount) {
       res.status(404);
-      return next({
-        error: 'failed_credentials',
-        message: `Could not login with user ${username}`
-      });
+      throw new Error('failed_credentials')
     }
     const comparePasswords = await bcrypt.compare(password, userQueryData.rows[0].password);
     if (!comparePasswords) {
       res.status(405);
-      return next({
-        error: 'failed_credentials',
-        message: `Could not login with user ${username}`
-      });
+      throw new Error('failed_credentials')
     }
     const token = await jwt.sign({
       userID: userQueryData.rows[0].id,
@@ -47,7 +41,7 @@ router.post('/login', async (req, res, next) => {
       username: username
     });
   } catch (err) {
-    return next(err);
+    next(err);
   }
 });
 
@@ -83,7 +77,7 @@ router.post('/signup', async (req, res, next) => {
       });
     }
     res.status(500);
-    return next(err);
+    next(err);
   }
 });
 

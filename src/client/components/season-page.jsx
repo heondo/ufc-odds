@@ -7,6 +7,7 @@ import { UserContext } from '../context/user-context';
 
 export default function SeasonPage(props) {
   const { id: seasonID } = props.match.params;
+  const currentTime = new Date()
   const [summaries, setSummaries] = useState(null);
   const { user, setUser } = useContext(UserContext);
 
@@ -28,11 +29,18 @@ export default function SeasonPage(props) {
     return (!!(statusObject.status === 'closed' && statusObject.match_status === 'cancelled'));
   };
 
+  const currentDate = new Date();
+  const seasonDate = summaries ? new Date(summaries[0].sport_event.start_time) : null;
+
+  const isDayBefore = (currentDate - seasonDate) > -86400;
+
+  const isHistory = !summaries ? null : seasonDate < currentDate;
+
   return summaries && summaries.length ? (
     <SummariesContainer>
       <SeasonTitle>
         {summaries[0].sport_event.sport_event_context.season.name.replace(/\d{4}\s*$/, '')}
-        {user.userID === 35 ? (
+        {user && user.userID === 35 ? (
           <EditButton>
             <Link to={`/edit/${seasonID}`}>
               Edit
@@ -47,10 +55,14 @@ export default function SeasonPage(props) {
           key={s.id}
           {...props}
           id={s.id}
+          seasonID={seasonID}
           competitors={s.sport_event.competitors}
           summaryOrder={s.s_order}
           canceled={isCanceled(s.sport_event_status)}
           weightClass={s.sport_event_status.weight_class}
+          winner={s.sport_event_status.winner_id || null}
+          isHistory={isHistory}
+          isDayBefore={isDayBefore}
         />
       ))}
     </SummariesContainer>

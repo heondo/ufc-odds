@@ -14,12 +14,14 @@ const summariesRoute = require('./api/routes/summaries');
 const app = express();
 
 app.use(cookies());
+// app.use(express.json());
 
 app.use('/api/users', usersRoute);
 app.use('/api/seasons', seasonsRoute);
 app.use('/api/summaries', summariesRoute);
 
 app.use((err, req, res, next) => {
+  console.log(err)
   res.send({
     error: err.error,
     message: err.message
