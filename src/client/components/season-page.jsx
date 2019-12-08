@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import update from 'immutability-helper'
 import { Link } from 'react-router-dom';
 import SummaryListItem from './summary-list-item';
 import styled from 'styled-components';
@@ -25,6 +26,16 @@ export default function SeasonPage(props) {
     return venueString;
   };
 
+  const addPredictionHandler = (index, predictionID, fighterID) => {
+    const newSummaries = update(summaries, {
+      [index]: {
+        prediction_id: {$set: predictionID},
+        predicted_fighter: {$set: fighterID}
+      }
+    })
+    setSummaries(newSummaries)
+  }
+
   const isCanceled = statusObject => {
     return (!!(statusObject.status === 'closed' && statusObject.match_status === 'cancelled'));
   };
@@ -32,7 +43,7 @@ export default function SeasonPage(props) {
   const currentDate = new Date();
   const seasonDate = summaries ? new Date(summaries[0].sport_event.start_time) : null;
 
-  const isDayBefore = (currentDate - seasonDate) > -86400;
+  const isDayBefore = (seasonDate - currentDate)/1000 < 86400;
 
   const isHistory = !summaries ? null : seasonDate < currentDate;
 
@@ -50,11 +61,12 @@ export default function SeasonPage(props) {
       </SeasonTitle>
       <div>{createVenueLocation(summaries[0].sport_event.venue)}</div>
       <Divider />
-      {summaries.map(s => (
+      {summaries.map((s, i) => (
         <SummaryListItem
           key={s.id}
           {...props}
           id={s.id}
+          index={i}
           seasonID={seasonID}
           competitors={s.sport_event.competitors}
           summaryOrder={s.s_order}
@@ -63,6 +75,9 @@ export default function SeasonPage(props) {
           winner={s.sport_event_status.winner_id || null}
           isHistory={isHistory}
           isDayBefore={isDayBefore}
+          predictionID={s.prediction_id}
+          predictedFighter={s.predicted_fighter}
+          addPredictionHandler={addPredictionHandler}
         />
       ))}
     </SummariesContainer>

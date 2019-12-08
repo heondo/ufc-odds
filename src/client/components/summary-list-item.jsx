@@ -73,10 +73,11 @@ export default function SummaryListItem(props) {
       const insertResponse = await axios.post('/api/summaries/predict', {
         seasonID: props.seasonID,
         summaryID: props.id,
-        fighterID: props.competitors[0].id
+        fighterID: props.competitors[index].id
       })
       if (insertResponse.data.success)  {
         // setIsPredicting(false)
+        props.addPredictionHandler(props.index, insertResponse.data.id, fighterID)
       }
     }
     catch (err) {
@@ -88,22 +89,38 @@ export default function SummaryListItem(props) {
   const weightArray = convertWeightClass(props.weightClass);
 
   const PredictButton = (innerProps) => {
+    if (!user) {
+      return null;
+    }
     if (props.isDayBefore) {
+      if (props.predictedFighter) {
+        return (
+          <PredictButtonContainer>
+            {props.predictedFighter === props.competitors[innerProps.index].id ? 'Your winner' : 'Your loser'}
+          </PredictButtonContainer>
+        )
+      }
       return (
-        <div>
-          date passed
-        </div>
+        <PredictButtonContainer>
+          Too late
+        </PredictButtonContainer>
       )
     }
-    if (user && !props.canceled && !props.isHistory) {
+    if (!props.canceled && !props.isHistory) {
+      if (props.predictedFighter) {
+        return (
+          <PredictButtonContainer>
+            {props.predictedFighter === props.competitors[innerProps.index].id ? 'Your winner': 'Your loser'}
+          </PredictButtonContainer>
+        )
+      }
       return (
         <PredictButtonContainer onClick={() => submitPrediction(innerProps.index)}>
           Predict
         </PredictButtonContainer>
       )
-    } else {
-      return null;
     }
+    return null;
   }
 
   return (
@@ -185,10 +202,15 @@ const SummaryContainer = styled.div`
 SummaryListItem.propTypes = {
   id: PropTypes.string,
   seasonID: PropTypes.string,
+  index: PropTypes.number,
   competitors: PropTypes.array,
   summaryOrder: PropTypes.number,
   canceled: PropTypes.bool,
   weightClass: PropTypes.string,
   isHistory: PropTypes.bool,
-  winner: PropTypes.string
+  winner: PropTypes.string,
+  predictionID: PropTypes.number,
+  predictedFighter: PropTypes.string,
+  seasonDate: PropTypes.object,
+  addPredictionHandler: PropTypes.func
 };

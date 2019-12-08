@@ -1,8 +1,11 @@
 import React, { useState, useContext } from 'react';
+import Cookies from 'universal-cookie';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { UserContext } from '../context/user-context';
+
+const cookies = new Cookies();
 
 const LogoAndText = styled.div`
   display: flex;
@@ -43,6 +46,7 @@ export default function Header(props) {
       {user ? (
         <div onClick={() => {
           window.localStorage.removeItem('userData');
+          cookies.remove('token')
           setUser(null);
         }}>
             Signout
