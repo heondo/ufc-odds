@@ -135,21 +135,21 @@ export default function SummaryListItem(props) {
         </PredictButton>
       </FighterOne>
       <Middle>
-        <span>
-          {weightArray[0]}
-        </span>
-        <PoundsContainer>
-          {` - ` + weightArray[1]}
-        </PoundsContainer>
+        <div>
+          <span>
+            {weightArray[0]}
+          </span>
+          <PoundsContainer>
+            {` - ` + weightArray[1]}
+          </PoundsContainer>
+        </div>
       </Middle>
       <FighterTwo winner={props.winner} fighter={props.competitors[1].id}>
         <div>
           {convertName(props.competitors[1].name)}
           {props.isHistory ? <WinnerLoser winner={props.winner} competitors={props.competitors} leftRight="r"/> : null}
         </div>
-        <PredictButton index={1}>
-          Predict
-        </PredictButton>
+        <PredictButton index={1} />
       </FighterTwo>
     </SummaryContainer>
   );
@@ -212,5 +212,6 @@ SummaryListItem.propTypes = {
   predictionID: PropTypes.number,
   predictedFighter: PropTypes.string,
   seasonDate: PropTypes.object,
-  addPredictionHandler: PropTypes.func
+  addPredictionHandler: PropTypes.func,
+  voteCount: PropTypes.object
 };

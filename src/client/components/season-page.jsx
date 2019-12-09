@@ -78,6 +78,7 @@ export default function SeasonPage(props) {
           predictionID={s.prediction_id}
           predictedFighter={s.predicted_fighter}
           addPredictionHandler={addPredictionHandler}
+          voteCount={s.voteCount}
         />
       ))}
     </SummariesContainer>

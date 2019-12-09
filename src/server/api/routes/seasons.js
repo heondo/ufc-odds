@@ -13,12 +13,12 @@ router.get('/:id', async (req, res, next) => {
     const userData = token ? await jwt.verify(token, process.env.JWT_KEY) : null;
     const getSeasonQuery = {
       name: `get-season`,
-      text: 'select * from summaries where seasons_id = $1 order by s_order',
+      text: 'select summ.*, preds.vote_count voteCount from summaries as summ left join (with main as (select summary_id, fighter_id, count(*) as vote_count from predictions group by summary_id, fighter_id) select summary_id, json_object_agg(fighter_id, vote_count) as vote_count from main group by summary_id) as preds on preds.summary_id = summ.id where summ.seasons_id = $1 order by summ.s_order',
       values: []
     };
     if (userData) {
       getSeasonQuery.name += '-cookies'
-      getSeasonQuery.text = "select summ.*, pred.id as prediction_id, pred.fighter_id as predicted_fighter, pred.user_id as user_id from summaries as summ left join (select * from predictions where seasons_id=$1 and user_id=$2) as pred on pred.summary_id = summ.id where summ.seasons_id = $3 order by summ.s_order";
+      getSeasonQuery.text = "select summ.*, pred.id as prediction_id, pred.fighter_id as predicted_fighter, pred.user_id as user_id, preds.vote_count voteCount from summaries as summ left join (select * from predictions where seasons_id=$1 and user_id=$2) as pred on pred.summary_id = summ.id left join (with main as (select summary_id, fighter_id, count(*) as vote_count from predictions group by summary_id, fighter_id) select summary_id, json_object_agg(fighter_id, vote_count) as vote_count from main group by summary_id) as preds on preds.summary_id = summ.id where summ.seasons_id = $3 order by summ.s_order";
       getSeasonQuery.values.push(seasonID, userData.userID, seasonID);
     } else {
       getSeasonQuery.values.push(seasonID)
