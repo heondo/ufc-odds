@@ -56,7 +56,7 @@ const WinnerLoser = props => {
   );
 };
 
-const VoteContainer = props => {
+const VoteComponent = props => {
   if (!props.voteCount) {
     return (
       <div>
@@ -64,12 +64,32 @@ const VoteContainer = props => {
       </div>
     )
   }
+  const totalVotes = Object.values(props.voteCount).reduce((a, b) => a + b) || 0;
+  const f1Votes = props.voteCount[props.competitors[0].id] || 0;
+  const f2Votes = props.voteCount[props.competitors[1].id] || 0;
+  const f1Percent = (f1Votes/totalVotes*100).toFixed(0)
+  const f2Percent = (f2Votes/totalVotes * 100).toFixed(0)
   return (
-    <div>
-      <span>{props.voteCount[props.competitors[0].id] || 0} votes </span>
-      <span>to</span>
-      <span> {props.voteCount[props.competitors[1].id] || 0} votes</span>
-    </div>
+    <VoteContainer>
+      <VoteDisplay>
+        <VoteCountBar percent={f1Percent} moreThan={f1Votes > f2Votes}/>
+        <VoteDisplay>
+          <div> ({f1Votes}/{totalVotes}) </div>
+          <MobileDisappear>
+            {f1Percent}%
+          </MobileDisappear>
+        </VoteDisplay>
+      </VoteDisplay>
+      <VoteDisplay>
+        <VoteDisplay>
+          <MobileDisappear>
+            {f2Percent}%
+          </MobileDisappear>
+          <div> ({f2Votes}/{totalVotes}) </div>
+        </VoteDisplay>
+        <VoteCountBar percent={f2Percent} moreThan={f1Votes < f2Votes}/>
+      </VoteDisplay>
+    </VoteContainer>
   )
 }
 
@@ -160,9 +180,7 @@ export default function SummaryListItem(props) {
             {` - ` + weightArray[1]}
           </PoundsContainer>
         </div>
-        <VoteContainer voteCount={props.voteCount} competitors={props.competitors} />
-          {/* <span>fighter 0 {props.voteCount[props.competitors[0].id] || 0}</span>
-          <span>figter 1 {props.voteCount[props.competitors[1].id] || 0}</span> */}
+        <VoteComponent voteCount={props.voteCount} competitors={props.competitors} />
       </Middle>
       <FighterTwo winner={props.winner} fighter={props.competitors[1].id}>
         <div>
@@ -174,6 +192,26 @@ export default function SummaryListItem(props) {
     </SummaryContainer>
   );
 }
+
+const VoteDisplay = styled.div`
+  display: flex;
+  /* flex-direction: row; */
+  justify-content: center;
+  align-items: center;
+`
+
+const MobileDisappear = styled.span`
+  margin: auto 2px;
+  @media(max-width: 576px) {
+    display: none;
+  }
+`
+
+const VoteContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  /* flex-wrap: wrap; */
+`
 
 const PredictButtonContainer = styled.button`
   max-width: 7rem;
@@ -190,20 +228,28 @@ const Middle = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: .85em;
-  width: 15%;
+  font-size: .75em;
+  width: 25%;
   margin: auto;
 `;
 
 const Fighter = styled.div`
   border: ${props => props.winner === props.fighter ? '2px solid darkgreen' : !props.winner ? null : '2px solid darkred'};
   font-size: .95em;
-  width: 42.5%
+  width: 37.5%
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 `;
+
+const VoteCountBar = styled.span`
+  display: inline-block;
+  margin: auto 2px;
+  height: 3px;
+  width: ${props => `${props.percent/40}rem`};
+  background-color: ${props => props.moreThan ? 'green' : 'grey'};
+`//${props => props.moreThan ? 'green' : 'grey'};
 
 const FighterOne = styled(Fighter)`
 `;

@@ -28,8 +28,9 @@ export default function SeasonPage(props) {
 
   const addPredictionHandler = (index, predictionID, fighterID) => {
     let {votecount: voteCount} = summaries[index];
-    if (!voteCount) {
+    if (!voteCount || !voteCount[fighterID]) {
       voteCount = {
+        ...voteCount,
         [fighterID]: 0
       }
     }
