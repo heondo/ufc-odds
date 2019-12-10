@@ -27,10 +27,18 @@ export default function SeasonPage(props) {
   };
 
   const addPredictionHandler = (index, predictionID, fighterID) => {
+    let {votecount: voteCount} = summaries[index];
+    if (!voteCount) {
+      voteCount = {
+        [fighterID]: 0
+      }
+    }
+    voteCount[fighterID] += 1;
     const newSummaries = update(summaries, {
       [index]: {
         prediction_id: {$set: predictionID},
-        predicted_fighter: {$set: fighterID}
+        predicted_fighter: {$set: fighterID},
+        votecount: {$set: voteCount}
       }
     })
     setSummaries(newSummaries)
@@ -78,7 +86,7 @@ export default function SeasonPage(props) {
           predictionID={s.prediction_id}
           predictedFighter={s.predicted_fighter}
           addPredictionHandler={addPredictionHandler}
-          voteCount={s.voteCount}
+          voteCount={s.votecount}
         />
       ))}
     </SummariesContainer>

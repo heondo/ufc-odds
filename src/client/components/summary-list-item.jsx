@@ -56,6 +56,23 @@ const WinnerLoser = props => {
   );
 };
 
+const VoteContainer = props => {
+  if (!props.voteCount) {
+    return (
+      <div>
+        No votes
+      </div>
+    )
+  }
+  return (
+    <div>
+      <span>{props.voteCount[props.competitors[0].id] || 0} votes </span>
+      <span>to</span>
+      <span> {props.voteCount[props.competitors[1].id] || 0} votes</span>
+    </div>
+  )
+}
+
 export default function SummaryListItem(props) {
   // const [isPredicting, setIsPredicting] = useState(false);
   const convertName = name => {
@@ -143,6 +160,9 @@ export default function SummaryListItem(props) {
             {` - ` + weightArray[1]}
           </PoundsContainer>
         </div>
+        <VoteContainer voteCount={props.voteCount} competitors={props.competitors} />
+          {/* <span>fighter 0 {props.voteCount[props.competitors[0].id] || 0}</span>
+          <span>figter 1 {props.voteCount[props.competitors[1].id] || 0}</span> */}
       </Middle>
       <FighterTwo winner={props.winner} fighter={props.competitors[1].id}>
         <div>
@@ -167,6 +187,9 @@ const PoundsContainer = styled.span`
 `;
 
 const Middle = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   font-size: .85em;
   width: 15%;
   margin: auto;
