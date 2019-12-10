@@ -27,7 +27,7 @@ export default function UpcomingSeasonItem(props) {
   return (
     <SeasonItemContainer onClick={() => props.history.push(`/season/${props.id}`)}>
       <SeasonName>{props.name.replace(/\d{4}\s*$/, '')}</SeasonName>
-      <SeasonDate>{moment(props.startDate).format('MMM Do YY')}</SeasonDate>
+      <SeasonDate>{moment(props.startDate).format('MMM Do, YYYY')}</SeasonDate>
       <FiveRoundHeader>5 Round Fights</FiveRoundHeader>
       <Fights />
       <Arrow><i className="fas fa-caret-right"></i></Arrow>

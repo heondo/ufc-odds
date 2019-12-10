@@ -2,9 +2,11 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import update from 'immutability-helper'
 import { Link } from 'react-router-dom';
+import moment from 'moment';
 import SummaryListItem from './summary-list-item';
 import styled from 'styled-components';
 import { UserContext } from '../context/user-context';
+import LoadingCircle from '../container/loading-circle'
 
 export default function SeasonPage(props) {
   const { id: seasonID } = props.match.params;
@@ -69,6 +71,7 @@ export default function SeasonPage(props) {
         ) : (null)}
       </SeasonTitle>
       <div>{createVenueLocation(summaries[0].sport_event.venue)}</div>
+      <div>{moment(summaries[0].sport_event.start_time).format('MMM Do, YYYY')}</div>
       {isHistory && user ? <UsersVotesResults summaries={summaries} isCanceled={isCanceled}/> : null}
       <Divider />
       {summaries.map((s, i) => (
@@ -92,7 +95,7 @@ export default function SeasonPage(props) {
         />
       ))}
     </SummariesContainer>
-  ) : null;
+  ) : <LoadingCircle />;
 }
 
 const UsersVotesResults = (props) => {
@@ -104,7 +107,8 @@ const UsersVotesResults = (props) => {
       nonCanceledFightLength += 1;
       if (sum.prediction_id) {
         totalPredictions += 1;
-        if (sum.predicted_fighter === sum.sport_event_status.winner_id){
+        const realWinnerID = sum.sport_event_status.winner_id
+        if (realWinnerID && sum.predicted_fighter === realWinnerID){
           correctPredictions += 1;
         }
       }
@@ -112,8 +116,8 @@ const UsersVotesResults = (props) => {
   })
   return (
     <div>
+      <Divider style={{maxWidth: '300px', margin: '2px auto'}}/>
       <div>Your Prediction Results</div>
-      <Divider style={{maxWidth: '300px'}}/>
       {correctPredictions}/{totalPredictions} on your predictions <span> out of {nonCanceledFightLength} fights</span>
     </div>
   )

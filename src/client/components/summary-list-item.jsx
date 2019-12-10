@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { UserContext } from '../context/user-context';
 import axios from 'axios';
+// import LoadingCircle from '../container/loading-circle';
 
 const ResultContainer = styled.span`
     margin-right: ${props => props.leftRight === 'l' ? '.5rem' : null};
@@ -94,7 +95,7 @@ const VoteComponent = props => {
 }
 
 export default function SummaryListItem(props) {
-  // const [isPredicting, setIsPredicting] = useState(false);
+  const [isPredicting, setIsPredicting] = useState(false);
   const convertName = name => {
     const split = name.split(', ');
     return [split[1], split[0]].join(' ');
@@ -103,7 +104,7 @@ export default function SummaryListItem(props) {
   const { user } = useContext(UserContext);
 
   const submitPrediction = async index => {
-    // setIsPredicting(true)
+    setIsPredicting(true)
     const fighterID = props.competitors[index].id;
     // necessary things for the database. its own predictionID, summaryID, seasonsID, fighterID,
     try {
@@ -113,12 +114,12 @@ export default function SummaryListItem(props) {
         fighterID: props.competitors[index].id
       })
       if (insertResponse.data.success)  {
-        // setIsPredicting(false)
+        setIsPredicting(false)
         props.addPredictionHandler(props.index, insertResponse.data.id, fighterID)
       }
     }
     catch (err) {
-      // setIsPredicting(false);
+      setIsPredicting(false);
       console.error(err)
     }
   };
@@ -128,6 +129,9 @@ export default function SummaryListItem(props) {
   const PredictButton = (innerProps) => {
     if (!user) {
       return null;
+    }
+    if (isPredicting) {
+      return <MiniLoading />
     }
     const isYourWinner = props.predictedFighter === props.competitors[innerProps.index].id
     if (props.isDayBefore) {
@@ -162,9 +166,19 @@ export default function SummaryListItem(props) {
     return null;
   }
 
+  const correctPrediction = (fighter) => {
+    if (props.predictedFighter && props.winner) {
+      if (props.predictedFighter === fighter){
+        return 'lightgreen';
+      }
+      return 'pink';
+    }
+    return 'white'
+  }
+
   return (
     <SummaryContainer canceled={props.canceled}>
-      <FighterOne winner={props.winner} fighter={props.competitors[0].id}>
+      <FighterOne correctPrediction={correctPrediction(props.competitors[0].id)} predictedFighter={props.predictedFighter} winner={props.winner} fighter={props.competitors[0].id}>
         <div>
           {props.isHistory ? <WinnerLoser winner={props.winner} competitors={props.competitors} leftRight="l"/> : null}
           {convertName(props.competitors[0].name)}
@@ -184,7 +198,7 @@ export default function SummaryListItem(props) {
         </div>
         <VoteComponent voteCount={props.voteCount} competitors={props.competitors} />
       </Middle>
-      <FighterTwo winner={props.winner} fighter={props.competitors[1].id}>
+      <FighterTwo correctPrediction={correctPrediction(props.competitors[1].id)} winner={props.winner} fighter={props.competitors[1].id}>
         <div>
           {convertName(props.competitors[1].name)}
           {props.isHistory ? <WinnerLoser winner={props.winner} competitors={props.competitors} leftRight="r"/> : null}
@@ -218,6 +232,8 @@ const VoteContainer = styled.div`
 const PredictButtonContainer = styled.button`
   max-width: 7rem;
   margin: .2rem auto;
+  border-radius: 3px;
+  background-color: ${props => props.isYourWinner === true ? 'lightgreen' : props.isYourWinner === false ? 'rgb(247, 148, 148)' : 'default'};
   padding: ${props => props.isYourWinner === true || props.isYourWinner === false ? '.3rem': '.3rem'};
   border: ${props => props.isYourWinner === true ? '1px solid green' : props.isYourWinner === false ? '1px solid red' : '1px solid grey'};
   @media(max-width: 576px){
@@ -235,13 +251,14 @@ const Middle = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: .75em;
+  font-size: .78em;
   width: 25%;
   margin: auto;
 `;
 
 const Fighter = styled.div`
   border: ${props => props.winner === props.fighter ? '2px solid darkgreen' : !props.winner ? null : '2px solid darkred'};
+  background-color: ${props => props.correctPrediction};
   font-size: .95em;
   width: 37.5%
   display: flex;
@@ -274,6 +291,16 @@ const SummaryContainer = styled.div`
     font-size: .95em;
   }
 `;
+
+const MiniLoading = styled.div`
+  border: 3px solid #f3f3f3 !important; /* Light grey */
+  border-top: 3px solid #3498db !important; /* Blue */
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 50%;
+  margin: auto;
+  animation: spin .5s linear infinite;
+`
 
 SummaryListItem.propTypes = {
   id: PropTypes.string,

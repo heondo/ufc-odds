@@ -1,7 +1,8 @@
-import React, { useState, useMemo, useContext } from 'react';
+import React, { useState, useMemo, useContext, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import UpcomingSeasons from './upcoming-seasons';
 import SeasonPage from './season-page';
+import axios from 'axios'
 import Header from '../container/header';
 import SignUp from './signup';
 import Login from './login';
@@ -10,6 +11,16 @@ import EditSummaries from './edit-summaries';
 
 export default function App(props) {
   const [user, setUser] = useState(JSON.parse(window.localStorage.getItem('userData')) || null);
+  const [seasons, setSeasons] = useState(null);
+
+  const getSeasons = async () => {
+    const response = await axios.get('api/seasons');
+    setSeasons(response.data.seasons);
+  };
+
+  useEffect(() => {
+    getSeasons();
+  }, []);
 
   const userProviderVal = useMemo(() => ({ user, setUser }), [user, setUser]);
 
@@ -18,7 +29,7 @@ export default function App(props) {
       <UserContext.Provider value={userProviderVal}>
         <Header />
         <Switch>
-          <Route exact path="/" render={props => <UpcomingSeasons {...props} />} />
+          <Route exact path="/" render={props => <UpcomingSeasons {...props} seasons={seasons}/>} />
           <Route exact path="/season/:id" render={props => <SeasonPage {...props} />} />
           <Route exact path="/edit/:id" render={props => <EditSummaries {...props} />} />
           <Route exact path="/signup" render={props => <SignUp {...props} />} />
