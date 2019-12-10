@@ -129,11 +129,12 @@ export default function SummaryListItem(props) {
     if (!user) {
       return null;
     }
+    const isYourWinner = props.predictedFighter === props.competitors[innerProps.index].id
     if (props.isDayBefore) {
       if (props.predictedFighter) {
         return (
-          <PredictButtonContainer>
-            {props.predictedFighter === props.competitors[innerProps.index].id ? 'Your winner' : 'Your loser'}
+          <PredictButtonContainer isYourWinner={isYourWinner}>
+            {isYourWinner ? 'Your winner' : 'Your loser'}
           </PredictButtonContainer>
         )
       }
@@ -146,8 +147,8 @@ export default function SummaryListItem(props) {
     if (!props.canceled && !props.isHistory) {
       if (props.predictedFighter) {
         return (
-          <PredictButtonContainer>
-            {props.predictedFighter === props.competitors[innerProps.index].id ? 'Your winner': 'Your loser'}
+          <PredictButtonContainer isYourWinner={isYourWinner}>
+            {isYourWinner ? 'Your winner': 'Your loser'}
           </PredictButtonContainer>
         )
       }
@@ -216,6 +217,10 @@ const VoteContainer = styled.div`
 const PredictButtonContainer = styled.button`
   max-width: 7rem;
   padding: .3rem;
+  border: ${props => props.isYourWinner === true ? '1px solid green' : props.isYourWinner === false ? '1px solid red' : '1px solid grey'};
+  @media(max-width: 576px){
+    font-size: .75em;
+  }
 `;
 
 const PoundsContainer = styled.span`
