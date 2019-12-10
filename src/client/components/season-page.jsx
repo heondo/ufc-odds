@@ -69,6 +69,7 @@ export default function SeasonPage(props) {
         ) : (null)}
       </SeasonTitle>
       <div>{createVenueLocation(summaries[0].sport_event.venue)}</div>
+      {isHistory && user ? <UsersVotesResults summaries={summaries} isCanceled={isCanceled}/> : null}
       <Divider />
       {summaries.map((s, i) => (
         <SummaryListItem
@@ -92,6 +93,30 @@ export default function SeasonPage(props) {
       ))}
     </SummariesContainer>
   ) : null;
+}
+
+const UsersVotesResults = (props) => {
+  let nonCanceledFightLength = 0;
+  let correctPredictions = 0;
+  let totalPredictions = 0;
+  props.summaries.forEach(sum => {
+    if (!props.isCanceled(sum.sport_event_status)){
+      nonCanceledFightLength += 1;
+      if (sum.prediction_id) {
+        totalPredictions += 1;
+        if (sum.predicted_fighter === sum.sport_event_status.winner_id){
+          correctPredictions += 1;
+        }
+      }
+    }
+  })
+  return (
+    <div>
+      <div>Your Prediction Results</div>
+      <Divider style={{maxWidth: '300px'}}/>
+      {correctPredictions}/{totalPredictions} on your predictions <span> out of {nonCanceledFightLength} fights</span>
+    </div>
+  )
 }
 
 const EditButton = styled.div`

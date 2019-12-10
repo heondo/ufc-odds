@@ -34,14 +34,14 @@ module.exports = {
   devtool: 'source-map',
   devServer: {
     host: '0.0.0.0',
-    port: 4200,
+    port: 24000,
     contentBase: publicPath,
     historyApiFallback: true,
     watchContentBase: true,
     stats: 'minimal',
     proxy: {
       '/api': {
-        target: 'http://localhost:4201',
+        target: 'http://localhost:24001',
         headers: {
           Host: 'ufc.localhost'
         }

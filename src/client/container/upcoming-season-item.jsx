@@ -30,7 +30,7 @@ export default function UpcomingSeasonItem(props) {
       <SeasonDate>{moment(props.startDate).format('MMM Do YY')}</SeasonDate>
       <FiveRoundHeader>5 Round Fights</FiveRoundHeader>
       <Fights />
-      <Arrow>></Arrow>
+      <Arrow><i className="fas fa-caret-right"></i></Arrow>
     </SeasonItemContainer>
   );
 }

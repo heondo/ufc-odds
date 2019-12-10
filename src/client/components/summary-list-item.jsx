@@ -138,11 +138,12 @@ export default function SummaryListItem(props) {
           </PredictButtonContainer>
         )
       }
-      return (
-        <PredictButtonContainer>
-          Too late
-        </PredictButtonContainer>
-      )
+      return null;
+      // (
+      //   <PredictButtonContainer>
+      //     Too late
+      //   </PredictButtonContainer>
+      // )
     }
     if (!props.canceled && !props.isHistory) {
       if (props.predictedFighter) {
@@ -216,7 +217,8 @@ const VoteContainer = styled.div`
 
 const PredictButtonContainer = styled.button`
   max-width: 7rem;
-  padding: .3rem;
+  margin: .2rem auto;
+  padding: ${props => props.isYourWinner === true || props.isYourWinner === false ? '.3rem': '.3rem'};
   border: ${props => props.isYourWinner === true ? '1px solid green' : props.isYourWinner === false ? '1px solid red' : '1px solid grey'};
   @media(max-width: 576px){
     font-size: .75em;
