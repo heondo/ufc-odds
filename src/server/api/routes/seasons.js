@@ -28,7 +28,6 @@ router.get('/:id', async (req, res, next) => {
       res.status(403);
       throw new Error('No data available')
     }
-    // queryResponse.rows.sort((a, b) => a.sport_event_status.match_status === 'cancelled' ? 1 : -1);
     res.status(200);
     res.json({
       success: true,

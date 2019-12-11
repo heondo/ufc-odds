@@ -7,9 +7,9 @@ import { UserContext } from '../context/user-context';
 
 const cookies = new Cookies();
 
-const LogoAndText = styled.div`
+const LogoAndText = styled.span`
   display: flex;
-  justify-content: start;
+  justify-content: center;
   align-items: center;
 `;
 
@@ -24,6 +24,31 @@ const HeaderContainer = styled.div`
   display: flex;
 `;
 
+const DownArrow = styled.i`
+  margin: 0 0 10px 5px;
+  width: 15px;
+  height: 15px;
+  padding: 3px;
+  background-color: black;
+  transition: all ease .5s;
+  /* :hover {
+    background-color: white;
+  } */
+`
+
+const AccountMenu = styled.div`
+  display: ${props => props.menuVisible ? 'flex': 'none'};
+  position: absolute;
+  flex-direction: column;
+  color: black;
+  background-color: lightgrey;
+  margin-top: 4rem;
+  margin-right: .5rem;
+  z-index: 2;
+  padding: .5rem;
+  border-radius: 5px;
+`
+
 const LogoContainer = styled.div`
   width: 8rem;
   height: 6.5rem;
@@ -35,6 +60,12 @@ const LogoContainer = styled.div`
 
 export default function Header(props) {
   const { user, setUser } = useContext(UserContext);
+  const [menuVisible, setMenuVisible] = useState(false);
+
+  const toggleMenu = () => {
+    setMenuVisible(!menuVisible)
+  }
+
   return (
     <HeaderContainer>
       <Link to="/">
@@ -43,24 +74,37 @@ export default function Header(props) {
           <div>Guesser</div>
         </LogoAndText>
       </Link>
-      {user ? (
-        <div onClick={() => {
-          window.localStorage.removeItem('userData');
-          cookies.remove('token')
-          setUser(null);
-        }}>
-            Signout
-        </div>
-      ) : (
-        <LogoAndText>
-          <Link to="/login">
-            <div>Login</div>
+      <LogoAndText>
+        {user ? (
+          <Link to="/account">
+            Account
           </Link>
-          <Link to="/signup" style={{ marginLeft: '1rem' }}>
-            <div>Signup</div>
-          </Link>
-        </LogoAndText>
-      )}
+        ) : (
+            <LogoAndText>
+              <Link to="/login">
+                <div>Login</div>
+              </Link>
+            </LogoAndText>
+          )}
+        <DownArrow onClick={toggleMenu}>
+          <i className="fas fa-sort-down" />
+        </DownArrow>
+        <AccountMenu menuVisible={menuVisible}>
+          {user ? (
+            <Link to="/" onClick={() => {
+              window.localStorage.removeItem('userData');
+              cookies.remove('token')
+              setUser(null);
+            }}>
+              Signout
+            </Link>
+          ) : (
+              <Link to="/signup" style={{ marginLeft: '1rem' }}>
+                <div>Signup</div>
+              </Link>
+          )}
+        </AccountMenu>
+      </LogoAndText>
     </HeaderContainer>
   );
 }

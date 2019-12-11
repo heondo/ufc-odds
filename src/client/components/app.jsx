@@ -5,6 +5,7 @@ import SeasonPage from './season-page';
 import axios from 'axios'
 import Header from '../container/header';
 import SignUp from './signup';
+import AccountPage from './account-page'
 import Login from './login';
 import { UserContext } from '../context/user-context';
 import EditSummaries from './edit-summaries';
@@ -29,10 +30,11 @@ export default function App(props) {
       <UserContext.Provider value={userProviderVal}>
         <Header />
         <Switch>
-          <Route exact path="/" render={props => <UpcomingSeasons {...props} seasons={seasons}/>} />
+          <Route exact path="/" render={props => <UpcomingSeasons {...props} seasons={seasons} />} />
           <Route exact path="/season/:id" render={props => <SeasonPage {...props} />} />
           <Route exact path="/edit/:id" render={props => <EditSummaries {...props} />} />
           <Route exact path="/signup" render={props => <SignUp {...props} />} />
+          <Route exact path="/account" render={props => <AccountPage {...props} />} />
           <Route exact path="/login" render={props => <Login {...props} />} />
         </Switch>
       </UserContext.Provider>
