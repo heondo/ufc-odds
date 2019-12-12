@@ -180,7 +180,7 @@ export default function SummaryListItem(props) {
     <SummaryContainer canceled={props.canceled}>
       <FighterOne correctPrediction={correctPrediction(props.competitors[0].id)} predictedFighter={props.predictedFighter} winner={props.winner} fighter={props.competitors[0].id}>
         <div>
-          {props.isHistory ? <WinnerLoser winner={props.winner} competitors={props.competitors} leftRight="l"/> : null}
+          {props.isHistory && props.winner ? <WinnerLoser winner={props.winner} competitors={props.competitors} leftRight="l"/> : null}
           {convertName(props.competitors[0].name)}
         </div>
         <PredictButton index={0}>
@@ -201,7 +201,7 @@ export default function SummaryListItem(props) {
       <FighterTwo correctPrediction={correctPrediction(props.competitors[1].id)} winner={props.winner} fighter={props.competitors[1].id}>
         <div>
           {convertName(props.competitors[1].name)}
-          {props.isHistory ? <WinnerLoser winner={props.winner} competitors={props.competitors} leftRight="r"/> : null}
+          {props.isHistory && props.winner ? <WinnerLoser winner={props.winner} competitors={props.competitors} leftRight="r"/> : null}
         </div>
         <PredictButton index={1} />
       </FighterTwo>

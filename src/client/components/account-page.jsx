@@ -1,15 +1,40 @@
-import React, {useState, useContext} from 'react';
-import styled from 'styled-components'
+import React, {useState, useContext, useEffect} from 'react';
+import styled from 'styled-components';
+import axios from 'axios';
 import {UserContext} from '../context/user-context'
 import LoadingCircle from '../container/loading-circle';
 
 export default function AccountPage(props){
   const {user, setUser} = useContext(UserContext);
-  return user ? (
+  const [predictionData, setPredictionData] = useState(true)
+
+  const fetchUserPredictions = async () => {
+    try {
+      const predictionResponse = await axios.get('/api/users/');
+      setPredictionData([]);
+    }
+    catch(err) {
+      setPredictionData([]);
+      console.error(err)
+    }
+  }
+
+  return user && predictionData  ? (
     <AccountContainer>
       <AccountTitle>
         this is your home account page
       </AccountTitle>
+      {
+        predictionData.length ? (
+          <div>
+            if prediiction array then here
+          </div>
+        ) : (
+          <div>
+            Make predictions for some data
+          </div>
+        )
+      }
     </AccountContainer>
   ) : <LoadingCircle />
 }

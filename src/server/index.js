@@ -15,6 +15,7 @@ const app = express();
 
 app.use(cookies());
 // app.use(express.json());
+getInsertSummaries();
 
 app.use('/api/users', usersRoute);
 app.use('/api/seasons', seasonsRoute);

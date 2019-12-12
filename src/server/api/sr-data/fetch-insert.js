@@ -19,6 +19,14 @@ async function insertQuery(query) {
 
 const createPreparedStatements = (table, data, index) => {
   let prepareIndexer = 1;
+  switch (table) {
+    case 'summaries':
+    case 'seasons':
+    case 'competitions':
+      break;
+    default:
+      return false;
+  }
   const query = {
     name: `add-${table}-${index}`,
     // will have to grab the sport event id in the data.forEach below
