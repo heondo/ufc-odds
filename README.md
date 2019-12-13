@@ -12,4 +12,5 @@ Why not use what I've learned to make this....along with some data gathering alo
 * CRON jobs to gather/update data on a schedule will have to tweak fights that are more recent so on and so forth, but every sunday morning should be fine.
 * Trying out Async/Await, implementing PropTypes, useContext, cookies for JWT
 
-
+#### Sample View of predicting on a fight and rearranging fight order
+![ufc demo gif](demo/ufc-demo.gif)
