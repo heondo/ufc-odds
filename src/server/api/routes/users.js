@@ -21,7 +21,7 @@ router.get('/:id', async (req, res, next) => {
     }
     const userPredictionsQuery = {
       name: `get-users-${Date.now()}`,
-      text: "select seas.id, seas.name, seas.start_date, spreds.seasonSummaries from seasons as seas left join (select summs.seasons_id, json_agg( json_build_object( 'summaryID', summs.id, 'sportEvent', summs.sport_event, 'sportEventStatus', summs.sport_event_status, 'statistics', summs.statistics, 'sortOrder', summs.s_order, 'predictionID', preds.id, 'predictedFighter', preds.predicted_fighter ) ) as seasonSummaries from summaries as summs right join ( select id, summary_id, fighter_id predicted_fighter from predictions where user_id = $1 is not null ) as preds on preds.summary_id = summs.id group by summs.seasons_id ) as spreds on seas.id = spreds.seasons_id limit 20",
+      text: "select seas.id, seas.name, seas.start_date, spreds.seasonSummaries from seasons as seas left join (select summs.seasons_id, json_agg( json_build_object( 'summaryID', summs.id, 'sportEvent', summs.sport_event, 'sportEventStatus', summs.sport_event_status, 'statistics', summs.statistics, 'sortOrder', summs.s_order, 'predictionID', preds.id, 'predictedFighter', preds.predicted_fighter ) order by summs.s_order) as seasonSummaries from summaries as summs right join ( select id, summary_id, fighter_id predicted_fighter from predictions where user_id = $1 and id is not null ) as preds on preds.summary_id = summs.id group by summs.seasons_id ) as spreds on seas.id = spreds.seasons_id limit 20",
       values: [id]
     }
     const queryResponse = await client.query(userPredictionsQuery);

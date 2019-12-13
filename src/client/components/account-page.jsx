@@ -3,15 +3,20 @@ import styled from 'styled-components';
 import axios from 'axios';
 import {UserContext} from '../context/user-context'
 import LoadingCircle from '../container/loading-circle';
+import AccountsSummaries from '../container/accounts-summaries'
 
 export default function AccountPage(props){
   const {user, setUser} = useContext(UserContext);
-  const [predictionData, setPredictionData] = useState(true)
+  const [predictionData, setPredictionData] = useState(false)
+
+  useEffect(() => {
+    fetchUserPredictions();
+  }, [])
 
   const fetchUserPredictions = async () => {
     try {
-      const predictionResponse = await axios.get('/api/users/');
-      setPredictionData([]);
+      const predictionResponse = await axios.get(`/api/users/${user.userID}`);
+      setPredictionData(predictionResponse.data.seasons);
     }
     catch(err) {
       setPredictionData([]);
@@ -22,13 +27,19 @@ export default function AccountPage(props){
   return user && predictionData  ? (
     <AccountContainer>
       <AccountTitle>
-        this is your home account page
+        Account
       </AccountTitle>
       {
         predictionData.length ? (
-          <div>
-            if prediiction array then here
-          </div>
+          predictionData.map(s => (
+            <AccountsSummaries
+              key={s.id}
+              id={s.id}
+              name={s.name}
+              startDate={s.start_date}
+              eventsArray={s.seasonsummaries}
+            />
+          ))
         ) : (
           <div>
             Make predictions for some data
