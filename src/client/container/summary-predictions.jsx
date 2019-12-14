@@ -28,7 +28,10 @@ const Middle = styled.div`
 `
 
 const Fighter = styled.div`
+  border: ${props => props.winner ? props.winner === props.competitorID ? ' 1px solid green' : '1px solid red' : 'none'};
+  color: ${props => props.predictedFighter === props.competitorID ? 'green': 'red'}
   width: 47.5%;
+  padding: .2rem;
 `
 
 const FighterOne = styled(Fighter)`

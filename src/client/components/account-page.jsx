@@ -29,17 +29,22 @@ export default function AccountPage(props){
       <AccountTitle>
         Account
       </AccountTitle>
+      <div>
+        total prediction results here?
+      </div>
       {
         predictionData.length ? (
-          predictionData.map(s => (
-            <AccountsSummaries
-              key={s.id}
-              id={s.id}
-              name={s.name}
-              startDate={s.start_date}
-              eventsArray={s.seasonsummaries}
-            />
-          ))
+          predictionData.map(s => {
+            return (
+              <AccountsSummaries
+                key={s.id}
+                id={s.id}
+                name={s.name}
+                startDate={s.start_date}
+                eventsArray={s.seasonsummaries}
+              />
+            )
+          })
         ) : (
           <div>
             Make predictions for some data

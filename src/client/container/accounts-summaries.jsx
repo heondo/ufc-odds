@@ -1,26 +1,47 @@
-import React from 'react';
+import React, {useState} from 'react';
 import SummaryPredictions from './summary-predictions';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import {Link} from 'react-router-dom';
 
 export default function AccountsSummaries(props) {
+  const GeneratePredictionTotals = innerProps => {
+    let correct = 0;
+    let total = 0;
+    if (innerProps.eventsArray) {
+      innerProps.eventsArray.forEach(e => {
+        if (e.predictedFighter === e.sportEventStatus.winner_id) {
+          correct += 1;
+        }
+        total += 1;
+      })
+    }
+    return (
+      <div>
+        {correct}/{total}
+      </div>
+    )
+  }
+
   return (
     <SeasonsContainer>
-      <Link to={`/season/${props.id}`}>
-        <SeasonName>
+      <SeasonName>
+        <Link to={`/season/${props.id}`}>
           {props.name}
-        </SeasonName>
-      </Link>
+        </Link>
+      </SeasonName>
+      <GeneratePredictionTotals eventsArray={props.eventsArray}/>
       {props.eventsArray ? (
-        props.eventsArray.map(p => (
-          <SummaryPredictions
-          key={p.summaryID}
-          competitors={p.sportEvent.competitors}
-          predictedFighter={p.predictedFighter}
-          winner={p.sportEventStatus.winner}
-          />
-        ))
+        props.eventsArray.map(p => {
+          return (
+            <SummaryPredictions
+              key={p.summaryID}
+              competitors={p.sportEvent.competitors}
+              predictedFighter={p.predictedFighter}
+              winner={p.sportEventStatus.winner_id}
+            />
+          )
+        })
       ) : (
         <div>
           NA
