@@ -9,6 +9,34 @@ export default function AccountPage(props){
   const {user, setUser} = useContext(UserContext);
   const [predictionData, setPredictionData] = useState(false)
 
+  const TotalPredictions = ({seasonsArray}) => {
+    let correct = 0;
+    let passedFights = 0;
+    for (let i = 0; i < seasonsArray.length; i++){
+      if (!seasonsArray[i].seasonsummaries){
+        continue;
+      }
+      if (!seasonsArray[[i]].seasonsummaries[0].sportEventStatus.winner){
+        continue;
+      }
+      const seasonSummaries = seasonsArray[i].seasonsummaries;
+      for (let j in seasonSummaries){
+        if (seasonSummaries[j].predictedFighter === seasonSummaries[j].sportEventStatus.winner_id){
+          correct += 1;
+        }
+        passedFights += 1;
+      }
+    }
+    return (
+      <div>
+        {correct}/{passedFights} so far
+        <div>
+          thats not bad, for a percentage of {(correct*100/passedFights).toFixed(2)}%
+        </div>
+      </div>
+    )
+  }
+
   useEffect(() => {
     fetchUserPredictions();
   }, [])
@@ -29,9 +57,7 @@ export default function AccountPage(props){
       <AccountTitle>
         Account
       </AccountTitle>
-      <div>
-        total prediction results here?
-      </div>
+      <TotalPredictions seasonsArray={predictionData}/>
       {
         predictionData.length ? (
           predictionData.map(s => {
