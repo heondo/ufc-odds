@@ -7,7 +7,7 @@ dotenv.config({ path: path.resolve(__dirname, '..', '..', '..', '.env') });
 const client = new Client();
 client.connect();
 
-const fetchTimeout = 1200;
+const fetchTimeout = 1500;
 
 async function getInsertSeasons() {
   try {

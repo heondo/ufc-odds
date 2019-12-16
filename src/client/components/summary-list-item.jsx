@@ -168,10 +168,10 @@ export default function SummaryListItem(props) {
 
   const correctPrediction = (fighter) => {
     if (props.predictedFighter && props.winner) {
-      if (props.predictedFighter === fighter){
-        return 'lightgreen';
+      if (props.winner === fighter){
+        return '#c5e0d8';
       }
-      return 'pink';
+      return '#ceabb1';
     }
     return 'white'
   }
@@ -233,9 +233,11 @@ const PredictButtonContainer = styled.button`
   max-width: 7rem;
   margin: .2rem auto;
   border-radius: 3px;
-  background-color: ${props => props.isYourWinner === true ? 'lightgreen' : props.isYourWinner === false ? 'rgb(247, 148, 148)' : 'default'};
+  background-color: ${props => props.isYourWinner === true ? '#c5e0d8' : props.isYourWinner === false ? '#ceabb1' : 'default'};
   padding: ${props => props.isYourWinner === true || props.isYourWinner === false ? '.3rem': '.3rem'};
-  border: ${props => props.isYourWinner === true ? '1px solid green' : props.isYourWinner === false ? '1px solid red' : '1px solid grey'};
+  /* border: ${props => props.isYourWinner === true ? '1px solid green' : props.isYourWinner === false ? '1px solid red' : '1px solid grey'}; */
+  border: 1px solid grey;
+  border-radius: 4px;
   @media(max-width: 576px){
     font-size: .75em;
   }
@@ -257,7 +259,10 @@ const Middle = styled.div`
 `;
 
 const Fighter = styled.div`
-  border: ${props => props.winner === props.fighter ? '2px solid darkgreen' : !props.winner ? null : '2px solid darkred'};
+  /* border: ${props => props.winner === props.fighter ? '1px solid #2e9778' : !props.winner ? null : '1px solid #8a4a55'}; */
+  padding: .5rem auto;
+  /* border: 1px solid grey; */
+  border-radius: 4px;
   background-color: ${props => props.correctPrediction};
   font-size: .95em;
   width: 37.5%

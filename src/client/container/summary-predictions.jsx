@@ -28,8 +28,8 @@ const Middle = styled.div`
 `
 
 const Fighter = styled.div`
-  border: ${props => props.winner ? props.winner === props.competitorID ? ' 1px solid green' : '1px solid red' : 'none'};
-  color: ${props => props.predictedFighter === props.competitorID ? 'green': 'red'}
+  border: ${props => props.winner ? props.winner === props.competitorID ? ' 1px solid #498a77;' : '1px solid #bd6574' : 'none'};
+  color: ${props => props.predictedFighter === props.competitorID ? '#498a77;' : '#bd6574'};
   width: 47.5%;
   padding: .2rem;
 `
