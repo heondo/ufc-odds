@@ -236,7 +236,7 @@ const PredictButtonContainer = styled.button`
   background-color: ${props => props.isYourWinner === true ? '#c5e0d8' : props.isYourWinner === false ? '#ceabb1' : 'default'};
   padding: ${props => props.isYourWinner === true || props.isYourWinner === false ? '.3rem': '.3rem'};
   /* border: ${props => props.isYourWinner === true ? '1px solid green' : props.isYourWinner === false ? '1px solid red' : '1px solid grey'}; */
-  border: 1px solid grey;
+  border: 1px solid black;
   border-radius: 4px;
   @media(max-width: 576px){
     font-size: .75em;

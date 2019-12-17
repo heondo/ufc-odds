@@ -9,7 +9,7 @@ export default function UpcomingSeasonItem(props) {
     return [split[1], split[0]].join(' ');
   };
 
-  const Fights = fightProps => {
+  const Fights = () => {
     return (
       <div>
         {props.eventsArray.map(e => {
@@ -28,7 +28,9 @@ export default function UpcomingSeasonItem(props) {
     <SeasonItemContainer onClick={() => props.history.push(`/season/${props.id}`)}>
       <SeasonName>{props.name.replace(/\d{4}\s*$/, '')}</SeasonName>
       <SeasonDate>{moment(props.startDate).format('MMM Do, YYYY')}</SeasonDate>
-      <FiveRoundHeader>5 Round Fights</FiveRoundHeader>
+      {
+        props.eventsArray.length ? <FiveRoundHeader>5 Round Fights</FiveRoundHeader> : undefined
+      }
       <Fights />
       <Arrow><i className="fas fa-caret-right"></i></Arrow>
     </SeasonItemContainer>
