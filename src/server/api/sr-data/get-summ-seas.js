@@ -37,7 +37,23 @@ async function getInsertSummaries() {
   }
 }
 
+async function getInsertProbabilities() {
+  try {
+    const queryResult = await client.query('select * from seasons order by id limit 20');
+    queryResult.rows.forEach((r, i) => {
+      const url = `https://api.sportradar.us/ufc/trial/v2/en/seasons/${r.id}/probabilities.json?api_key=${process.env.SR_UFC_KEY}`;
+      setTimeout(() => {
+        fetchInsert(url, i);
+      }, i * fetchTimeout);
+    });
+  }
+  catch (err) {
+    console.error(err);
+  }
+}
+
 module.exports = {
   getInsertSeasons,
-  getInsertSummaries
+  getInsertSummaries,
+  getInsertProbabilities
 };

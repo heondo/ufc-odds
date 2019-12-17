@@ -4,10 +4,10 @@ const dotenv = require('dotenv');
 const path = require('path');
 const cookies = require('cookie-parser');
 dotenv.config({ path: path.resolve(__dirname, '..', '..', '.env') });
-const { getInsertSeasons, getInsertSummaries } = require('./api/sr-data/get-summ-seas');
-const fetchInsert = require('./api/sr-data/fetch-insert')
+const { getInsertSeasons, getInsertSummaries, getInsertProbabilities } = require('./api/sr-data/get-summ-seas');
+// const fetchInsert = require('./api/sr-data/fetch-insert')
 
-const { competitionsJob, summariesJob, seasonsJob } = require('./api/sr-data/cron-jobs');
+const { competitionsJob, summariesJob, seasonsJob, probabilitiesJob } = require('./api/sr-data/cron-jobs');
 const seasonsRoute = require('./api/routes/seasons');
 const usersRoute = require('./api/routes/users');
 const summariesRoute = require('./api/routes/summaries');
@@ -18,6 +18,7 @@ app.use(cookies());
 // fetchInsert(`https://api.sportradar.us/ufc/trial/v2/en/competitions.json?api_key=${process.env.SR_UFC_KEY}`)
 // getInsertSeasons();
 // getInsertSummaries();
+// getInsertProbabilities();
 // app.use(express.json());
 
 app.use('/api/users', usersRoute);
@@ -35,6 +36,7 @@ app.use((err, req, res, next) => {
 competitionsJob.start();
 summariesJob.start();
 seasonsJob.start();
+probabilitiesJob.start();
 
 const port = process.env.PORT;
 const server = http.createServer(app);

@@ -23,6 +23,7 @@ const createPreparedStatements = (table, data, index) => {
     case 'summaries':
     case 'seasons':
     case 'competitions':
+    case 'probabilities':
       break;
     default:
       return false;
@@ -34,7 +35,7 @@ const createPreparedStatements = (table, data, index) => {
     values: []
   };
   if (!data.length) {
-    throw new Error('No data');
+    return false;
   }
   // create which values to insert
   // if the returned data is... fights. It doesnt have the summary id so that has to be inserted? in side each dataObjcts sport_event.id;
@@ -42,6 +43,11 @@ const createPreparedStatements = (table, data, index) => {
     data[0].id = data[0].id || null;
     data[0].name = data[0].name || null;
     data[0].parent_id = data[0].parent_id || null;
+  }
+  if (table === 'probabilities') {
+    data[0].summaries_id = data[0].sport_event.id || null;
+    data[0].sport_event = data[0].sport_event || null;
+    data[0].markets = data[0].markets || null;
   }
   if (table === 'summaries') {
     data[0].id = data[0].sport_event.id || null;
@@ -69,6 +75,11 @@ const createPreparedStatements = (table, data, index) => {
       dataObject.id = dataObject.id || null;
       dataObject.name = dataObject.name || null;
       dataObject.parent_id = dataObject.parent_id || null;
+    }
+    if (table === 'probabilities') {
+      dataObject.summaries_id = dataObject.sport_event.id || null;
+      dataObject.sport_event = dataObject.sport_event || null;
+      dataObject.markets = dataObject.markets || null;
     }
     if (table === 'seasons') {
       dataObject.id = dataObject.id || null;
@@ -108,7 +119,6 @@ const fetchInsert = async (url, index) => {
       throw new Error(res.error);
     }
     const json = await res.json();
-
     let pgQuery;
     if (json.competitions) { // fight nights, PPV events, single nights essentially. Some Dana white contender series. etc.
       json.competitions = json.competitions.filter(c => c.name.search(/dana.white/i) === -1);
@@ -117,6 +127,11 @@ const fetchInsert = async (url, index) => {
       pgQuery = createPreparedStatements('seasons', json.seasons, index);
     } else if (json.summaries) { // fight summaries with lots of reptitive info but idk how else to get it.
       pgQuery = createPreparedStatements('summaries', json.summaries, index);
+    } else if (json.sport_event_probabilities) {
+      pgQuery = createPreparedStatements('probabilities', json.sport_event_probabilities, index);
+    }
+    if (!pgQuery){
+      throw new Error('no_insert')
     }
     insertQuery(pgQuery);
   } catch (err) {
