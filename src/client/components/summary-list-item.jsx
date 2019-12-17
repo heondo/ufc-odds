@@ -316,6 +316,7 @@ SummaryListItem.propTypes = {
   canceled: PropTypes.bool,
   weightClass: PropTypes.string,
   isHistory: PropTypes.bool,
+  isDayBefore: PropTypes.bool,
   winner: PropTypes.string,
   predictionID: PropTypes.number,
   predictedFighter: PropTypes.string,

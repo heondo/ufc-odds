@@ -10,7 +10,7 @@ router.post('/reorder', checkAuth, async (req, res, next) => {
     const userData = req.userData;
     if (userData.userID !== 35) {
       res.status(404);
-      throw new Error("I'm afraid I can't let you do that Stan, I'm going to have to put you in the game grid.")
+      throw new Error("I'm afraid I can't let you do that Stan Marsh, I'm going to have to put you in the game grid.")
     }
     const { seasonID, newOrder } = req.body;
     if (!seasonID || !newOrder) {
