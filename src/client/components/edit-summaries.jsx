@@ -17,7 +17,6 @@ const EditSummaries = props => {
     }, []);
 
     const handleSubmitChanges = async function () {
-      // console.log(summaries);
       setIsSubmitting(true);
       try {
         const axiosBody = {

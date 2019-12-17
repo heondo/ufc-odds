@@ -43,9 +43,7 @@ export default function AccountsSummaries(props) {
           )
         })
       ) : (
-        <div>
-          NA
-        </div>
+        null
       )}
     </SeasonsContainer>
   )

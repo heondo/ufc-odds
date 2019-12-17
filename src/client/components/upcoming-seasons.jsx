@@ -21,7 +21,7 @@ export default function UpcomingSeasons(props) {
           id={s.id}
           name={s.name}
           startDate={s.start_date}
-          eventsArray={s.five_round_events}
+          eventsArray={s.five_round_events || []}
         />
       ))}
     </SeasonsListContainer>

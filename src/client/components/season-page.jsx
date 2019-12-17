@@ -19,8 +19,17 @@ export default function SeasonPage(props) {
   }, []);
 
   const getSeasonData = async () => {
-    const response = await axios.get(`/api/seasons/${seasonID}`);
-    setSummaries(response.data.summaries);
+    try {
+      const response = await axios.get(`/api/seasons/${seasonID}`);
+      setSummaries(response.data.summaries);
+    }
+    catch(err){
+      // console.log(Object.keys(err));
+      console.log(err.response.data.message)
+      if (err.response.data.message === "No data available"){
+        setSummaries([])
+      }
+    }
   };
 
   const createVenueLocation = venue => {
@@ -52,13 +61,13 @@ export default function SeasonPage(props) {
   };
 
   const currentDate = new Date();
-  const seasonDate = summaries ? new Date(summaries[0].sport_event.start_time) : null;
+  const seasonDate = summaries && summaries.length ? new Date(summaries[0].sport_event.start_time) : null;
 
   const isDayBefore = (seasonDate - currentDate)/1000 < 86400;
 
   const isHistory = !summaries ? null : seasonDate < currentDate;
 
-  return summaries && summaries.length ? (
+  return summaries ? summaries.length ? (
     <SummariesContainer>
       <SeasonTitle>
         {summaries[0].sport_event.sport_event_context.season.name.replace(/\d{4}\s*$/, '')}
@@ -75,27 +84,28 @@ export default function SeasonPage(props) {
       {isHistory && user ? <UsersVotesResults summaries={summaries} isCanceled={isCanceled}/> : null}
       <Divider />
       {summaries.map((s, i) => (
-        <SummaryListItem
-          key={s.id}
-          {...props}
-          id={s.id}
-          index={i}
-          seasonID={seasonID}
-          competitors={s.sport_event.competitors}
-          summaryOrder={s.s_order}
-          canceled={isCanceled(s.sport_event_status)}
-          weightClass={s.sport_event_status.weight_class}
-          winner={s.sport_event_status.winner_id || null}
-          isHistory={isHistory}
-          isDayBefore={isDayBefore}
-          predictionID={s.prediction_id}
-          predictedFighter={s.predicted_fighter}
-          addPredictionHandler={addPredictionHandler}
-          voteCount={s.votecount}
-        />
-      ))}
+          <SummaryListItem
+            key={s.id}
+            {...props}
+            id={s.id}
+            index={i}
+            seasonID={seasonID}
+            competitors={s.sport_event.competitors}
+            summaryOrder={s.s_order}
+            canceled={isCanceled(s.sport_event_status)}
+            weightClass={s.sport_event_status.weight_class}
+            winner={s.sport_event_status.winner_id || null}
+            isHistory={isHistory}
+            isDayBefore={isDayBefore}
+            predictionID={s.prediction_id}
+            predictedFighter={s.predicted_fighter}
+            addPredictionHandler={addPredictionHandler}
+            voteCount={s.votecount}
+          />
+        ))
+      }
     </SummariesContainer>
-  ) : <LoadingCircle />;
+  ) : <SummariesContainer>No fights to display yet</SummariesContainer> : <LoadingCircle />;
 }
 
 const UsersVotesResults = (props) => {

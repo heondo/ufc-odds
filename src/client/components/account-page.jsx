@@ -7,7 +7,22 @@ import AccountsSummaries from '../container/accounts-summaries'
 
 export default function AccountPage(props){
   const {user, setUser} = useContext(UserContext);
-  const [predictionData, setPredictionData] = useState(false)
+  const [predictionData, setPredictionData] = useState(false);
+
+  const accuracyText = (percentage) => {
+    if (percentage < .25){
+      return `I definitely wouldn't bet with an accuracy of ${percentage*100}%`
+    }
+    if (percentage < .5){
+      return `You could try your luck with a ${percentage*100}% accuracy`;
+    }
+    if (percentage < .75){
+      return `Not bad try your luck you're doing ${percentage*100}%`;
+    }
+    else {
+      return `Sell the house. Go to Vegas and good luck: ${percentage*100}%`
+    }
+  }
 
   const TotalPredictions = ({seasonsArray}) => {
     let correct = 0;
@@ -31,7 +46,7 @@ export default function AccountPage(props){
       <div>
         {correct}/{passedFights} so far
         <div>
-          thats not bad, for a percentage of {(correct*100/passedFights).toFixed(2)}%
+          {passedFights ? accuracyText((correct / passedFights).toFixed(2)) : null}
         </div>
       </div>
     )
