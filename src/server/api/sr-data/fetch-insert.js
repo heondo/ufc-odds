@@ -105,7 +105,11 @@ const createPreparedStatements = (table, data, index) => {
     });
   });
   query.text = query.text.substring(0, query.text.length - 1);
-  query.text += ` ON CONFLICT (id) DO UPDATE set `;
+  if (table==='probabilities') {
+    query.text += ' ON CONFLICT (summaries_id) DO UPDATE SET ';
+  } else {
+    query.text += ` ON CONFLICT (id) DO UPDATE set `;
+  }
   Object.keys(data[0]).sort().forEach((key, i, arr) => {
     query.text += (i === arr.length - 1) ? `${key} = EXCLUDED.${key}` : `${key} = EXCLUDED.${key}, `;
   });

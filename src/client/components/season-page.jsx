@@ -101,6 +101,7 @@ export default function SeasonPage(props) {
             predictedFighter={s.predicted_fighter}
             addPredictionHandler={addPredictionHandler}
             voteCount={s.votecount}
+            markets={s.markets}
           />
         ))
       }

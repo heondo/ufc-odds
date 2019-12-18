@@ -176,12 +176,21 @@ export default function SummaryListItem(props) {
     return 'white'
   }
 
+  const percentToOdds = percentage => {
+    const tempPercent = percentage/100;
+    const oneOver = 1/tempPercent;
+    return `${(oneOver-1).toFixed(1)} : 1`
+  }
+
   return (
     <SummaryContainer canceled={props.canceled}>
       <FighterOne correctPrediction={correctPrediction(props.competitors[0].id)} predictedFighter={props.predictedFighter} winner={props.winner} fighter={props.competitors[0].id}>
         <div>
           {props.isHistory && props.winner ? <WinnerLoser winner={props.winner} competitors={props.competitors} leftRight="l"/> : null}
           {convertName(props.competitors[0].name)}
+        </div>
+        <div>
+          {props.markets ? percentToOdds(props.markets[0].outcomes[0].probability) : null}
         </div>
         <PredictButton index={0}>
           Predict
@@ -202,6 +211,9 @@ export default function SummaryListItem(props) {
         <div>
           {convertName(props.competitors[1].name)}
           {props.isHistory && props.winner ? <WinnerLoser winner={props.winner} competitors={props.competitors} leftRight="r"/> : null}
+        </div>
+        <div>
+          {props.markets ? percentToOdds(props.markets[0].outcomes[1].probability): null}
         </div>
         <PredictButton index={1} />
       </FighterTwo>
@@ -322,5 +334,6 @@ SummaryListItem.propTypes = {
   predictedFighter: PropTypes.string,
   seasonDate: PropTypes.object,
   addPredictionHandler: PropTypes.func,
-  voteCount: PropTypes.object
+  voteCount: PropTypes.object,
+  markets: PropTypes.array
 };
