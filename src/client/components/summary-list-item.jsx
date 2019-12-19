@@ -3,13 +3,11 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { UserContext } from '../context/user-context';
 import axios from 'axios';
-// import LoadingCircle from '../container/loading-circle';
 
 const ResultContainer = styled.span`
     margin-right: ${props => props.leftRight === 'l' ? '.5rem' : null};
     color: ${props => props.winStatus === 'W' ? 'darkgreen' : 'darkred'}
     margin-left: ${props => props.leftRight === 'r' ? '.5rem' : null};
-    /* border: 3px solid ${props => props.winStatus === 'W' ? 'darkgreen' : 'darkred'}; */
   `;
 
 const convertWeightClass = weightClass => {
@@ -143,11 +141,6 @@ export default function SummaryListItem(props) {
         )
       }
       return null;
-      // (
-      //   <PredictButtonContainer>
-      //     Too late
-      //   </PredictButtonContainer>
-      // )
     }
     if (!props.canceled && !props.isHistory) {
       if (props.predictedFighter) {
@@ -176,11 +169,6 @@ export default function SummaryListItem(props) {
     return 'white'
   }
 
-  const percentToOdds = percentage => {
-    const tempPercent = percentage/100;
-    const oneOver = 1/tempPercent;
-    return `${(oneOver-1).toFixed(1)} : 1`
-  }
 
   return (
     <SummaryContainer canceled={props.canceled}>
@@ -190,7 +178,7 @@ export default function SummaryListItem(props) {
           {convertName(props.competitors[0].name)}
         </div>
         <div>
-          {props.markets ? percentToOdds(props.markets[0].outcomes[0].probability) : null}
+          {props.markets ? props.plusMinusOdds(props.markets[0].outcomes[0].probability) : null}
         </div>
         <PredictButton index={0}>
           Predict
@@ -213,7 +201,7 @@ export default function SummaryListItem(props) {
           {props.isHistory && props.winner ? <WinnerLoser winner={props.winner} competitors={props.competitors} leftRight="r"/> : null}
         </div>
         <div>
-          {props.markets ? percentToOdds(props.markets[0].outcomes[1].probability): null}
+          {props.markets ? props.plusMinusOdds(props.markets[0].outcomes[1].probability): null}
         </div>
         <PredictButton index={1} />
       </FighterTwo>
@@ -238,7 +226,6 @@ const MobileDisappear = styled.span`
 const VoteContainer = styled.div`
   display: flex;
   flex-direction: column;
-  /* flex-wrap: wrap; */
 `
 
 const PredictButtonContainer = styled.button`
@@ -247,7 +234,6 @@ const PredictButtonContainer = styled.button`
   border-radius: 3px;
   background-color: ${props => props.isYourWinner === true ? '#c5e0d8' : props.isYourWinner === false ? '#ceabb1' : 'default'};
   padding: ${props => props.isYourWinner === true || props.isYourWinner === false ? '.3rem': '.3rem'};
-  /* border: ${props => props.isYourWinner === true ? '1px solid green' : props.isYourWinner === false ? '1px solid red' : '1px solid grey'}; */
   border: 1px solid black;
   border-radius: 4px;
   @media(max-width: 576px){
@@ -271,9 +257,7 @@ const Middle = styled.div`
 `;
 
 const Fighter = styled.div`
-  /* border: ${props => props.winner === props.fighter ? '1px solid #2e9778' : !props.winner ? null : '1px solid #8a4a55'}; */
   padding: .5rem auto;
-  /* border: 1px solid grey; */
   border-radius: 4px;
   background-color: ${props => props.correctPrediction};
   font-size: .95em;
@@ -290,13 +274,11 @@ const VoteCountBar = styled.span`
   height: 3px;
   width: ${props => `${props.percent/40}rem`};
   background-color: ${props => props.moreThan ? 'green' : 'grey'};
-`//${props => props.moreThan ? 'green' : 'grey'};
+`
 
-const FighterOne = styled(Fighter)`
-`;
+const FighterOne = styled(Fighter)``;
 
-const FighterTwo = styled(Fighter)`
-`;
+const FighterTwo = styled(Fighter)``;
 
 const SummaryContainer = styled.div`
   display: flex;
@@ -310,9 +292,8 @@ const SummaryContainer = styled.div`
 `;
 
 const MiniLoading = styled.div`
-  border: 3px solid #f3f3f3 !important; /* Light grey */
-  border-top: 3px solid #3498db !important; /* Blue */
-  width: 10px !important;
+  border: 3px solid #f3f3f3 !important;
+  border-top: 3px solid #3498db !important;
   height: 10px !important;
   border-radius: 50%;
   margin: auto;
@@ -335,5 +316,6 @@ SummaryListItem.propTypes = {
   seasonDate: PropTypes.object,
   addPredictionHandler: PropTypes.func,
   voteCount: PropTypes.object,
-  markets: PropTypes.array
+  markets: PropTypes.array,
+  plusMinusOdds: PropTypes.func
 };

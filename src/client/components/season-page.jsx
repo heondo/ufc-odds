@@ -14,6 +14,16 @@ export default function SeasonPage(props) {
   const [summaries, setSummaries] = useState(null);
   const { user, setUser } = useContext(UserContext);
 
+  const percentToOdds = percentage => {
+    const odds = percentage >= 50 ? (-(percentage) / (100 - percentage) * 100).toFixed(0) : (((100 - percentage) / percentage) * 100).toFixed(0);
+    return odds
+  }
+
+  const plusMinusOdds = percentage => {
+    const odds = percentToOdds(percentage);
+    return odds > 0 ? `+${odds}` : odds;
+  }
+
   useEffect(() => {
     getSeasonData();
   }, []);
@@ -102,6 +112,7 @@ export default function SeasonPage(props) {
             addPredictionHandler={addPredictionHandler}
             voteCount={s.votecount}
             markets={s.markets}
+            plusMinusOdds={plusMinusOdds}
           />
         ))
       }
