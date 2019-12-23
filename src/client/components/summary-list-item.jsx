@@ -71,7 +71,7 @@ const VoteComponent = props => {
   return (
     <VoteContainer>
       <VoteDisplay>
-        <VoteCountBar percent={f1Percent} moreThan={f1Votes > f2Votes}/>
+        <VoteCountBar percent={f1Percent} moreThan={f1Votes > f2Votes} direction="left"/>
         <VoteDisplay>
           <div> ({f1Votes}/{totalVotes}) </div>
           <MobileDisappear>
@@ -86,7 +86,7 @@ const VoteComponent = props => {
           </MobileDisappear>
           <div> ({f2Votes}/{totalVotes}) </div>
         </VoteDisplay>
-        <VoteCountBar percent={f2Percent} moreThan={f1Votes < f2Votes}/>
+        <VoteCountBar percent={f2Percent} moreThan={f1Votes < f2Votes} direction="right"/>
       </VoteDisplay>
     </VoteContainer>
   )
@@ -237,7 +237,7 @@ const PredictButtonContainer = styled.button`
   border: 1px solid black;
   border-radius: 4px;
   @media(max-width: 576px){
-    font-size: .75em;
+    font-size: .80em;
   }
 `;
 
@@ -258,9 +258,8 @@ const Middle = styled.div`
 
 const Fighter = styled.div`
   padding: .5rem auto;
-  border-radius: 4px;
   background-color: ${props => props.correctPrediction};
-  font-size: .95em;
+  font-size: 1em;
   width: 37.5%
   display: flex;
   flex-direction: column;
@@ -271,14 +270,19 @@ const Fighter = styled.div`
 const VoteCountBar = styled.span`
   display: inline-block;
   margin: auto 2px;
-  height: 3px;
+  height: 4px;
   width: ${props => `${props.percent/40}rem`};
   background-color: ${props => props.moreThan ? 'green' : 'grey'};
+  border-radius: ${props => props.direction === "left" ? '2px 0 0 2px': '0 2px 2px 0'};
 `
 
-const FighterOne = styled(Fighter)``;
+const FighterOne = styled(Fighter)`
+  border-radius: 8px 25px;
+`;
 
-const FighterTwo = styled(Fighter)``;
+const FighterTwo = styled(Fighter)`
+  border-radius: 25px 8px;
+`;
 
 const SummaryContainer = styled.div`
   display: flex;
