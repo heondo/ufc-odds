@@ -177,9 +177,9 @@ export default function SummaryListItem(props) {
           {props.isHistory && props.winner ? <WinnerLoser winner={props.winner} competitors={props.competitors} leftRight="l"/> : null}
           {convertName(props.competitors[0].name)}
         </div>
-        <div>
+        <OddsContainer>
           {props.markets ? props.plusMinusOdds(props.markets[0].outcomes[0].probability) : null}
-        </div>
+        </OddsContainer>
         <PredictButton index={0}>
           Predict
         </PredictButton>
@@ -200,9 +200,9 @@ export default function SummaryListItem(props) {
           {convertName(props.competitors[1].name)}
           {props.isHistory && props.winner ? <WinnerLoser winner={props.winner} competitors={props.competitors} leftRight="r"/> : null}
         </div>
-        <div>
+        <OddsContainer>
           {props.markets ? props.plusMinusOdds(props.markets[0].outcomes[1].probability): null}
-        </div>
+        </OddsContainer>
         <PredictButton index={1} />
       </FighterTwo>
     </SummaryContainer>
@@ -247,6 +247,10 @@ const PoundsContainer = styled.span`
   }
 `;
 
+const OddsContainer = styled.div`
+  font-size: .82em;
+`
+
 const Middle = styled.div`
   display: flex;
   flex-direction: column;
@@ -257,7 +261,7 @@ const Middle = styled.div`
 `;
 
 const Fighter = styled.div`
-  padding: .5rem auto;
+  padding: .5rem;
   background-color: ${props => props.correctPrediction};
   font-size: 1em;
   width: 37.5%
@@ -321,5 +325,8 @@ SummaryListItem.propTypes = {
   addPredictionHandler: PropTypes.func,
   voteCount: PropTypes.object,
   markets: PropTypes.array,
-  plusMinusOdds: PropTypes.func
+  plusMinusOdds: PropTypes.func,
+  winMethod: PropTypes.string,
+  finalRound: PropTypes.number,
+  finalRoundTime: PropTypes.string
 };

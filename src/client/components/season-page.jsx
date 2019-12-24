@@ -10,19 +10,10 @@ import LoadingCircle from '../container/loading-circle'
 
 export default function SeasonPage(props) {
   const { id: seasonID } = props.match.params;
+  const betAmount = 10;
   const currentTime = new Date()
   const [summaries, setSummaries] = useState(null);
   const { user, setUser } = useContext(UserContext);
-
-  const percentToOdds = percentage => {
-    const odds = percentage >= 50 ? (-(percentage) / (100 - percentage) * 100).toFixed(0) : (((100 - percentage) / percentage) * 100).toFixed(0);
-    return odds
-  }
-
-  const plusMinusOdds = percentage => {
-    const odds = percentToOdds(percentage);
-    return odds > 0 ? `+${odds}` : odds;
-  }
 
   useEffect(() => {
     getSeasonData();
@@ -41,6 +32,87 @@ export default function SeasonPage(props) {
       }
     }
   };
+
+  const currentDate = new Date();
+  const seasonDate = summaries && summaries.length ? new Date(summaries[0].sport_event.start_time) : null;
+
+  const isDayBefore = (seasonDate - currentDate) / 1000 < 86400;
+
+  const isHistory = !summaries ? null : seasonDate < currentDate;
+
+  const returnWinnerPercentage = (winner, competitors, outcomes) => {
+    // I need the sportEvents competitors, get the index for the predictedCompetitor, get the odds for that fighter
+    if (!outcomes) {
+      return 50;
+    }
+    let winnerIndex;
+    competitors.forEach((c, i) => {
+      if (c.id === winner) {
+        winnerIndex = i;
+      }
+    });
+    // so i have 0 or 1
+    return outcomes[winnerIndex].probability;
+  };
+
+  const calculateWinnings = percentage => {
+    // configure logic to calculate payout for betting on a particular percentage odds thing
+    const odds = plusMinusOdds(percentage);
+    const payout = odds >= 0 ? betAmount * (odds / 100) + betAmount : betAmount / ((-1 * odds) / 100) + betAmount;
+    return payout;
+  };
+
+  const percentToOdds = percentage => {
+    const odds = percentage >= 50 ? (-(percentage) / (100 - percentage) * 100).toFixed(0) : (((100 - percentage) / percentage) * 100).toFixed(0);
+    return odds
+  };
+
+  const plusMinusOdds = percentage => {
+    const odds = percentToOdds(percentage);
+    return odds > 0 ? `+${odds}` : odds;
+  };
+
+  const TotalPredictions = ({ summariesArray }) => {
+    let correct = 0;
+    let passedFights = 0;
+    let winnings = 0;
+    let inputMoney = 0;
+    if (!summariesArray || !summariesArray.length) {
+      return null;
+    }
+    if (!isHistory) {
+      return null;
+    }
+    for (let j in summariesArray) {
+      if (!summariesArray[j].sport_event_status.winner) {
+        continue;
+      }
+      if (summariesArray[j].predicted_fighter === summariesArray[j].sport_event_status.winner_id) {
+        // this is the winning conditional, if you win, find the winners probabilities in outcome.
+        const { outcomes } = summariesArray[j].markets ? summariesArray[j].markets[0] : null;
+        const predictedPercentage = returnWinnerPercentage(summariesArray[j].sport_event_status.winner_id, summariesArray[j].sport_event.competitors, outcomes);
+        const payout = calculateWinnings(predictedPercentage);
+        winnings += payout;
+        correct += 1;
+      }
+      passedFights += 1;
+      inputMoney += betAmount;
+    }
+    if (!inputMoney) {
+      return null;
+    }
+    const percentageChange = (winnings * 100 / inputMoney - 100).toFixed(2);
+    return (
+      <OddsResultsContainer>
+        <div>
+          ${inputMoney} in, ${winnings.toFixed(2)} in yo pocket
+        </div>
+        <div>
+          Good for {percentageChange > 0 ? '+' : '-'}{percentageChange}% of initial earnings
+        </div>
+      </OddsResultsContainer>
+    )
+  }
 
   const createVenueLocation = venue => {
     const venueString = `${venue.name} - ${venue.city_name}, ${venue.country_name}`;
@@ -70,12 +142,7 @@ export default function SeasonPage(props) {
     return (!!(statusObject.status === 'closed' && statusObject.match_status === 'cancelled'));
   };
 
-  const currentDate = new Date();
-  const seasonDate = summaries && summaries.length ? new Date(summaries[0].sport_event.start_time) : null;
 
-  const isDayBefore = (seasonDate - currentDate)/1000 < 86400;
-
-  const isHistory = !summaries ? null : seasonDate < currentDate;
 
   return summaries ? summaries.length ? (
     <SummariesContainer>
@@ -92,6 +159,7 @@ export default function SeasonPage(props) {
       <div>{createVenueLocation(summaries[0].sport_event.venue)}</div>
       <div>{moment(summaries[0].sport_event.start_time).format('MMM Do, YYYY')}</div>
       {isHistory && user ? <UsersVotesResults summaries={summaries} isCanceled={isCanceled}/> : null}
+      <TotalPredictions summariesArray={summaries}/>
       <Divider />
       {summaries.map((s, i) => (
           <SummaryListItem
@@ -113,6 +181,9 @@ export default function SeasonPage(props) {
             voteCount={s.votecount}
             markets={s.markets}
             plusMinusOdds={plusMinusOdds}
+            winMethod={s.sport_event_status.method}
+            finalRound={s.sport_event_status.final_round}
+            finalRoundTime={s.sport_event_status.final_round_length}
           />
         ))
       }
@@ -144,6 +215,10 @@ const UsersVotesResults = (props) => {
     </div>
   )
 }
+
+const OddsResultsContainer = styled.div`
+  font-size: .92em;
+`
 
 const EditButton = styled.div`
   position: absolute;
