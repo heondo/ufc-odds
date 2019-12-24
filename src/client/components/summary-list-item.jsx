@@ -159,8 +159,11 @@ export default function SummaryListItem(props) {
     return null;
   }
 
-  const correctPrediction = (fighter) => {
-    if (props.predictedFighter && props.winner) {
+  const correctPredictionColor = (fighter) => {
+    if (props.isDraw) {
+      return 'yellow';
+    }
+    if (props.winner) {
       if (props.winner === fighter){
         return '#c5e0d8';
       }
@@ -172,17 +175,20 @@ export default function SummaryListItem(props) {
 
   return (
     <SummaryContainer canceled={props.canceled}>
-      <FighterOne correctPrediction={correctPrediction(props.competitors[0].id)} predictedFighter={props.predictedFighter} winner={props.winner} fighter={props.competitors[0].id}>
+      <FighterOne correctPredictionColor={correctPredictionColor(props.competitors[0].id)} predictedFighter={props.predictedFighter} winner={props.winner} fighter={props.competitors[0].id}>
         <div>
-          {props.isHistory && props.winner ? <WinnerLoser winner={props.winner} competitors={props.competitors} leftRight="l"/> : null}
+          {/* {props.isHistory && props.winner ? <WinnerLoser winner={props.winner} competitors={props.competitors} leftRight="l"/> : null} */}
           {convertName(props.competitors[0].name)}
         </div>
         <OddsContainer>
           {props.markets ? props.plusMinusOdds(props.markets[0].outcomes[0].probability) : null}
         </OddsContainer>
-        <PredictButton index={0}>
-          Predict
-        </PredictButton>
+        <PredictButton index={0} />
+        {props.isHistory && props.winner ? (
+          <div>
+            via {props.winMethod} in {props.finalRoundTime} round {props.finalRound}
+          </div>
+        ) : null}
       </FighterOne>
       <Middle>
         <div>
@@ -194,11 +200,14 @@ export default function SummaryListItem(props) {
           </PoundsContainer>
         </div>
         <VoteComponent voteCount={props.voteCount} competitors={props.competitors} />
+        <div>
+          RD: {props.finalRound} {props.finalRoundTime}
+        </div>
       </Middle>
-      <FighterTwo correctPrediction={correctPrediction(props.competitors[1].id)} winner={props.winner} fighter={props.competitors[1].id}>
+      <FighterTwo correctPredictionColor={correctPredictionColor(props.competitors[1].id)} winner={props.winner} fighter={props.competitors[1].id}>
         <div>
           {convertName(props.competitors[1].name)}
-          {props.isHistory && props.winner ? <WinnerLoser winner={props.winner} competitors={props.competitors} leftRight="r"/> : null}
+          {/* {props.isHistory && props.winner ? <WinnerLoser winner={props.winner} competitors={props.competitors} leftRight="r"/> : null} */}
         </div>
         <OddsContainer>
           {props.markets ? props.plusMinusOdds(props.markets[0].outcomes[1].probability): null}
@@ -262,7 +271,7 @@ const Middle = styled.div`
 
 const Fighter = styled.div`
   padding: .5rem;
-  background-color: ${props => props.correctPrediction};
+  background-color: ${props => props.correctPredictionColor};
   font-size: 1em;
   width: 37.5%
   display: flex;
@@ -316,6 +325,7 @@ SummaryListItem.propTypes = {
   summaryOrder: PropTypes.number,
   canceled: PropTypes.bool,
   weightClass: PropTypes.string,
+  isDraw: PropTypes.bool,
   isHistory: PropTypes.bool,
   isDayBefore: PropTypes.bool,
   winner: PropTypes.string,

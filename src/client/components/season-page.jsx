@@ -172,6 +172,7 @@ export default function SeasonPage(props) {
             summaryOrder={s.s_order}
             canceled={isCanceled(s.sport_event_status)}
             weightClass={s.sport_event_status.weight_class}
+            isDraw={s.sport_event_status.winner === 'draw'}
             winner={s.sport_event_status.winner_id || null}
             isHistory={isHistory}
             isDayBefore={isDayBefore}
