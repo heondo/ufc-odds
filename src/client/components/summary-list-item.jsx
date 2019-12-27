@@ -122,6 +122,19 @@ export default function SummaryListItem(props) {
     }
   };
 
+  const convertDecision = decision => {
+    switch(decision) {
+      case 'ko_tko':
+        return 'KO/TKO';
+      case 'decision_unanimous':
+        return 'UD';
+      case 'decision_split':
+        return 'SD';
+      case 'submission':
+        return 'SUB';
+    }
+  }
+
   const weightArray = convertWeightClass(props.weightClass);
 
   const PredictButton = (innerProps) => {
@@ -186,7 +199,7 @@ export default function SummaryListItem(props) {
         <PredictButton index={0} />
         {props.isHistory && props.winner ? (
           <div>
-            via {props.winMethod} in {props.finalRoundTime} round {props.finalRound}
+            via {convertDecision(props.winMethod)} in {props.finalRoundTime} round {props.finalRound}
           </div>
         ) : null}
       </FighterOne>
@@ -201,7 +214,7 @@ export default function SummaryListItem(props) {
         </div>
         <VoteComponent voteCount={props.voteCount} competitors={props.competitors} />
         <div>
-          RD: {props.finalRound} {props.finalRoundTime}
+          {props.finalRound ? 'RD:' : null} {props.finalRound} {props.finalRoundTime}
         </div>
       </Middle>
       <FighterTwo correctPredictionColor={correctPredictionColor(props.competitors[1].id)} winner={props.winner} fighter={props.competitors[1].id}>
@@ -213,6 +226,11 @@ export default function SummaryListItem(props) {
           {props.markets ? props.plusMinusOdds(props.markets[0].outcomes[1].probability): null}
         </OddsContainer>
         <PredictButton index={1} />
+        {props.isHistory && props.winner ? (
+          <div>
+            via {convertDecision(props.winMethod)} in {props.finalRoundTime} round {props.finalRound}
+          </div>
+        ) : null}
       </FighterTwo>
     </SummaryContainer>
   );
