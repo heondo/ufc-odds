@@ -216,6 +216,11 @@ export default function SummaryListItem(props) {
         <div>
           {props.finalRound ? 'RD:' : null} {props.finalRound} {props.finalRoundTime}
         </div>
+        <PredictionResult winner={props.winner} predictedFighter={props.predictedFighter} >
+          {
+            props.winner ? props.predictedFighter === props.winner ? "Correct" : "Incorrect" : null
+          }
+        </PredictionResult>
       </Middle>
       <FighterTwo correctPredictionColor={correctPredictionColor(props.competitors[1].id)} winner={props.winner} fighter={props.competitors[1].id}>
         <div>
@@ -278,6 +283,10 @@ const OddsContainer = styled.div`
   font-size: .82em;
 `
 
+const PredictionResult = styled.div`
+  color: ${props => props.winner === props.predictedFighter ? 'green' : 'red'};
+`
+
 const Middle = styled.div`
   display: flex;
   flex-direction: column;
@@ -289,7 +298,7 @@ const Middle = styled.div`
 
 const Fighter = styled.div`
   padding: .5rem;
-  background-color: ${props => props.correctPredictionColor};
+  /* background-color: ${props => props.correctPredictionColor}; */
   font-size: 1em;
   width: 37.5%
   display: flex;
