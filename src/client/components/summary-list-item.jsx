@@ -190,7 +190,7 @@ export default function SummaryListItem(props) {
     <SummaryContainer canceled={props.canceled}>
       <FighterOne correctPredictionColor={correctPredictionColor(props.competitors[0].id)} predictedFighter={props.predictedFighter} winner={props.winner} fighter={props.competitors[0].id}>
         <div>
-          {/* {props.isHistory && props.winner ? <WinnerLoser winner={props.winner} competitors={props.competitors} leftRight="l"/> : null} */}
+          {props.isHistory && props.winner ? <WinnerLoser winner={props.winner} competitors={props.competitors} leftRight="l"/> : null}
           {convertName(props.competitors[0].name)}
         </div>
         <OddsContainer>
@@ -225,7 +225,7 @@ export default function SummaryListItem(props) {
       <FighterTwo correctPredictionColor={correctPredictionColor(props.competitors[1].id)} winner={props.winner} fighter={props.competitors[1].id}>
         <div>
           {convertName(props.competitors[1].name)}
-          {/* {props.isHistory && props.winner ? <WinnerLoser winner={props.winner} competitors={props.competitors} leftRight="r"/> : null} */}
+          {props.isHistory && props.winner ? <WinnerLoser winner={props.winner} competitors={props.competitors} leftRight="r"/> : null}
         </div>
         <OddsContainer>
           {props.markets ? props.plusMinusOdds(props.markets[0].outcomes[1].probability): null}
@@ -285,6 +285,8 @@ const OddsContainer = styled.div`
 
 const PredictionResult = styled.div`
   color: ${props => props.winner === props.predictedFighter ? 'green' : 'red'};
+  display: ${props => props.winner ? 'block' :'none'};
+  font-size: 1.05rem;
 `
 
 const Middle = styled.div`
