@@ -15,31 +15,31 @@ const convertWeightClass = weightClass => {
   let newString;
   switch (charsOnly) {
     case 'bantamweight':
-      newString = ['BW', '135lbs'];
+      newString = ['Bantamweight', '135lbs'];
       break;
     case 'featherweight':
-      newString = ['FW', '145lbs'];
+      newString = ['Featherweight', '145lbs'];
       break;
     case 'lightweight':
-      newString = ['LW', '155lbs'];
+      newString = ['Lighweight', '155lbs'];
       break;
     case 'welterweight':
-      newString = ['WW', '170lbs'];
+      newString = ['Welterweight', '170lbs'];
       break;
     case 'light_heavyweight':
-      newString = ['LHW', '205lbs'];
+      newString = ['Light Heavyweight', '205lbs'];
       break;
     case 'middleweight':
-      newString = ['MW', '185lbs'];
+      newString = ['Middleweight', '185lbs'];
       break;
     case 'heavyweight':
-      newString = ['HW', '265lbs'];
+      newString = ['Heavyweight', '265lbs'];
       break;
     case 'flyweight':
-      newString = ['FLW', '125lbs'];
+      newString = ['Flyweight', '125lbs'];
       break;
     case 'strawweight':
-      newString = ['SW', '115lbs'];
+      newString = ['Strawweight', '115lbs'];
       break;
   }
   return newString;

@@ -3,10 +3,11 @@ import axios from 'axios';
 import update from 'immutability-helper'
 import { Link } from 'react-router-dom';
 import moment from 'moment';
-import SummaryListItem from './summary-list-item';
+// import SummaryListItem from './summary-list-item';
 import styled from 'styled-components';
 import { UserContext } from '../context/user-context';
 import LoadingCircle from '../container/loading-circle'
+import SeasonSummaryItem from '../container/new-fight-summary'
 
 export default function SeasonPage(props) {
   const { id: seasonID } = props.match.params;
@@ -164,8 +165,8 @@ export default function SeasonPage(props) {
       <TotalPredictions summariesArray={summaries}/>
       <Divider />
       {summaries.map((s, i) => (
-          <SummaryListItem
-            key={s.id}
+        <SeasonSummaryItem
+          key={s.id}
             {...props}
             id={s.id}
             index={i}
@@ -187,7 +188,7 @@ export default function SeasonPage(props) {
             winMethod={s.sport_event_status.method}
             finalRound={s.sport_event_status.final_round}
             finalRoundTime={s.sport_event_status.final_round_length}
-          />
+        />
         ))
       }
     </SummariesContainer>
