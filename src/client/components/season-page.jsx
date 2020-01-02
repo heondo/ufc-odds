@@ -115,7 +115,8 @@ export default function SeasonPage(props) {
   }
 
   const createVenueLocation = venue => {
-    const venueString = `${venue.name} - ${venue.city_name}, ${venue.country_name}`;
+    const venueString = `${venue.name}`;
+    //  - ${venue.city_name}, ${venue.country_name}`;
     return venueString;
   };
 
@@ -142,7 +143,7 @@ export default function SeasonPage(props) {
     return (!!(statusObject.status === 'closed' && statusObject.match_status === 'cancelled'));
   };
 
-
+  // TODO: format time format with AM PM and time zone. just PST
 
   return summaries ? summaries.length ? (
     <SummariesContainer>
@@ -156,8 +157,9 @@ export default function SeasonPage(props) {
           </EditButton>
         ) : (null)}
       </SeasonTitle>
-      <div>{createVenueLocation(summaries[0].sport_event.venue)}</div>
-      <div>{moment(summaries[0].sport_event.start_time).format('MMM Do, YYYY')}</div>
+      <div>{summaries[0].sport_event.venue.country_name}</div>
+      <ArenaName>{createVenueLocation(summaries[0].sport_event.venue)}</ArenaName>
+      <div>{moment(summaries[0].sport_event.start_time).format('hh:mm A MMM Do, YYYY')}</div>
       {isHistory && user ? <UsersVotesResults summaries={summaries} isCanceled={isCanceled}/> : null}
       <TotalPredictions summariesArray={summaries}/>
       <Divider />
@@ -216,6 +218,10 @@ const UsersVotesResults = (props) => {
     </div>
   )
 }
+
+const ArenaName = styled.div`
+  font-style: italic;
+`;
 
 const OddsResultsContainer = styled.div`
   font-size: .92em;
