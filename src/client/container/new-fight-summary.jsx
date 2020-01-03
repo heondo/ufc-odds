@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import { UserContext } from '../context/user-context';
 import axios from 'axios';
 import Dropdown, {MenuItem} from '../components/Dropdown';
+import { Button, ButtonGroup, ButtonToolbar } from '../components/Buttons';
+import LoadingCircle from './loading-circle';
 
 const convertWeightClass = weightClass => {
   const charsOnly = weightClass.match(/[a-z_]+/)[0];
@@ -108,36 +110,40 @@ const PredictOnFighter = props => {
   }
   return (
     <>
+    <DropdownContainer>
       <Dropdown
         onSelect={(eventKey) => {
-          setSelectedFighter(props.competitors[eventKey].id);
+          setSelectedFighter(eventKey);
         }}
       >
         <Dropdown.Toggle
           btnStyle="flat"
         >
-          {selectedFighter ? fighterIDtoName(selectedFighter, props.competitors) :'Predict on your fighter'}
+          {selectedFighter !== null ? convertName(props.competitors[selectedFighter].name) : 'Predict on your fighter'}
         </Dropdown.Toggle>
         <Dropdown.Menu>
           <MenuItem
-          eventKey={0}
-          active={props.competitors[0].id === selectedFighter}
+            eventKey={0}
+              active={selectedFighter === 0}
           >
             {convertName(props.competitors[0].name)}
           </MenuItem>
           <MenuItem
-          eventKey={1}
-          active={props.competitors[1].id === selectedFighter}
+            eventKey={1}
+              active={selectedFighter === 1}
           >
             {convertName(props.competitors[1].name)}
           </MenuItem>
         </Dropdown.Menu>
       </Dropdown>
+    </DropdownContainer>
       {
-        selectedFighter ? (
-          <button>
+        selectedFighter !== null ? (
+          <Button onClick={() => {
+            props.submitPrediction(selectedFighter);
+          }}>
             Submit
-          </button>
+          </Button>
         ) : null
       }
     </>
@@ -145,7 +151,29 @@ const PredictOnFighter = props => {
 };
 
 export default function SeasonSummaryItem(props){
+  const [isPredicting, setIsPredicting] = useState(false);
   const weightClass = convertWeightClass(props.weightClass);
+
+  const submitPrediction = async index => {
+    setIsPredicting(true);
+    const fighterID = props.competitors[index].id;
+    // necessary things for the database. its own predictionID, summaryID, seasonsID, fighterID,
+    try {
+      const insertResponse = await axios.post('/api/summaries/predict', {
+        seasonID: props.seasonID,
+        summaryID: props.id,
+        fighterID: props.competitors[index].id
+      });
+      if (insertResponse.data.success) {
+        setIsPredicting(false);
+        props.addPredictionHandler(props.index, insertResponse.data.id, fighterID);
+      }
+    }
+    catch (err) {
+      setIsPredicting(false);
+      console.error(err);
+    }
+  };
 
   return (
     <SummaryContainer canceled={props.canceled}>
@@ -163,13 +191,22 @@ export default function SeasonSummaryItem(props){
           <div>
             Your pick: {fighterIDtoName(props.predictedFighter, props.competitors)}
           </div>
-        ) : (
-            <PredictOnFighter isDayBefore={props.isDayBefore} competitors={props.competitors}/>
-        )
-      }
+        ) : isPredicting ? <MiniLoading />
+        : (
+              <PredictOnFighter
+                isDayBefore={props.isDayBefore}
+                competitors={props.competitors}
+                submitPrediction={submitPrediction}
+              />
+            )
+}
     </SummaryContainer>
   );
 }
+
+const DropdownContainer = styled.span`
+  margin: auto .5rem auto auto;
+`;
 
 const VoteBarContainer = styled.div`
   width: 2.5rem;
@@ -236,9 +273,21 @@ const SummaryContainer = styled.div`
   }
 `;
 
+const MiniLoading = styled.div`
+  border: 3px solid #f3f3f3 !important;
+  position: absolute;
+  border-top: 3px solid #3498db !important;
+  height: 10px !important;
+  width: 10px !important;
+  border-radius: 50%;
+  margin: auto;
+  animation: spin .5s linear infinite;
+`;
+
 PredictOnFighter.propTypes = {
   isDayBefore: PropTypes.bool,
-  competitors: PropTypes.array
+  competitors: PropTypes.array,
+  submitPrediction: PropTypes.func
 };
 
 
