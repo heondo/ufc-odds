@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { UserContext } from '../context/user-context';
 import axios from 'axios';
+import Dropdown, {MenuItem} from '../components/Dropdown';
 
 const convertWeightClass = weightClass => {
   const charsOnly = weightClass.match(/[a-z_]+/)[0];
@@ -39,9 +40,9 @@ const convertWeightClass = weightClass => {
   return newString;
 };
 
-const getPredictedFighterName = (predicted, competitors) => {
+const fighterIDtoName = (fighter, competitors) => {
   for (let i of competitors) {
-    if (i.id === predicted) {
+    if (i.id === fighter) {
       return convertName(i.name);
     }
   }
@@ -98,6 +99,51 @@ const VoteComponent = props => {
   )
 }
 
+const PredictOnFighter = props => {
+
+  const [selectedFighter, setSelectedFighter] = useState(null);
+
+  if (props.isDayBefore) {
+    return null;
+  }
+  return (
+    <>
+      <Dropdown
+        onSelect={(eventKey) => {
+          setSelectedFighter(props.competitors[eventKey].id)
+        }}
+      >
+        <Dropdown.Toggle
+          btnStyle="flat"
+        >
+          {selectedFighter ? fighterIDtoName(selectedFighter, props.competitors) :'Predict on your fighter'}
+        </Dropdown.Toggle>
+        <Dropdown.Menu>
+          <MenuItem
+          eventKey={0}
+          active={props.competitors[0].id === selectedFighter}
+          >
+            {convertName(props.competitors[0].name)}
+          </MenuItem>
+          <MenuItem
+          eventKey={1}
+          active={props.competitors[1].id === selectedFighter}
+          >
+            {convertName(props.competitors[1].name)}
+          </MenuItem>
+        </Dropdown.Menu>
+      </Dropdown>
+      {
+        selectedFighter ? (
+          <button>
+            Submit
+          </button>
+        ) : null
+      }
+    </>
+  )
+}
+
 export default function SeasonSummaryItem(props){
   const weightClass = convertWeightClass(props.weightClass);
 
@@ -115,12 +161,10 @@ export default function SeasonSummaryItem(props){
       {
         props.predictedFighter ? (
           <div>
-            Your pick: {getPredictedFighterName(props.predictedFighter, props.competitors)}
+            Your pick: {fighterIDtoName(props.predictedFighter, props.competitors)}
           </div>
         ) : (
-          <div>
-            Predict on a fighter here
-          </div>
+            <PredictOnFighter isDayBefore={props.isDayBefore} competitors={props.competitors}/>
         )
       }
     </SummaryContainer>
@@ -181,6 +225,9 @@ const SummaryContainer = styled.div`
   /* display: flex; */
   display: block;
   text-align: start;
+  border: 1px solid grey;
+  border-radius: 5px;
+  margin: .2rem 0;
   /* justify-content: start; */
   padding: .3rem .7rem;
   text-decoration: ${props => props.canceled ? 'line-through' : null};
@@ -188,6 +235,11 @@ const SummaryContainer = styled.div`
     font-size: .95em;
   }
 `;
+
+PredictOnFighter.propTypes = {
+  isDayBefore: PropTypes.bool,
+  competitors: PropTypes.array
+}
 
 
 SeasonSummaryItem.propTypes = {
