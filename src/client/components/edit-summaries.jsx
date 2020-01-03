@@ -40,6 +40,9 @@ const EditSummaries = props => {
     const getSeasonData = async () => {
       try {
         const response = await axios.get(`/api/seasons/${seasonID}`);
+        if (response.data.summaries && !response.data.summaries.length) {
+          return setSummaries(Object.values(response.data.summaries).reduce((a, b) => [...a, ...b]));
+        }
         setSummaries(response.data.summaries);
       } catch (err) {
         console.error(err);
