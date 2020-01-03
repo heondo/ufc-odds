@@ -1,5 +1,5 @@
-import React from 'react'
-import styled from 'styled-components'
+import React from 'react';
+import styled from 'styled-components';
 
 
 const LoadingContainer = styled.div`
@@ -10,8 +10,8 @@ const LoadingContainer = styled.div`
   height: 80px;
   margin: 4rem auto;
   animation: spin 2s linear infinite;
-`
+`;
 
 export default function LoadingCircle(props){
-  return <LoadingContainer />
+  return <LoadingContainer />;
 }

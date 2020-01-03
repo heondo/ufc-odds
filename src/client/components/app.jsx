@@ -2,10 +2,10 @@ import React, { useState, useMemo, useContext, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import UpcomingSeasons from './upcoming-seasons';
 import SeasonPage from './season-page';
-import axios from 'axios'
+import axios from 'axios';
 import Header from '../container/header';
 import SignUp from './signup';
-import AccountPage from './account-page'
+import AccountPage from './account-page';
 import Login from './login';
 import { UserContext } from '../context/user-context';
 import EditSummaries from './edit-summaries';

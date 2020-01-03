@@ -1,9 +1,9 @@
 import React, {useState, useContext, useEffect} from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
-import {UserContext} from '../context/user-context'
+import {UserContext} from '../context/user-context';
 import LoadingCircle from '../container/loading-circle';
-import AccountsSummaries from '../container/accounts-summaries'
+import AccountsSummaries from '../container/accounts-summaries';
 
 export default function AccountPage(props){
   const {user, setUser} = useContext(UserContext);
@@ -12,7 +12,7 @@ export default function AccountPage(props){
 
   const accuracyText = (percentage) => {
     if (percentage < .25){
-      return `I definitely wouldn't bet with an accuracy of ${percentage*100}%`
+      return `I definitely wouldn't bet with an accuracy of ${percentage*100}%`;
     }
     if (percentage < .5){
       return `You could try your luck with a ${percentage*100}% accuracy`;
@@ -21,9 +21,9 @@ export default function AccountPage(props){
       return `Not bad try your luck you're doing ${percentage*100}%`;
     }
     else {
-      return `Sell the house. Go to Vegas and good luck: ${percentage*100}%`
+      return `Sell the house. Go to Vegas and good luck: ${percentage*100}%`;
     }
-  }
+  };
 
   const returnWinnerPercentage = (winner, competitors, outcomes) => {
     // I need the sportEvents competitors, get the index for the predictedCompetitor, get the odds for that fighter
@@ -38,24 +38,24 @@ export default function AccountPage(props){
     });
     // so i have 0 or 1
     return outcomes[winnerIndex].probability;
-  }
+  };
 
   const percentToOdds = percentage => {
     const odds = percentage >= 50 ? (-(percentage) / (100 - percentage) * 100).toFixed(0) : (((100 - percentage) / percentage) * 100).toFixed(0);
-    return odds
-  }
+    return odds;
+  };
 
   const plusMinusOdds = percentage => {
     const odds = percentToOdds(percentage);
     return odds > 0 ? `+${odds}` : odds;
-  }
+  };
 
   const calculateWinnings = percentage => {
     // configure logic to calculate payout for betting on a particular percentage odds thing
     const odds = plusMinusOdds(percentage);
     const payout = odds >= 0 ? betAmount * (odds / 100) + betAmount : betAmount / ((-1*odds)/100) + betAmount;
     return payout;
-  }
+  };
 
   const TotalPredictions = ({seasonsArray}) => {
     let correct = 0;
@@ -95,16 +95,13 @@ export default function AccountPage(props){
         <div>
           Good for {percentageChange}% of initial earnings
         </div>
-        {/* <div>
-          {passedFights ? accuracyText((correct / passedFights).toFixed(2)) : null}
-        </div> */}
       </div>
-    )
-  }
+    );
+  };
 
   useEffect(() => {
     fetchUserPredictions();
-  }, [])
+  }, []);
 
   const fetchUserPredictions = async () => {
     try {
@@ -113,9 +110,9 @@ export default function AccountPage(props){
     }
     catch(err) {
       setPredictionData([]);
-      console.error(err)
+      console.error(err);
     }
-  }
+  };
 
   return user && predictionData  ? (
     <AccountContainer>
@@ -134,7 +131,7 @@ export default function AccountPage(props){
                 startDate={s.start_date}
                 eventsArray={s.seasonsummaries}
               />
-            )
+            );
           })
         ) : (
           <div>
@@ -143,7 +140,7 @@ export default function AccountPage(props){
         )
       }
     </AccountContainer>
-  ) : <LoadingCircle />
+  ) : <LoadingCircle />;
 }
 
 

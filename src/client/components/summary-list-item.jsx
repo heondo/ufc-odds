@@ -61,13 +61,13 @@ const VoteComponent = props => {
       <div>
         No votes
       </div>
-    )
+    );
   }
   const totalVotes = Object.values(props.voteCount).reduce((a, b) => a + b) || 0;
   const f1Votes = props.voteCount[props.competitors[0].id] || 0;
   const f2Votes = props.voteCount[props.competitors[1].id] || 0;
-  const f1Percent = (f1Votes/totalVotes*100).toFixed(0)
-  const f2Percent = (f2Votes/totalVotes * 100).toFixed(0)
+  const f1Percent = (f1Votes/totalVotes*100).toFixed(0);
+  const f2Percent = (f2Votes/totalVotes * 100).toFixed(0);
   return (
     <VoteContainer>
       <VoteDisplay>
@@ -89,8 +89,8 @@ const VoteComponent = props => {
         <VoteCountBar percent={f2Percent} moreThan={f1Votes < f2Votes} direction="right"/>
       </VoteDisplay>
     </VoteContainer>
-  )
-}
+  );
+};
 
 export default function SummaryListItem(props) {
   const [isPredicting, setIsPredicting] = useState(false);
@@ -102,7 +102,7 @@ export default function SummaryListItem(props) {
   const { user } = useContext(UserContext);
 
   const submitPrediction = async index => {
-    setIsPredicting(true)
+    setIsPredicting(true);
     const fighterID = props.competitors[index].id;
     // necessary things for the database. its own predictionID, summaryID, seasonsID, fighterID,
     try {
@@ -110,15 +110,15 @@ export default function SummaryListItem(props) {
         seasonID: props.seasonID,
         summaryID: props.id,
         fighterID: props.competitors[index].id
-      })
+      });
       if (insertResponse.data.success)  {
-        setIsPredicting(false)
-        props.addPredictionHandler(props.index, insertResponse.data.id, fighterID)
+        setIsPredicting(false);
+        props.addPredictionHandler(props.index, insertResponse.data.id, fighterID);
       }
     }
     catch (err) {
       setIsPredicting(false);
-      console.error(err)
+      console.error(err);
     }
   };
 
@@ -133,7 +133,7 @@ export default function SummaryListItem(props) {
       case 'submission':
         return 'SUB';
     }
-  }
+  };
 
   const weightArray = convertWeightClass(props.weightClass);
 
@@ -142,16 +142,16 @@ export default function SummaryListItem(props) {
       return null;
     }
     if (isPredicting) {
-      return <MiniLoading />
+      return <MiniLoading />;
     }
-    const isYourWinner = props.predictedFighter === props.competitors[innerProps.index].id
+    const isYourWinner = props.predictedFighter === props.competitors[innerProps.index].id;
     if (props.isDayBefore) {
       if (props.predictedFighter) {
         return (
           <PredictButtonContainer isYourWinner={isYourWinner}>
             {isYourWinner ? 'Your winner' : 'Your loser'}
           </PredictButtonContainer>
-        )
+        );
       }
       return null;
     }
@@ -161,16 +161,16 @@ export default function SummaryListItem(props) {
           <PredictButtonContainer isYourWinner={isYourWinner}>
             {isYourWinner ? 'Your winner': 'Your loser'}
           </PredictButtonContainer>
-        )
+        );
       }
       return (
         <PredictButtonContainer onClick={() => submitPrediction(innerProps.index)}>
           Predict
         </PredictButtonContainer>
-      )
+      );
     }
     return null;
-  }
+  };
 
   const correctPredictionColor = (fighter) => {
     if (props.isDraw) {
@@ -182,8 +182,8 @@ export default function SummaryListItem(props) {
       }
       return '#ceabb1';
     }
-    return 'white'
-  }
+    return 'white';
+  };
 
 
   return (
@@ -246,19 +246,19 @@ const VoteDisplay = styled.div`
   /* flex-direction: row; */
   justify-content: center;
   align-items: center;
-`
+`;
 
 const MobileDisappear = styled.span`
   margin: auto 2px;
   @media(max-width: 576px) {
     display: none;
   }
-`
+`;
 
 const VoteContainer = styled.div`
   display: flex;
   flex-direction: column;
-`
+`;
 
 const PredictButtonContainer = styled.button`
   max-width: 7rem;
@@ -281,13 +281,13 @@ const PoundsContainer = styled.span`
 
 const OddsContainer = styled.div`
   font-size: .82em;
-`
+`;
 
 const PredictionResult = styled.div`
   color: ${props => props.winner === props.predictedFighter ? 'green' : 'red'};
   display: ${props => props.winner ? 'block' :'none'};
   font-size: 1.05rem;
-`
+`;
 
 const Middle = styled.div`
   display: flex;
@@ -316,7 +316,7 @@ const VoteCountBar = styled.span`
   width: ${props => `${props.percent/40}rem`};
   background-color: ${props => props.moreThan ? 'green' : 'grey'};
   border-radius: ${props => props.direction === "left" ? '2px 0 0 2px': '0 2px 2px 0'};
-`
+`;
 
 const FighterOne = styled(Fighter)`
   border-radius: 8px 25px;
@@ -344,7 +344,7 @@ const MiniLoading = styled.div`
   border-radius: 50%;
   margin: auto;
   animation: spin .5s linear infinite;
-`
+`;
 
 SummaryListItem.propTypes = {
   id: PropTypes.string,

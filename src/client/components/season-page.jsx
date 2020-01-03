@@ -1,18 +1,17 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import update from 'immutability-helper'
+import update from 'immutability-helper';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 // import SummaryListItem from './summary-list-item';
 import styled from 'styled-components';
 import { UserContext } from '../context/user-context';
-import LoadingCircle from '../container/loading-circle'
-import SeasonSummaryItem from '../container/new-fight-summary'
+import LoadingCircle from '../container/loading-circle';
+import SeasonSummaryItem from '../container/new-fight-summary';
 
 export default function SeasonPage(props) {
   const { id: seasonID } = props.match.params;
   const betAmount = 10;
-  const currentTime = new Date()
   const [summaries, setSummaries] = useState(null);
   const { user, setUser } = useContext(UserContext);
 
@@ -27,9 +26,9 @@ export default function SeasonPage(props) {
     }
     catch(err){
       // console.log(Object.keys(err));
-      console.log(err.response.data.message)
+      console.log(err.response.data.message);
       if (err.response.data.message === "No data available"){
-        setSummaries([])
+        setSummaries([]);
       }
     }
   };
@@ -65,7 +64,7 @@ export default function SeasonPage(props) {
 
   const percentToOdds = percentage => {
     const odds = percentage >= 50 ? (-(percentage) / (100 - percentage) * 100).toFixed(0) : (((100 - percentage) / percentage) * 100).toFixed(0);
-    return odds
+    return odds;
   };
 
   const plusMinusOdds = percentage => {
@@ -112,8 +111,8 @@ export default function SeasonPage(props) {
           Good for {percentageChange > 0 ? '+' : '-'}{percentageChange}% of initial earnings
         </div>
       </OddsResultsContainer>
-    )
-  }
+    );
+  };
 
   const createVenueLocation = venue => {
     const venueString = `${venue.name}`;
@@ -127,7 +126,7 @@ export default function SeasonPage(props) {
       voteCount = {
         ...voteCount,
         [fighterID]: 0
-      }
+      };
     }
     voteCount[fighterID] += 1;
     const newSummaries = update(summaries, {
@@ -136,9 +135,9 @@ export default function SeasonPage(props) {
         predicted_fighter: {$set: fighterID},
         votecount: {$set: voteCount}
       }
-    })
-    setSummaries(newSummaries)
-  }
+    });
+    setSummaries(newSummaries);
+  };
 
   const isCanceled = statusObject => {
     return (!!(statusObject.status === 'closed' && statusObject.match_status === 'cancelled'));
@@ -204,21 +203,21 @@ const UsersVotesResults = (props) => {
       nonCanceledFightLength += 1;
       if (sum.prediction_id) {
         totalPredictions += 1;
-        const realWinnerID = sum.sport_event_status.winner_id
+        const realWinnerID = sum.sport_event_status.winner_id;
         if (realWinnerID && sum.predicted_fighter === realWinnerID){
           correctPredictions += 1;
         }
       }
     }
-  })
+  });
   return (
     <div>
       <Divider style={{maxWidth: '300px', margin: '2px auto'}}/>
       <div>Your Prediction Results</div>
       {correctPredictions}/{totalPredictions} on your predictions <span> out of {nonCanceledFightLength} fights</span>
     </div>
-  )
-}
+  );
+};
 
 const ArenaName = styled.div`
   font-style: italic;
@@ -226,7 +225,7 @@ const ArenaName = styled.div`
 
 const OddsResultsContainer = styled.div`
   font-size: .92em;
-`
+`;
 
 const EditButton = styled.div`
   position: absolute;

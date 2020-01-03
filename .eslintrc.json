@@ -19,5 +19,12 @@
         "react"
     ],
     "rules": {
+        "semi": [
+            2,
+            "always"
+        ],
+        "react/jsx-uses-vars": [
+            2
+        ]
     }
 }

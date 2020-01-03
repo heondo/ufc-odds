@@ -14,14 +14,14 @@ export default function AccountsSummaries(props) {
           correct += 1;
         }
         total += 1;
-      })
+      });
     }
     return (
       <div>
         {correct}/{total}
       </div>
-    )
-  }
+    );
+  };
 
   return (
     <SeasonsContainer>
@@ -40,13 +40,13 @@ export default function AccountsSummaries(props) {
               predictedFighter={p.predictedFighter}
               winner={p.sportEventStatus.winner_id}
             />
-          )
+          );
         })
       ) : (
         null
       )}
     </SeasonsContainer>
-  )
+  );
 }
 
 const SeasonName = styled.div`
@@ -54,14 +54,14 @@ const SeasonName = styled.div`
   &:hover {
     text-decoration: underline;
   }
-`
+`;
 
 const SeasonsContainer = styled.div`
-`
+`;
 
 AccountsSummaries.propTypes = {
   id: PropTypes.string,
   name: PropTypes.string,
   startDate: PropTypes.string,
   eventsArray: PropTypes.array
-}
+};

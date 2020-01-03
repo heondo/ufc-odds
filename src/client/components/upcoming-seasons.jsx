@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import UpcomingSeasonItem from '../container/upcoming-season-item';
-import LoadingCircle from '../container/loading-circle'
+import LoadingCircle from '../container/loading-circle';
 
 export default function UpcomingSeasons(props) {
   const {seasons} = props;

@@ -34,7 +34,7 @@ const DownArrow = styled.i`
   /* :hover {
     background-color: white;
   } */
-`
+`;
 
 const AccountMenu = styled.div`
   display: ${props => props.menuVisible ? 'flex': 'none'};
@@ -47,7 +47,7 @@ const AccountMenu = styled.div`
   z-index: 2;
   padding: .5rem;
   border-radius: 5px;
-`
+`;
 
 const LogoContainer = styled.div`
   width: 8rem;
@@ -63,8 +63,8 @@ export default function Header(props) {
   const [menuVisible, setMenuVisible] = useState(false);
 
   const toggleMenu = () => {
-    setMenuVisible(!menuVisible)
-  }
+    setMenuVisible(!menuVisible);
+  };
 
   return (
     <HeaderContainer>
@@ -93,7 +93,7 @@ export default function Header(props) {
           {user ? (
             <Link to="/" onClick={() => {
               window.localStorage.removeItem('userData');
-              cookies.remove('token')
+              cookies.remove('token');
               setUser(null);
             }}>
               Signout

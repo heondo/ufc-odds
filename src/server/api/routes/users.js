@@ -24,19 +24,19 @@ router.get('/:id', async (req, res, next) => {
       name: `get-users-${Date.now()}`,
       text: "select seas.id, seas.name, seas.start_date, spreds.seasonSummaries from seasons as seas left join (select summs.seasons_id, json_agg( json_build_object( 'summaryID', summs.id, 'sportEvent', summs.sport_event, 'sportEventStatus', summs.sport_event_status, 'statistics', summs.statistics, 'sortOrder', summs.s_order, 'predictionID', preds.id, 'predictedFighter', preds.predicted_fighter, 'markets', probs.markets ) order by summs.s_order) as seasonSummaries from summaries as summs right join ( select id, summary_id, fighter_id predicted_fighter from predictions where user_id = $1 and id is not null ) as preds on preds.summary_id = summs.id left join (select summaries_id, markets from probabilities) as probs on probs.summaries_id = summs.id group by summs.seasons_id ) as spreds on seas.id = spreds.seasons_id order by seas.start_date desc limit 30",
       values: [id]
-    }
+    };
     const queryResponse = await client.query(userPredictionsQuery);
     res.json({
       success: false,
       seasons: queryResponse.rows
-    })
+    });
   } catch (err) {
     if (!res.statusCode) {
       res.status(500);
     }
     next(err);
   }
-})
+});
 
 router.post('/login', async (req, res, next) => {
   const { username, password } = req.body;
@@ -49,12 +49,12 @@ router.post('/login', async (req, res, next) => {
     const userQueryData = await client.query(getUserQuery);
     if (!userQueryData.rowCount) {
       res.status(404);
-      throw new Error('failed_credentials')
+      throw new Error('failed_credentials');
     }
     const comparePasswords = await bcrypt.compare(password, userQueryData.rows[0].password);
     if (!comparePasswords) {
       res.status(405);
-      throw new Error('failed_credentials')
+      throw new Error('failed_credentials');
     }
     const token = await jwt.sign({
       userID: userQueryData.rows[0].id,

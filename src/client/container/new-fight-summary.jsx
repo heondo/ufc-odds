@@ -16,7 +16,7 @@ const convertWeightClass = weightClass => {
       newString = ['Featherweight', '145lbs'];
       break;
     case 'lightweight':
-      newString = ['Lighweight', '155lbs'];
+      newString = ['Lightweight', '155lbs'];
       break;
     case 'welterweight':
       newString = ['Welterweight', '170lbs'];
@@ -47,7 +47,7 @@ const fighterIDtoName = (fighter, competitors) => {
     }
   }
   return null;
-}
+};
 
 const convertName = name => {
   const split = name.split(', ');
@@ -60,7 +60,7 @@ const VoteComponent = props => {
       <div>
         No votes
       </div>
-    )
+    );
   }
   const totalVotes = Object.values(props.voteCount).reduce((a, b) => a + b) || 0;
   const f1Votes = props.voteCount[props.competitors[0].id] || 0;
@@ -96,8 +96,8 @@ const VoteComponent = props => {
         </VoteDisplay>
       </VoteDisplay>
     </VoteContainer>
-  )
-}
+  );
+};
 
 const PredictOnFighter = props => {
 
@@ -110,7 +110,7 @@ const PredictOnFighter = props => {
     <>
       <Dropdown
         onSelect={(eventKey) => {
-          setSelectedFighter(props.competitors[eventKey].id)
+          setSelectedFighter(props.competitors[eventKey].id);
         }}
       >
         <Dropdown.Toggle
@@ -141,8 +141,8 @@ const PredictOnFighter = props => {
         ) : null
       }
     </>
-  )
-}
+  );
+};
 
 export default function SeasonSummaryItem(props){
   const weightClass = convertWeightClass(props.weightClass);
@@ -155,7 +155,7 @@ export default function SeasonSummaryItem(props){
         <span>{convertName(props.competitors[1].name)}</span>
       </FightersContainer>
       <WeightClass>
-        {weightClass[0].toUpperCase()} - {weightClass[1]}
+        <em>{weightClass[0].toUpperCase()}</em> - {weightClass[1]}
       </WeightClass>
       <VoteComponent voteCount={props.voteCount} competitors={props.competitors} />
       {
@@ -168,14 +168,14 @@ export default function SeasonSummaryItem(props){
         )
       }
     </SummaryContainer>
-  )
+  );
 }
 
 const VoteBarContainer = styled.div`
   width: 2.5rem;
   display: flex;
   align-items: center;
-`
+`;
 
 const VoteCountBar = styled.span`
   display: inline-block;
@@ -184,7 +184,7 @@ const VoteCountBar = styled.span`
   width: ${props => `${props.percent / 40}rem`};
   background-color: ${props => props.moreThan ? 'green' : 'grey'};
   border-radius: ${props => props.direction === "left" ? '2px 0 0 2px' : '0 2px 2px 0'};
-`
+`;
 
 const VoteDisplay = styled.div`
   display: flex;
@@ -192,20 +192,20 @@ const VoteDisplay = styled.div`
   /* flex-direction: row; */
   justify-content: center;
   align-items: center;
-`
+`;
 
 const MobileDisappear = styled.span`
   margin: auto 2px;
   @media(max-width: 576px) {
     display: none;
-  }
-`
+  };
+`;
 
 const VoteContainer = styled.div`
   display: flex;
   justify-content: center;
   /* justify-content: space-between; */
-`
+`;
 
 // const VotesContainer = styled.div`
 //   display: flex;
@@ -215,11 +215,11 @@ const VoteContainer = styled.div`
 
 const WeightClass = styled.div`
   font-size: .85rem;
-`
+`;
 
 const FightersContainer = styled.div`
   font-size: 1.03rem;
-`
+`;
 
 const SummaryContainer = styled.div`
   /* display: flex; */
@@ -239,7 +239,7 @@ const SummaryContainer = styled.div`
 PredictOnFighter.propTypes = {
   isDayBefore: PropTypes.bool,
   competitors: PropTypes.array
-}
+};
 
 
 SeasonSummaryItem.propTypes = {
