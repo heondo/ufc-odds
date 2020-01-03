@@ -29,20 +29,29 @@ router.get('/:id', async (req, res, next) => {
       throw new Error('No data available');
     }
     // I need to group them by stage?
-    const newDataObject = {};
-    queryResponse.rows.forEach((fight) => {
-      const stage = fight.sport_event.sport_event_context.stage.type;
+    let newDataObject = {};
+    let count = 0;
+    for (let fight of queryResponse.rows){
+      const stage = fight.sport_event.sport_event_context.stage ? fight.sport_event.sport_event_context.stage.type : null;
+      if (stage === null) {
+        continue;
+      }
       if (!newDataObject[stage]) {
         newDataObject[stage] = [fight];
+        count++;
       } else {
         newDataObject[stage].push(fight);
+        count++;
       }
-    });
+    }
+    if (count === 0) {
+      newDataObject = null;
+    }
     res.status(200);
     res.json({
       success: true,
-      summaries: queryResponse.rows,
-      newDataObject
+      summaries: newDataObject === null ? queryResponse.rows : newDataObject,
+      summariesCount: queryResponse.rowCount
     });
   } catch (err) {
     if (!res.statusCode)  {
