@@ -39,6 +39,15 @@ const convertWeightClass = weightClass => {
   return newString;
 };
 
+const getPredictedFighterName = (predicted, competitors) => {
+  for (let i of competitors) {
+    if (i.id === predicted) {
+      return convertName(i.name);
+    }
+  }
+  return null;
+}
+
 const convertName = name => {
   const split = name.split(', ');
   return [split[1], split[0]].join(' ');
@@ -62,17 +71,27 @@ const VoteComponent = props => {
     <VoteContainer>
       <VoteDisplay>
         <VoteDisplay>
-          <div>{f1Percent}% ({f1Votes}/{totalVotes}) </div>
+          <div>
+            {f1Percent}%
+            <MobileDisappear>({f1Votes}/{totalVotes})</MobileDisappear>
+          </div>
         </VoteDisplay>
-        <VoteCountBar percent={f1Percent} moreThan={f1Votes > f2Votes} direction="left" />
+        <VoteBarContainer>
+          <VoteCountBar percent={f1Percent} moreThan={f1Votes > f2Votes} direction="left" />
+        </VoteBarContainer>
       </VoteDisplay>
       <div>
         Community Votes
       </div>
       <VoteDisplay>
-      <VoteCountBar percent={f2Percent} moreThan={f1Votes < f2Votes} direction="right" />
+      <VoteBarContainer>
+        <VoteCountBar percent={f2Percent} moreThan={f1Votes < f2Votes} direction="right" />
+      </VoteBarContainer>
         <VoteDisplay>
-          <div> ({f2Votes}/{totalVotes}) {f2Percent}%</div>
+          <div>
+            <MobileDisappear>({f2Votes}/{totalVotes})</MobileDisappear>
+            {f2Percent}%
+          </div>
         </VoteDisplay>
       </VoteDisplay>
     </VoteContainer>
@@ -93,9 +112,26 @@ export default function SeasonSummaryItem(props){
         {weightClass[0].toUpperCase()} - {weightClass[1]}
       </WeightClass>
       <VoteComponent voteCount={props.voteCount} competitors={props.competitors} />
+      {
+        props.predictedFighter ? (
+          <div>
+            Your pick: {getPredictedFighterName(props.predictedFighter, props.competitors)}
+          </div>
+        ) : (
+          <div>
+            Predict on a fighter here
+          </div>
+        )
+      }
     </SummaryContainer>
   )
 }
+
+const VoteBarContainer = styled.div`
+  width: 2.5rem;
+  display: flex;
+  align-items: center;
+`
 
 const VoteCountBar = styled.span`
   display: inline-block;
@@ -108,6 +144,7 @@ const VoteCountBar = styled.span`
 
 const VoteDisplay = styled.div`
   display: flex;
+  font-size: .9rem;
   /* flex-direction: row; */
   justify-content: center;
   align-items: center;
