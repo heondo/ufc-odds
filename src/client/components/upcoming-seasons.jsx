@@ -26,7 +26,7 @@ export default function UpcomingSeasons(props) {
       ))}
     </SeasonsListContainer>
   ) : (
-      <LoadingCircle />
+    <LoadingCircle />
   );
 }
 

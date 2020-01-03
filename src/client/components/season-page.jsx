@@ -166,29 +166,29 @@ export default function SeasonPage(props) {
       {summaries.map((s, i) => (
         <SeasonSummaryItem
           key={s.id}
-            {...props}
-            id={s.id}
-            index={i}
-            seasonID={seasonID}
-            competitors={s.sport_event.competitors}
-            summaryOrder={s.s_order}
-            canceled={isCanceled(s.sport_event_status)}
-            weightClass={s.sport_event_status.weight_class}
-            isDraw={s.sport_event_status.winner === 'draw'}
-            winner={s.sport_event_status.winner_id || null}
-            isHistory={isHistory}
-            isDayBefore={isDayBefore}
-            predictionID={s.prediction_id}
-            predictedFighter={s.predicted_fighter}
-            addPredictionHandler={addPredictionHandler}
-            voteCount={s.votecount}
-            markets={s.markets}
-            plusMinusOdds={plusMinusOdds}
-            winMethod={s.sport_event_status.method}
-            finalRound={s.sport_event_status.final_round}
-            finalRoundTime={s.sport_event_status.final_round_length}
+          {...props}
+          id={s.id}
+          index={i}
+          seasonID={seasonID}
+          competitors={s.sport_event.competitors}
+          summaryOrder={s.s_order}
+          canceled={isCanceled(s.sport_event_status)}
+          weightClass={s.sport_event_status.weight_class}
+          isDraw={s.sport_event_status.winner === 'draw'}
+          winner={s.sport_event_status.winner_id || null}
+          isHistory={isHistory}
+          isDayBefore={isDayBefore}
+          predictionID={s.prediction_id}
+          predictedFighter={s.predicted_fighter}
+          addPredictionHandler={addPredictionHandler}
+          voteCount={s.votecount}
+          markets={s.markets}
+          plusMinusOdds={plusMinusOdds}
+          winMethod={s.sport_event_status.method}
+          finalRound={s.sport_event_status.final_round}
+          finalRoundTime={s.sport_event_status.final_round_length}
         />
-        ))
+      ))
       }
     </SummariesContainer>
   ) : <SummariesContainer>No fights to display yet</SummariesContainer> : <LoadingCircle />;

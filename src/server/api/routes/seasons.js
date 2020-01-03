@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
 const client = require('../db_connect');
 client.connect();
 
@@ -17,27 +17,38 @@ router.get('/:id', async (req, res, next) => {
       values: []
     };
     if (userData) {
-      getSeasonQuery.name += '-cookies'
+      getSeasonQuery.name += '-cookies';
       getSeasonQuery.text = "select summ.*, probs.markets, pred.id as prediction_id, pred.fighter_id as predicted_fighter, pred.user_id as user_id, preds.vote_count voteCount from summaries as summ left join (select * from predictions where seasons_id=$1 and user_id=$2) as pred on pred.summary_id = summ.id left join (with main as (select summary_id, fighter_id, count(*) as vote_count from predictions group by summary_id, fighter_id) select summary_id, json_object_agg(fighter_id, vote_count) as vote_count from main group by summary_id) as preds on preds.summary_id = summ.id left join (select summaries_id, markets from probabilities) as probs on probs.summaries_id = summ.id where summ.seasons_id = $3 order by summ.s_order";
       getSeasonQuery.values.push(seasonID, userData.userID, seasonID);
     } else {
-      getSeasonQuery.values.push(seasonID)
+      getSeasonQuery.values.push(seasonID);
     }
-    const queryResponse = await client.query(getSeasonQuery)
+    const queryResponse = await client.query(getSeasonQuery);
     if (!queryResponse.rowCount) {
       res.status(403);
-      throw new Error('No data available')
+      throw new Error('No data available');
     }
+    // I need to group them by stage?
+    const newDataObject = {};
+    queryResponse.rows.forEach((fight) => {
+      const stage = fight.sport_event.sport_event_context.stage.type;
+      if (!newDataObject[stage]) {
+        newDataObject[stage] = [fight];
+      } else {
+        newDataObject[stage].push(fight);
+      }
+    });
     res.status(200);
     res.json({
       success: true,
-      summaries: queryResponse.rows
+      summaries: queryResponse.rows,
+      newDataObject
     });
   } catch (err) {
     if (!res.statusCode)  {
       res.status(500);
     }
-    next(err)
+    next(err);
   }
 });
 

@@ -11,33 +11,33 @@ const convertWeightClass = weightClass => {
   const charsOnly = weightClass.match(/[a-z_]+/)[0];
   let newString;
   switch (charsOnly) {
-    case 'bantamweight':
-      newString = ['Bantamweight', '135lbs'];
-      break;
-    case 'featherweight':
-      newString = ['Featherweight', '145lbs'];
-      break;
-    case 'lightweight':
-      newString = ['Lightweight', '155lbs'];
-      break;
-    case 'welterweight':
-      newString = ['Welterweight', '170lbs'];
-      break;
-    case 'light_heavyweight':
-      newString = ['Light Heavyweight', '205lbs'];
-      break;
-    case 'middleweight':
-      newString = ['Middleweight', '185lbs'];
-      break;
-    case 'heavyweight':
-      newString = ['Heavyweight', '265lbs'];
-      break;
-    case 'flyweight':
-      newString = ['Flyweight', '125lbs'];
-      break;
-    case 'strawweight':
-      newString = ['Strawweight', '115lbs'];
-      break;
+  case 'bantamweight':
+    newString = ['Bantamweight', '135 lbs'];
+    break;
+  case 'featherweight':
+    newString = ['Featherweight', '145 lbs'];
+    break;
+  case 'lightweight':
+    newString = ['Lightweight', '155 lbs'];
+    break;
+  case 'welterweight':
+    newString = ['Welterweight', '170 lbs'];
+    break;
+  case 'light_heavyweight':
+    newString = ['Light Heavyweight', '205 lbs'];
+    break;
+  case 'middleweight':
+    newString = ['Middleweight', '185 lbs'];
+    break;
+  case 'heavyweight':
+    newString = ['Heavyweight', '265 lbs'];
+    break;
+  case 'flyweight':
+    newString = ['Flyweight', '125 lbs'];
+    break;
+  case 'strawweight':
+    newString = ['Strawweight', '115 lbs'];
+    break;
   }
   return newString;
 };
@@ -51,15 +51,18 @@ const fighterIDtoName = (fighter, competitors) => {
   return null;
 };
 
-const convertName = name => {
+const convertName = (name, upper) => {
   const split = name.split(', ');
-  return [split[1], split[0]].join(' ');
+  const newName = [split[1], split[0]].join(' ');
+  return upper ? newName.toUpperCase() : newName;
 };
 
 const VoteComponent = props => {
   if (!props.voteCount) {
     return (
-      <div>
+      <div style={{
+        margin: '.3rem'
+      }}>
         No votes
       </div>
     );
@@ -79,17 +82,17 @@ const VoteComponent = props => {
             <MobileDisappear>({f1Votes}/{totalVotes})</MobileDisappear>
           </div>
         </VoteDisplay>
-        <VoteBarContainer>
+        <VoteBarContainer direction="left">
           <VoteCountBar percent={f1Percent} moreThan={f1Votes > f2Votes} direction="left" />
         </VoteBarContainer>
       </VoteDisplay>
       <div>
-        Community Votes
+        Total Votes
       </div>
       <VoteDisplay>
-      <VoteBarContainer>
-        <VoteCountBar percent={f2Percent} moreThan={f1Votes < f2Votes} direction="right" />
-      </VoteBarContainer>
+        <VoteBarContainer direction="right">
+          <VoteCountBar percent={f2Percent} moreThan={f1Votes < f2Votes} direction="right" />
+        </VoteBarContainer>
         <VoteDisplay>
           <div>
             <MobileDisappear>({f2Votes}/{totalVotes})</MobileDisappear>
@@ -124,15 +127,15 @@ const PredictOnFighter = props => {
         <Dropdown.Menu>
           <MenuItem
             eventKey={0}
-              active={selectedFighter === 0}
+            active={selectedFighter === 0}
           >
-            {convertName(props.competitors[0].name)}
+            {convertName(props.competitors[0].name)} {props.fighterOdds ? props.fighterOdds[0] : null}
           </MenuItem>
           <MenuItem
             eventKey={1}
-              active={selectedFighter === 1}
+            active={selectedFighter === 1}
           >
-            {convertName(props.competitors[1].name)}
+            {convertName(props.competitors[1].name)} {props.fighterOdds ? props.fighterOdds[1] : null}
           </MenuItem>
         </Dropdown.Menu>
       </Dropdown>
@@ -175,50 +178,96 @@ export default function SeasonSummaryItem(props){
     }
   };
 
+  const fighterIDtoOdds = (id, competitors, odds) => {
+    for (let i in competitors){
+      if (id === competitors[i].id) {
+        return odds ? `(${odds[i]})` : null;
+      }
+    }
+    return null;
+  };
+
+
+  const fighterOdds = props.markets ? [
+    props.plusMinusOdds(props.markets[0].outcomes[0].probability),
+    props.plusMinusOdds(props.markets[0].outcomes[1].probability)
+  ] : null;
+
   return (
     <SummaryContainer canceled={props.canceled}>
       <FightersContainer>
-        <span>{convertName(props.competitors[0].name)}</span>
-        {' vs '}
-        <span>{convertName(props.competitors[1].name)}</span>
+        <FighterNames direction="left">{convertName(props.competitors[0].name, true)}</FighterNames>
+        <VSContainer>
+          {' vs '}
+        </VSContainer>
+        <FighterNames direction="right">{convertName(props.competitors[1].name, true)}</FighterNames>
       </FightersContainer>
       <WeightClass>
-        <em>{weightClass[0].toUpperCase()}</em> - {weightClass[1]}
+        <em>{weightClass[0]}</em> - {weightClass[1]}
       </WeightClass>
       <VoteComponent voteCount={props.voteCount} competitors={props.competitors} />
       {
         props.predictedFighter ? (
-          <div>
-            Your pick: {fighterIDtoName(props.predictedFighter, props.competitors)}
-          </div>
+          <UserPickedFighter>
+            Your pick: {fighterIDtoName(props.predictedFighter, props.competitors)} {fighterIDtoOdds(props.predictedFighter, props.competitors, fighterOdds)}
+          </UserPickedFighter>
         ) : isPredicting ? <MiniLoading />
-        : (
-              <PredictOnFighter
-                isDayBefore={props.isDayBefore}
-                competitors={props.competitors}
-                submitPrediction={submitPrediction}
-              />
-            )
-}
+          : (
+            <PredictOnFighter
+              isDayBefore={props.isDayBefore}
+              competitors={props.competitors}
+              submitPrediction={submitPrediction}
+              fighterOdds={fighterOdds}
+            />
+          )
+      }
     </SummaryContainer>
   );
 }
+
+const VSContainer = styled.div`
+  width: 1rem;
+  margin: auto .4rem;
+`;
+
+const FighterNames = styled.div`
+  font-weight: bold;
+  width: 15rem;
+  display: flex;
+  justify-content: ${props => props.direction === "left" ? "flex-end": "flex-start"};
+`;
+
+const FightersContainer = styled.div`
+  font-size: 1.03rem;
+  display: flex;
+  justify-content: center;
+`;
+
+const UserPickedFighter = styled.div`
+  padding: .3rem;
+  border: 1px solid grey;
+  border-radius: 3px;
+  margin-bottom: .3rem;
+  background-color: lightgrey;
+`;
 
 const DropdownContainer = styled.span`
   margin: auto .5rem auto auto;
 `;
 
 const VoteBarContainer = styled.div`
-  width: 2.5rem;
+  width: 4rem;
   display: flex;
   align-items: center;
+  justify-content: ${props => props.direction === "left" ? 'flex-end' : 'flex-start'};
+  /* justify-content: flex-start; */
 `;
 
 const VoteCountBar = styled.span`
   display: inline-block;
   margin: auto 2px;
   height: 4px;
-  width: ${props => `${props.percent / 40}rem`};
+  width: ${props => `${props.percent / 25}rem`};
   background-color: ${props => props.moreThan ? 'green' : 'grey'};
   border-radius: ${props => props.direction === "left" ? '2px 0 0 2px' : '0 2px 2px 0'};
 `;
@@ -241,6 +290,7 @@ const MobileDisappear = styled.span`
 const VoteContainer = styled.div`
   display: flex;
   justify-content: center;
+  margin: .5rem auto;
   /* justify-content: space-between; */
 `;
 
@@ -254,14 +304,10 @@ const WeightClass = styled.div`
   font-size: .85rem;
 `;
 
-const FightersContainer = styled.div`
-  font-size: 1.03rem;
-`;
-
 const SummaryContainer = styled.div`
   /* display: flex; */
   display: block;
-  text-align: start;
+  text-align: center;
   border: 1px solid grey;
   border-radius: 5px;
   margin: .2rem 0;
@@ -275,7 +321,6 @@ const SummaryContainer = styled.div`
 
 const MiniLoading = styled.div`
   border: 3px solid #f3f3f3 !important;
-  position: absolute;
   border-top: 3px solid #3498db !important;
   height: 10px !important;
   width: 10px !important;
@@ -287,7 +332,8 @@ const MiniLoading = styled.div`
 PredictOnFighter.propTypes = {
   isDayBefore: PropTypes.bool,
   competitors: PropTypes.array,
-  submitPrediction: PropTypes.func
+  submitPrediction: PropTypes.func,
+  fighterOdds: PropTypes.array
 };
 
 

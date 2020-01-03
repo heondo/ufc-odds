@@ -14,33 +14,33 @@ const convertWeightClass = weightClass => {
   const charsOnly = weightClass.match(/[a-z_]+/)[0];
   let newString;
   switch (charsOnly) {
-    case 'bantamweight':
-      newString = ['Bantamweight', '135lbs'];
-      break;
-    case 'featherweight':
-      newString = ['Featherweight', '145lbs'];
-      break;
-    case 'lightweight':
-      newString = ['Lighweight', '155lbs'];
-      break;
-    case 'welterweight':
-      newString = ['Welterweight', '170lbs'];
-      break;
-    case 'light_heavyweight':
-      newString = ['Light Heavyweight', '205lbs'];
-      break;
-    case 'middleweight':
-      newString = ['Middleweight', '185lbs'];
-      break;
-    case 'heavyweight':
-      newString = ['Heavyweight', '265lbs'];
-      break;
-    case 'flyweight':
-      newString = ['Flyweight', '125lbs'];
-      break;
-    case 'strawweight':
-      newString = ['Strawweight', '115lbs'];
-      break;
+  case 'bantamweight':
+    newString = ['Bantamweight', '135lbs'];
+    break;
+  case 'featherweight':
+    newString = ['Featherweight', '145lbs'];
+    break;
+  case 'lightweight':
+    newString = ['Lighweight', '155lbs'];
+    break;
+  case 'welterweight':
+    newString = ['Welterweight', '170lbs'];
+    break;
+  case 'light_heavyweight':
+    newString = ['Light Heavyweight', '205lbs'];
+    break;
+  case 'middleweight':
+    newString = ['Middleweight', '185lbs'];
+    break;
+  case 'heavyweight':
+    newString = ['Heavyweight', '265lbs'];
+    break;
+  case 'flyweight':
+    newString = ['Flyweight', '125lbs'];
+    break;
+  case 'strawweight':
+    newString = ['Strawweight', '115lbs'];
+    break;
   }
   return newString;
 };
@@ -124,14 +124,14 @@ export default function SummaryListItem(props) {
 
   const convertDecision = decision => {
     switch(decision) {
-      case 'ko_tko':
-        return 'KO/TKO';
-      case 'decision_unanimous':
-        return 'UD';
-      case 'decision_split':
-        return 'SD';
-      case 'submission':
-        return 'SUB';
+    case 'ko_tko':
+      return 'KO/TKO';
+    case 'decision_unanimous':
+      return 'UD';
+    case 'decision_split':
+      return 'SD';
+    case 'submission':
+      return 'SUB';
     }
   };
 

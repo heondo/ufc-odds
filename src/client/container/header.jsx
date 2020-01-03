@@ -80,12 +80,12 @@ export default function Header(props) {
             Account
           </Link>
         ) : (
-            <LogoAndText>
-              <Link to="/login">
-                <div>Login</div>
-              </Link>
-            </LogoAndText>
-          )}
+          <LogoAndText>
+            <Link to="/login">
+              <div>Login</div>
+            </Link>
+          </LogoAndText>
+        )}
         <DownArrow onClick={toggleMenu}>
           <i className="fas fa-sort-down" />
         </DownArrow>
@@ -99,9 +99,9 @@ export default function Header(props) {
               Signout
             </Link>
           ) : (
-              <Link to="/signup" style={{ marginLeft: '1rem' }}>
-                <div>Signup</div>
-              </Link>
+            <Link to="/signup" style={{ marginLeft: '1rem' }}>
+              <div>Signup</div>
+            </Link>
           )}
         </AccountMenu>
       </LogoAndText>
