@@ -187,6 +187,18 @@ export default function SeasonSummaryItem(props){
     return null;
   };
 
+  const convertDecision = decision => {
+    switch (decision) {
+    case 'ko_tko':
+      return 'KO/TKO';
+    case 'decision_unanimous':
+      return 'UD';
+    case 'decision_split':
+      return 'SD';
+    case 'submission':
+      return 'SUB';
+    }
+  };
 
   const fighterOdds = props.markets ? [
     props.plusMinusOdds(props.markets[0].outcomes[0].probability),
@@ -220,6 +232,16 @@ export default function SeasonSummaryItem(props){
               fighterOdds={fighterOdds}
             />
           )
+      }
+      {
+        props.winner ? (
+          <div>
+            Winner: {fighterIDtoName(props.winner, props.competitors)}
+            <div>
+              via {convertDecision(props.winMethod)} at {props.finalRoundTime} of Round {props.finalRound}
+            </div>
+          </div>
+        ) : null
       }
     </SummaryContainer>
   );
