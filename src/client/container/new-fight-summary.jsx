@@ -234,6 +234,7 @@ const FighterNames = styled.div`
   font-weight: bold;
   width: 15rem;
   display: flex;
+  align-items: center;
   justify-content: ${props => props.direction === "left" ? "flex-end": "flex-start"};
 `;
 

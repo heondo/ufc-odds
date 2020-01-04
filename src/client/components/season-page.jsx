@@ -99,8 +99,10 @@ export default function SeasonPage(props) {
         winnings += payout;
         correct += 1;
       }
-      passedFights += 1;
-      inputMoney += betAmount;
+      if (summariesArray[j].predicted_fighter && !isCanceled(summariesArray[j].sport_event_status)) {
+        passedFights += 1;
+        inputMoney += betAmount;
+      }
     }
     if (!inputMoney) {
       return null;
@@ -209,217 +211,78 @@ export default function SeasonPage(props) {
         </SummariesContainer>
       );
     }
-    else {
-      const flattenedObjectSummaries = Object.values(summaries).reduce((a, b) => [...a, ...b]);
-      const firstFight = flattenedObjectSummaries[0];
-      // console.log(Object.values(summaries));
-      return (
-        <SummariesContainer>
-          <SeasonTitle>
-            {firstFight.sport_event.sport_event_context.season.name.replace(/\d{4}\s*$/, '')}
-            {user && user.userID === 35 ? (
-              <EditButton>
-                <Link to={`/edit/${seasonID}`}>
+    const flattenedObjectSummaries = Object.values(summaries).reduce((a, b) => [...a, ...b]);
+    const firstFight = flattenedObjectSummaries[0];
+    // console.log(Object.values(summaries));
+    return (
+      <SummariesContainer>
+        <SeasonTitle>
+          {firstFight.sport_event.sport_event_context.season.name.replace(/\d{4}\s*$/, '')}
+          {user && user.userID === 35 ? (
+            <EditButton>
+              <Link to={`/edit/${seasonID}`}>
                   Edit
-                </Link>
-              </EditButton>
-            ) : (null)}
-          </SeasonTitle>
-          <div>{firstFight.sport_event.venue.country_name}</div>
-          <ArenaName>{createVenueLocation(firstFight.sport_event.venue)}</ArenaName>
-          <div>{moment(firstFight.sport_event.start_time).format('hh:mm A MMM Do, YYYY')}</div>
-          {isHistory && user ? <UsersVotesResults summaries={flattenedObjectSummaries} isCanceled={isCanceled} /> : null}
-          <TotalPredictions summariesArray={flattenedObjectSummaries} />
-          <Divider />
-          {
-            possibleStages.map(stage => {
-              if (summaries[stage]) {
-                return (
-                  <div>
-                    <div>
-                      {stage}
-                    </div>
-                    {
-                      summaries[stage].map((s, i) => (
-                        <SeasonSummaryItem
-                          key={s.id}
-                          {...props}
-                          id={s.id}
-                          index={i}
-                          seasonID={seasonID}
-                          competitors={s.sport_event.competitors}
-                          summaryOrder={s.s_order}
-                          canceled={isCanceled(s.sport_event_status)}
-                          weightClass={s.sport_event_status.weight_class}
-                          isDraw={s.sport_event_status.winner === 'draw'}
-                          winner={s.sport_event_status.winner_id || null}
-                          isHistory={isHistory}
-                          isDayBefore={isDayBefore}
-                          predictionID={s.prediction_id}
-                          predictedFighter={s.predicted_fighter}
-                          addPredictionHandler={addPredictionHandler}
-                          voteCount={s.votecount}
-                          markets={s.markets}
-                          plusMinusOdds={plusMinusOdds}
-                          winMethod={s.sport_event_status.method}
-                          finalRound={s.sport_event_status.final_round}
-                          finalRoundTime={s.sport_event_status.final_round_length}
-                        />
-                      ))
-                    }
-                  </div>
-                );
-              }
-            })
-          }
-        </SummariesContainer>
-      );
-    }
+              </Link>
+            </EditButton>
+          ) : (null)}
+        </SeasonTitle>
+        <div>{firstFight.sport_event.venue.country_name}</div>
+        <ArenaName>{createVenueLocation(firstFight.sport_event.venue)}</ArenaName>
+        <div>{moment(firstFight.sport_event.start_time).format('hh:mm A MMM Do, YYYY')}</div>
+        {isHistory && user ? <UsersVotesResults summaries={flattenedObjectSummaries} isCanceled={isCanceled} /> : null}
+        <TotalPredictions summariesArray={flattenedObjectSummaries} />
+        <Divider />
+        {
+          possibleStages.map(stage => {
+            if (summaries[stage]) {
+              return (
+                <div>
+                  <StageText>
+                    {stage.toUpperCase()}
+                  </StageText>
+                  {
+                    summaries[stage].map((s, i) => (
+                      <SeasonSummaryItem
+                        key={s.id}
+                        {...props}
+                        id={s.id}
+                        index={i}
+                        seasonID={seasonID}
+                        competitors={s.sport_event.competitors}
+                        summaryOrder={s.s_order}
+                        canceled={isCanceled(s.sport_event_status)}
+                        weightClass={s.sport_event_status.weight_class}
+                        isDraw={s.sport_event_status.winner === 'draw'}
+                        winner={s.sport_event_status.winner_id || null}
+                        isHistory={isHistory}
+                        isDayBefore={isDayBefore}
+                        predictionID={s.prediction_id}
+                        predictedFighter={s.predicted_fighter}
+                        addPredictionHandler={addPredictionHandler}
+                        voteCount={s.votecount}
+                        markets={s.markets}
+                        plusMinusOdds={plusMinusOdds}
+                        winMethod={s.sport_event_status.method}
+                        finalRound={s.sport_event_status.final_round}
+                        finalRoundTime={s.sport_event_status.final_round_length}
+                      />
+                    ))
+                  }
+                </div>
+              );
+            }
+          })
+        }
+      </SummariesContainer>
+    );
   }
 
   return (
-    <div>
-      hi
-    </div>
+    <SummariesContainer>
+      Nothing to show here
+    </SummariesContainer>
   );
 
-  // return (
-  //   <div>
-  //     default
-  //   </div>
-  // );
-
-  // TODO: format time format with AM PM and time zone. just PST
-
-  // return summaries ? summaries.length ? (
-  //   <SummariesContainer>
-  //     <SeasonTitle>
-  //       {summaries[0].sport_event.sport_event_context.season.name.replace(/\d{4}\s*$/, '')}
-  //       {user && user.userID === 35 ? (
-  //         <EditButton>
-  //           <Link to={`/edit/${seasonID}`}>
-  //             Edit
-  //           </Link>
-  //         </EditButton>
-  //       ) : (null)}
-  //     </SeasonTitle>
-  //     <div>{summaries[0].sport_event.venue.country_name}</div>
-  //     <ArenaName>{createVenueLocation(summaries[0].sport_event.venue)}</ArenaName>
-  //     <div>{moment(summaries[0].sport_event.start_time).format('hh:mm A MMM Do, YYYY')}</div>
-  //     {isHistory && user ? <UsersVotesResults summaries={summaries} isCanceled={isCanceled}/> : null}
-  //     <TotalPredictions summariesArray={summaries}/>
-  //     <Divider />
-  //     <div>
-  //       {
-  //         summaries ? possibleStages.map(stage => {
-  //           if (summaries[stage]) {
-  //             return (
-  //               <div>
-  //                 <div>
-  //                   {stage}
-  //                 </div>
-  //                 {
-  //                   summaries[stage].map((s, i) => (
-  //                     <SeasonSummaryItem
-  //                       key={s.id}
-  //                       {...props}
-  //                       id={s.id}
-  //                       index={i}
-  //                       seasonID={seasonID}
-  //                       competitors={s.sport_event.competitors}
-  //                       summaryOrder={s.s_order}
-  //                       canceled={isCanceled(s.sport_event_status)}
-  //                       weightClass={s.sport_event_status.weight_class}
-  //                       isDraw={s.sport_event_status.winner === 'draw'}
-  //                       winner={s.sport_event_status.winner_id || null}
-  //                       isHistory={isHistory}
-  //                       isDayBefore={isDayBefore}
-  //                       predictionID={s.prediction_id}
-  //                       predictedFighter={s.predicted_fighter}
-  //                       addPredictionHandler={addPredictionHandler}
-  //                       voteCount={s.votecount}
-  //                       markets={s.markets}
-  //                       plusMinusOdds={plusMinusOdds}
-  //                       winMethod={s.sport_event_status.method}
-  //                       finalRound={s.sport_event_status.final_round}
-  //                       finalRoundTime={s.sport_event_status.final_round_length}
-  //                     />
-  //                   ))
-  //                 }
-  //               </div>
-  //             );
-  //           }
-  //         }) : null
-  //       }
-  //     </div>
-  //     {/* {newDataObject && (newDataObject['Main Card'] || newDataObject['Early Prelims'] || newDataObject['Prelims']) ?
-  //       ['Main Card', 'Prelims', 'Early Prelims'].forEach((stage, i) => {
-  //         newDataObject[stage] ? (
-  //           <div>
-  //             <div>
-  //               {stage}
-  //             </div>
-  //             {
-  //               newDataObject[stage].map((s, i) => {
-  //                 <SeasonSummaryItem
-  //                   key={s.id}
-  //                   {...props}
-  //                   id={s.id}
-  //                   index={i}
-  //                   seasonID={seasonID}
-  //                   competitors={s.sport_event.competitors}
-  //                   summaryOrder={s.s_order}
-  //                   canceled={isCanceled(s.sport_event_status)}
-  //                   weightClass={s.sport_event_status.weight_class}
-  //                   isDraw={s.sport_event_status.winner === 'draw'}
-  //                   winner={s.sport_event_status.winner_id || null}
-  //                   isHistory={isHistory}
-  //                   isDayBefore={isDayBefore}
-  //                   predictionID={s.prediction_id}
-  //                   predictedFighter={s.predicted_fighter}
-  //                   addPredictionHandler={addPredictionHandler}
-  //                   voteCount={s.votecount}
-  //                   markets={s.markets}
-  //                   plusMinusOdds={plusMinusOdds}
-  //                   winMethod={s.sport_event_status.method}
-  //                   finalRound={s.sport_event_status.final_round}
-  //                   finalRoundTime={s.sport_event_status.final_round_length}
-  //                 />;
-  //               })
-  //             }
-  //           </div>
-  //         ) : null;
-  //       }) :null
-  //     } */}
-  //     {/* {summaries.map((s, i) => (
-  //       <SeasonSummaryItem
-  //         key={s.id}
-  //         {...props}
-  //         id={s.id}
-  //         index={i}
-  //         seasonID={seasonID}
-  //         competitors={s.sport_event.competitors}
-  //         summaryOrder={s.s_order}
-  //         canceled={isCanceled(s.sport_event_status)}
-  //         weightClass={s.sport_event_status.weight_class}
-  //         isDraw={s.sport_event_status.winner === 'draw'}
-  //         winner={s.sport_event_status.winner_id || null}
-  //         isHistory={isHistory}
-  //         isDayBefore={isDayBefore}
-  //         predictionID={s.prediction_id}
-  //         predictedFighter={s.predicted_fighter}
-  //         addPredictionHandler={addPredictionHandler}
-  //         voteCount={s.votecount}
-  //         markets={s.markets}
-  //         plusMinusOdds={plusMinusOdds}
-  //         winMethod={s.sport_event_status.method}
-  //         finalRound={s.sport_event_status.final_round}
-  //         finalRoundTime={s.sport_event_status.final_round_length}
-  //       />
-  //     ))
-  //     } */}
-  //   </SummariesContainer>
-  // ) : <SummariesContainer>No fights to display yet</SummariesContainer> : <LoadingCircle />;
 }
 
 const UsersVotesResults = (props) => {
@@ -446,6 +309,11 @@ const UsersVotesResults = (props) => {
     </div>
   );
 };
+
+const StageText = styled.div`
+  font-weight: bold;
+  font-size: 1.2rem;
+`;
 
 const ArenaName = styled.div`
   font-style: italic;
