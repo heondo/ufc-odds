@@ -47,11 +47,19 @@ router.get('/:id', async (req, res, next) => {
     if (count === 0) {
       newDataObject = null;
     }
+    let isEnded = false;
+    for (let fight of queryResponse.rows) {
+      if (fight.sport_event_status.match_status === "ended") {
+        isEnded = true;
+        break;
+      }
+    }
     res.status(200);
     res.json({
       success: true,
       summaries: newDataObject === null ? queryResponse.rows : newDataObject,
-      summariesCount: queryResponse.rowCount
+      summariesCount: queryResponse.rowCount,
+      isEnded
     });
   } catch (err) {
     if (!res.statusCode)  {

@@ -369,7 +369,6 @@ SeasonSummaryItem.propTypes = {
   canceled: PropTypes.bool,
   weightClass: PropTypes.string,
   isDraw: PropTypes.bool,
-  isHistory: PropTypes.bool,
   isDayBefore: PropTypes.bool,
   winner: PropTypes.string,
   predictionID: PropTypes.number,

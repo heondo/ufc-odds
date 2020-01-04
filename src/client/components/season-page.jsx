@@ -14,6 +14,7 @@ export default function SeasonPage(props) {
   const betAmount = 10;
   const [summaries, setSummaries] = useState(null);
   const [summariesCount, setSummariesCount] = useState(null);
+  const [isEnded, setIsEnded] = useState(null);
   const possibleStages = ['Main Card', 'Prelims', 'Early Prelims'];
   const { user, setUser } = useContext(UserContext);
 
@@ -24,6 +25,7 @@ export default function SeasonPage(props) {
   const getSeasonData = async () => {
     try {
       const response = await axios.get(`/api/seasons/${seasonID}`);
+      setIsEnded(response.data.isEnded);
       setSummaries(response.data.summaries);
       setSummariesCount(response.data.summariesCount);
     }
@@ -31,6 +33,7 @@ export default function SeasonPage(props) {
       // console.log(Object.keys(err));
       console.log(err.response.data.message);
       if (err.response.data.message === "No data available"){
+        setIsEnded(false);
         setSummaries([]);
         setSummariesCount(0);
       }
@@ -42,7 +45,6 @@ export default function SeasonPage(props) {
 
   const isDayBefore = (seasonDate - currentDate) / 1000 < 86400;
 
-  const isHistory = !summaries ? null : seasonDate < currentDate;
 
   const returnWinnerPercentage = (winner, competitors, outcomes) => {
     // I need the sportEvents competitors, get the index for the predictedCompetitor, get the odds for that fighter
@@ -84,7 +86,7 @@ export default function SeasonPage(props) {
     if (!summariesArray || !summariesArray.length) {
       return null;
     }
-    if (!isHistory) {
+    if (!isEnded) {
       return null;
     }
     for (let j in summariesArray) {
@@ -178,7 +180,7 @@ export default function SeasonPage(props) {
           <div>{summaries[0].sport_event.venue.country_name}</div>
           <ArenaName>{createVenueLocation(summaries[0].sport_event.venue)}</ArenaName>
           <div>{moment(summaries[0].sport_event.start_time).format('hh:mm A MMM Do, YYYY')}</div>
-          {isHistory && user ? <UsersVotesResults summaries={summaries} isCanceled={isCanceled} /> : null}
+          {isEnded && user ? <UsersVotesResults summaries={summaries} isCanceled={isCanceled} /> : null}
           <TotalPredictions summariesArray={summaries} />
           <Divider />
           {summaries.map((s, i) => (
@@ -194,7 +196,6 @@ export default function SeasonPage(props) {
               weightClass={s.sport_event_status.weight_class}
               isDraw={s.sport_event_status.winner === 'draw'}
               winner={s.sport_event_status.winner_id || null}
-              isHistory={isHistory}
               isDayBefore={isDayBefore}
               predictionID={s.prediction_id}
               predictedFighter={s.predicted_fighter}
@@ -229,7 +230,6 @@ export default function SeasonPage(props) {
         <div>{firstFight.sport_event.venue.country_name}</div>
         <ArenaName>{createVenueLocation(firstFight.sport_event.venue)}</ArenaName>
         <div>{moment(firstFight.sport_event.start_time).format('hh:mm A MMM Do, YYYY')}</div>
-        {isHistory && user ? <UsersVotesResults summaries={flattenedObjectSummaries} isCanceled={isCanceled} /> : null}
         <TotalPredictions summariesArray={flattenedObjectSummaries} />
         <Divider />
         {
@@ -254,7 +254,6 @@ export default function SeasonPage(props) {
                         weightClass={s.sport_event_status.weight_class}
                         isDraw={s.sport_event_status.winner === 'draw'}
                         winner={s.sport_event_status.winner_id || null}
-                        isHistory={isHistory}
                         isDayBefore={isDayBefore}
                         predictionID={s.prediction_id}
                         predictedFighter={s.predicted_fighter}
