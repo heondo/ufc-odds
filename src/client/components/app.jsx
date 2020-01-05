@@ -8,6 +8,7 @@ import SignUp from './signup';
 import AccountPage from './account-page';
 import Login from './login';
 import { UserContext } from '../context/user-context';
+import { ThemeContext} from '../context/theme-context';
 import EditSummaries from './edit-summaries';
 
 export default function App(props) {

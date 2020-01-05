@@ -9,7 +9,7 @@ import { UserContext } from '../context/user-context';
 import LoadingCircle from '../container/loading-circle';
 import SeasonSummaryItem from '../container/new-fight-summary';
 
-const betAmount = 10;
+const betAmount = 100;
 
 const isCanceled = statusObject => {
   return (!!(statusObject.status === 'closed' && statusObject.match_status === 'cancelled'));
@@ -69,7 +69,6 @@ export default function SeasonPage(props) {
   const returnFighterWinnings = (bet, winner, competitors, outcomes) => {
     const winnerPercentage = returnWinnerPercentage(winner, competitors, outcomes);
     const payout =  calculateWinnings(winnerPercentage);
-    console.log(payout);
     return payout;
   };
 
@@ -326,7 +325,7 @@ const TotalPredictions = ({ summariesArray, isEnded, returnFighterWinnings }) =>
     <div>
       <Divider />
       <OddsResultsContainer>
-        On {stats.totalPredictions || 0}/{stats.totalFights || 0} fights your purse at the end
+        On {stats.correctPredictions || 0}/{stats.totalPredictions || 0} predictions ({stats.totalFights ||0} total fights) your purse at the end
         of the night is ${stats.winningAmount} from ${stats.totalMoneyIn} put in.
       </OddsResultsContainer>
     </div>

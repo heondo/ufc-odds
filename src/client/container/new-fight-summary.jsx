@@ -6,6 +6,7 @@ import axios from 'axios';
 import Dropdown, {MenuItem} from '../components/Dropdown';
 import { Button, ButtonGroup, ButtonToolbar } from '../components/Buttons';
 import LoadingCircle from './loading-circle';
+import {colors} from '../context/theme-context';
 
 const convertWeightClass = weightClass => {
   const charsOnly = weightClass.match(/[a-z_]+/)[0];
@@ -253,7 +254,7 @@ export default function SeasonSummaryItem(props){
       <VoteComponent voteCount={props.voteCount} competitors={props.competitors} />
       {
         props.predictedFighter ? (
-          <UserPickedFighter>
+          <UserPickedFighter winner={props.winner} predictedFighter={props.predictedFighter}>
             Your pick: {fighterIDtoName(props.predictedFighter, props.competitors)} {fighterIDtoOdds(props.predictedFighter, props.competitors, fighterOdds)}
           </UserPickedFighter>
         ) : isPredicting ? <MiniLoading />
@@ -300,6 +301,7 @@ const UserPickedFighter = styled.div`
   border-radius: 3px;
   margin-bottom: .3rem;
   background-color: lightgrey;
+  /* background-color: ${props => !props.winner ? 'lightgrey' : props.winner === props.predictedFighter ? colors.pCol2 : colors.s1Col1}; */
 `;
 
 const DropdownContainer = styled.span`
@@ -318,7 +320,7 @@ const VoteCountBar = styled.span`
   margin: auto 2px;
   height: 4px;
   width: ${props => `${props.percent / 25}rem`};
-  background-color: ${props => props.moreThan ? 'green' : 'grey'};
+  background-color: ${props => props.moreThan ? colors.pCol2 : colors.s2Col2};
   border-radius: ${props => props.direction === "left" ? '2px 0 0 2px' : '0 2px 2px 0'};
 `;
 
