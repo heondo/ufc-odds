@@ -169,7 +169,7 @@ export default function SeasonSummaryItem(props){
       });
       if (insertResponse.data.success) {
         setIsPredicting(false);
-        props.addPredictionHandler(props.index, insertResponse.data.id, fighterID);
+        props.addPredictionHandler(props.index, insertResponse.data.id, fighterID, props.stage);
       }
     }
     catch (err) {
@@ -177,6 +177,7 @@ export default function SeasonSummaryItem(props){
       console.error(err);
     }
   };
+
 
   const fighterIDtoOdds = (id, competitors, odds) => {
     for (let i in competitors){
@@ -191,12 +192,14 @@ export default function SeasonSummaryItem(props){
     switch (decision) {
     case 'ko_tko':
       return 'KO/TKO';
+    case 'tko_doctors_stoppage':
+      return 'TKO (Doctor Stoppage)';
     case 'decision_unanimous':
-      return 'UD';
+      return 'Unanimous Decision';
     case 'decision_split':
-      return 'SD';
+      return 'Split Decision';
     case 'submission':
-      return 'SUB';
+      return 'Submission';
     }
   };
 
@@ -204,6 +207,31 @@ export default function SeasonSummaryItem(props){
     props.plusMinusOdds(props.markets[0].outcomes[0].probability),
     props.plusMinusOdds(props.markets[0].outcomes[1].probability)
   ] : null;
+
+  const conditionalWinDescription = (winMethod, finalRound, finalRoundTime) => {
+    switch (winMethod) {
+    case 'decision_split':
+    case 'decision_unanimous':
+      return `via ${convertDecision(winMethod)}`;
+    case 'tko_doctors_stoppage':
+    case 'ko_tko':
+    case 'submission':
+      return `via ${convertDecision(winMethod)} at ${finalRoundTime} of RD ${finalRound}`;
+    default:
+      return null;
+    }
+  };
+
+  const WinnerDescription = () => {
+    return (
+      <div>
+        Winner: {props.isDraw ? "Draw" : fighterIDtoName(props.winner, props.competitors)}
+        <div>
+          {conditionalWinDescription(props.winMethod, props.finalRound, props.finalRoundTime)}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <SummaryContainer canceled={props.canceled}>
@@ -215,7 +243,12 @@ export default function SeasonSummaryItem(props){
         <FighterNames direction="right"><div>{convertName(props.competitors[1].name, true)}</div></FighterNames>
       </FightersContainer>
       <WeightClass>
-        <em>{weightClass[0]}</em> - {weightClass[1]}
+        <div>
+          <em>{weightClass[0]}</em> - {weightClass[1]}
+        </div>
+        <div>
+          {props.scheduledRounds} Rounds
+        </div>
       </WeightClass>
       <VoteComponent voteCount={props.voteCount} competitors={props.competitors} />
       {
@@ -234,13 +267,8 @@ export default function SeasonSummaryItem(props){
           )
       }
       {
-        props.winner ? (
-          <div>
-            Winner: {fighterIDtoName(props.winner, props.competitors)}
-            <div>
-              via {convertDecision(props.winMethod)} at {props.finalRoundTime} of Round {props.finalRound}
-            </div>
-          </div>
+        props.winner || props.winMethod ? (
+          <WinnerDescription />
         ) : null
       }
     </SummaryContainer>
@@ -283,7 +311,6 @@ const VoteBarContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: ${props => props.direction === "left" ? 'flex-end' : 'flex-start'};
-  /* justify-content: flex-start; */
 `;
 
 const VoteCountBar = styled.span`
@@ -298,7 +325,6 @@ const VoteCountBar = styled.span`
 const VoteDisplay = styled.div`
   display: flex;
   font-size: .9rem;
-  /* flex-direction: row; */
   justify-content: center;
   align-items: center;
 `;
@@ -314,27 +340,18 @@ const VoteContainer = styled.div`
   display: flex;
   justify-content: center;
   margin: .5rem auto;
-  /* justify-content: space-between; */
 `;
-
-// const VotesContainer = styled.div`
-//   display: flex;
-//   flex-direction: center;
-//   justify-content: center;
-// `
 
 const WeightClass = styled.div`
   font-size: .85rem;
 `;
 
 const SummaryContainer = styled.div`
-  /* display: flex; */
   display: block;
   text-align: center;
   border: 1px solid grey;
   border-radius: 5px;
   margin: .2rem 0;
-  /* justify-content: start; */
   padding: .3rem .7rem;
   text-decoration: ${props => props.canceled ? 'line-through' : null};
   @media(max-width: 767px) {
@@ -359,11 +376,11 @@ PredictOnFighter.propTypes = {
   fighterOdds: PropTypes.array
 };
 
-
 SeasonSummaryItem.propTypes = {
   id: PropTypes.string,
   seasonID: PropTypes.string,
   index: PropTypes.number,
+  scheduledRounds: PropTypes.number,
   competitors: PropTypes.array,
   summaryOrder: PropTypes.number,
   canceled: PropTypes.bool,
@@ -380,5 +397,6 @@ SeasonSummaryItem.propTypes = {
   plusMinusOdds: PropTypes.func,
   winMethod: PropTypes.string,
   finalRound: PropTypes.number,
-  finalRoundTime: PropTypes.string
+  finalRoundTime: PropTypes.string,
+  stage: PropTypes.string
 };

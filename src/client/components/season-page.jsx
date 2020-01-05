@@ -9,9 +9,14 @@ import { UserContext } from '../context/user-context';
 import LoadingCircle from '../container/loading-circle';
 import SeasonSummaryItem from '../container/new-fight-summary';
 
+const betAmount = 10;
+
+const isCanceled = statusObject => {
+  return (!!(statusObject.status === 'closed' && statusObject.match_status === 'cancelled'));
+};
+
 export default function SeasonPage(props) {
   const { id: seasonID } = props.match.params;
-  const betAmount = 10;
   const [summaries, setSummaries] = useState(null);
   const [summariesCount, setSummariesCount] = useState(null);
   const [isEnded, setIsEnded] = useState(null);
@@ -61,6 +66,13 @@ export default function SeasonPage(props) {
     return outcomes[winnerIndex].probability;
   };
 
+  const returnFighterWinnings = (bet, winner, competitors, outcomes) => {
+    const winnerPercentage = returnWinnerPercentage(winner, competitors, outcomes);
+    const payout =  calculateWinnings(winnerPercentage);
+    console.log(payout);
+    return payout;
+  };
+
   const calculateWinnings = percentage => {
     // configure logic to calculate payout for betting on a particular percentage odds thing
     const odds = plusMinusOdds(percentage);
@@ -78,58 +90,21 @@ export default function SeasonPage(props) {
     return odds > 0 ? `+${odds}` : odds;
   };
 
-  const TotalPredictions = ({ summariesArray }) => {
-    let correct = 0;
-    let passedFights = 0;
-    let winnings = 0;
-    let inputMoney = 0;
-    if (!summariesArray || !summariesArray.length) {
-      return null;
-    }
-    if (!isEnded) {
-      return null;
-    }
-    for (let j in summariesArray) {
-      if (!summariesArray[j].sport_event_status.winner) {
-        continue;
-      }
-      if (summariesArray[j].predicted_fighter === summariesArray[j].sport_event_status.winner_id) {
-        // this is the winning conditional, if you win, find the winners probabilities in outcome.
-        const { outcomes } = summariesArray[j].markets ? summariesArray[j].markets[0] : null;
-        const predictedPercentage = returnWinnerPercentage(summariesArray[j].sport_event_status.winner_id, summariesArray[j].sport_event.competitors, outcomes);
-        const payout = calculateWinnings(predictedPercentage);
-        winnings += payout;
-        correct += 1;
-      }
-      if (summariesArray[j].predicted_fighter && !isCanceled(summariesArray[j].sport_event_status)) {
-        passedFights += 1;
-        inputMoney += betAmount;
-      }
-    }
-    if (!inputMoney) {
-      return null;
-    }
-    const percentageChange = (winnings * 100 / inputMoney - 100).toFixed(2);
-    return (
-      <OddsResultsContainer>
-        <div>
-          ${inputMoney} in, ${winnings.toFixed(2)} in yo pocket
-        </div>
-        <div>
-          Good for {percentageChange > 0 ? '+' : '-'}{percentageChange}% of initial earnings
-        </div>
-      </OddsResultsContainer>
-    );
-  };
-
   const createVenueLocation = venue => {
     const venueString = `${venue.name}`;
     //  - ${venue.city_name}, ${venue.country_name}`;
     return venueString;
   };
 
-  const addPredictionHandler = (index, predictionID, fighterID) => {
-    let {votecount: voteCount} = summaries[index];
+  const addPredictionHandler = (index, predictionID, fighterID, stage) => {
+    let voteCount;
+    if (stage) {
+      const {votecount} = summaries[stage][index];
+      voteCount = votecount;
+    } else {
+      const { votecount } = summaries[index];
+      voteCount = votecount;
+    }
     if (!voteCount || !voteCount[fighterID]) {
       voteCount = {
         ...voteCount,
@@ -137,18 +112,28 @@ export default function SeasonPage(props) {
       };
     }
     voteCount[fighterID] += 1;
-    const newSummaries = update(summaries, {
-      [index]: {
-        prediction_id: {$set: predictionID},
-        predicted_fighter: {$set: fighterID},
-        votecount: {$set: voteCount}
-      }
-    });
+    let newSummaries;
+    if (stage) {
+      newSummaries = update(summaries, {
+        [stage]: {
+          [index]: {
+            prediction_id: { $set: predictionID },
+            predicted_fighter: { $set: fighterID },
+            votecount: { $set: voteCount }
+          }
+        }
+      });
+    }
+    else {
+      newSummaries = update(summaries, {
+        [index]: {
+          prediction_id: { $set: predictionID },
+          predicted_fighter: { $set: fighterID },
+          votecount: { $set: voteCount }
+        }
+      });
+    }
     setSummaries(newSummaries);
-  };
-
-  const isCanceled = statusObject => {
-    return (!!(statusObject.status === 'closed' && statusObject.match_status === 'cancelled'));
   };
 
   if (!summaries) {
@@ -181,7 +166,7 @@ export default function SeasonPage(props) {
           <ArenaName>{createVenueLocation(summaries[0].sport_event.venue)}</ArenaName>
           <div>{moment(summaries[0].sport_event.start_time).format('hh:mm A MMM Do, YYYY')}</div>
           {isEnded && user ? <UsersVotesResults summaries={summaries} isCanceled={isCanceled} /> : null}
-          <TotalPredictions summariesArray={summaries} />
+          <TotalPredictions returnFighterWinnings={returnFighterWinnings} isEnded={isEnded} summariesArray={summaries} />
           <Divider />
           {summaries.map((s, i) => (
             <SeasonSummaryItem
@@ -192,6 +177,7 @@ export default function SeasonPage(props) {
               seasonID={seasonID}
               competitors={s.sport_event.competitors}
               summaryOrder={s.s_order}
+              scheduledRounds={s.sport_event_status.scheduled_length}
               canceled={isCanceled(s.sport_event_status)}
               weightClass={s.sport_event_status.weight_class}
               isDraw={s.sport_event_status.winner === 'draw'}
@@ -230,13 +216,13 @@ export default function SeasonPage(props) {
         <div>{firstFight.sport_event.venue.country_name}</div>
         <ArenaName>{createVenueLocation(firstFight.sport_event.venue)}</ArenaName>
         <div>{moment(firstFight.sport_event.start_time).format('hh:mm A MMM Do, YYYY')}</div>
-        <TotalPredictions summariesArray={flattenedObjectSummaries} />
+        <TotalPredictions returnFighterWinnings={returnFighterWinnings} isEnded={isEnded} summariesArray={flattenedObjectSummaries} />
         <Divider />
         {
-          possibleStages.map(stage => {
+          possibleStages.map((stage, i) => {
             if (summaries[stage]) {
               return (
-                <div>
+                <div key={`${stage}-i`}>
                   <StageText>
                     {stage.toUpperCase()}
                   </StageText>
@@ -247,7 +233,9 @@ export default function SeasonPage(props) {
                         {...props}
                         id={s.id}
                         index={i}
+                        stage={stage}
                         seasonID={seasonID}
+                        scheduledRounds={s.sport_event_status.scheduled_length}
                         competitors={s.sport_event.competitors}
                         summaryOrder={s.s_order}
                         canceled={isCanceled(s.sport_event_status)}
@@ -283,6 +271,67 @@ export default function SeasonPage(props) {
   );
 
 }
+
+
+
+const TotalPredictions = ({ summariesArray, isEnded, returnFighterWinnings }) => {
+  const iteratePredictions = (summArray) => {
+    const stats = {
+      correctPredictions: 0,
+      totalPredictions: 0,
+      totalFights: 0,
+      winningAmount: 0,
+      totalMoneyIn: 0
+    };
+    for (let fight of summArray) {
+      // if (fight.predictedFighter)
+      if (isCanceled(fight.sport_event_status)) {
+        continue;
+      }
+      if (fight.predicted_fighter) {
+        stats.totalPredictions += 1;
+        stats.totalMoneyIn += betAmount;
+        if (fight.predicted_fighter === fight.sport_event_status.winner_id) {
+          stats.correctPredictions += 1;
+          const outcomes = fight.markets ? fight.markets[0].outcomes : null;
+          stats.winningAmount += returnFighterWinnings(betAmount, fight.sport_event_status.winner_id, fight.sport_event.competitors, outcomes);
+        }
+      }
+      stats.totalFights += 1;
+    }
+    return {
+      ...stats,
+      winningAmount: stats.winningAmount.toFixed(2)
+    };
+  };
+
+  const stats = iteratePredictions(summariesArray);
+
+  if (!isEnded) {
+    return (
+      <div>
+        <Divider />
+        <OddsResultsContainer>
+          Predicted on {stats.totalPredictions || 0}/{stats.totalFights || 0} fights
+        </OddsResultsContainer>
+      </div>
+    );
+  }
+
+  if (!stats.totalPredictions) {
+    return null;
+  }
+
+  return (
+    <div>
+      <Divider />
+      <OddsResultsContainer>
+        On {stats.totalPredictions || 0}/{stats.totalFights || 0} fights your purse at the end
+        of the night is ${stats.winningAmount} from ${stats.totalMoneyIn} put in.
+      </OddsResultsContainer>
+    </div>
+  );
+};
 
 const UsersVotesResults = (props) => {
   let nonCanceledFightLength = 0;
