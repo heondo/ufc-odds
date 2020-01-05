@@ -42,6 +42,7 @@ export default function SignUp(props) {
         };
         window.localStorage.setItem('userData', JSON.stringify(userData));
         setUser(userData);
+        props.history.push('/');
       }
     } catch (err) {
       if (err.response && err.response.data.error === 'duplicate_username') {
