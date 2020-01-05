@@ -37,11 +37,11 @@ export default function SeasonPage(props) {
     catch(err){
       // console.log(Object.keys(err));
       console.log(err.response.data.message);
-      if (err.response.data.message === "No data available"){
-        setIsEnded(false);
-        setSummaries([]);
-        setSummariesCount(0);
-      }
+      // if (err.response.data.message === "No data available"){
+      setIsEnded(false);
+      setSummaries([]);
+      setSummariesCount(0);
+      // }
     }
   };
 
