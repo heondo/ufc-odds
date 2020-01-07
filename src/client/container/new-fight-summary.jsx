@@ -244,11 +244,41 @@ export default function SeasonSummaryItem(props){
   return (
     <SummaryContainer canceled={props.canceled} statsHidden={statsHidden}>
       <FightersContainer>
-        <FighterNames direction="left"><div>{convertName(props.competitors[0].name, true)}</div></FighterNames>
+        <FighterNames direction="left">
+          {
+            !props.winner ? null : props.winner === props.competitors[0].id ? (
+              <span>
+                W
+              </span>
+            ) : (
+              <span>
+                  L
+              </span>
+            )
+          }
+          <div>
+            {convertName(props.competitors[0].name, true)}
+          </div>
+        </FighterNames>
         <VSContainer>
           {' vs '}
         </VSContainer>
-        <FighterNames direction="right"><div>{convertName(props.competitors[1].name, true)}</div></FighterNames>
+        <FighterNames direction="right">
+          <div>
+            {convertName(props.competitors[1].name, true)}
+          </div>
+          {
+            !props.winner ? null : props.winner === props.competitors[1].id ? (
+              <span>
+                W
+              </span>
+            ) : (
+              <span>
+                L
+              </span>
+            )
+          }
+        </FighterNames>
       </FightersContainer>
       <WeightClass>
         <div>
