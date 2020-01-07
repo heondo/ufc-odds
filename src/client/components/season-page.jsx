@@ -36,12 +36,11 @@ export default function SeasonPage(props) {
     }
     catch(err){
       // console.log(Object.keys(err));
-      console.log(err.response.data.message);
-      // if (err.response.data.message === "No data available"){
+      // if (err.response.data.message === "No data available")
       setIsEnded(false);
       setSummaries([]);
       setSummariesCount(0);
-      // }
+      console.log(err.response.data.message);
     }
   };
 
@@ -246,6 +245,7 @@ export default function SeasonPage(props) {
                         predictedFighter={s.predicted_fighter}
                         addPredictionHandler={addPredictionHandler}
                         voteCount={s.votecount}
+                        statistics={s.statistics}
                         markets={s.markets}
                         plusMinusOdds={plusMinusOdds}
                         winMethod={s.sport_event_status.method}
@@ -394,6 +394,6 @@ const SummariesContainer = styled.div`
   text-align: center;
   flex-direction: column;
   margin: auto;
-  max-width: 768px;
+  max-width: 576px;
   padding: .5rem;
 `;

@@ -5,6 +5,7 @@ import { UserContext } from '../context/user-context';
 import axios from 'axios';
 import Dropdown, {MenuItem} from '../components/Dropdown';
 import { Button, ButtonGroup, ButtonToolbar } from '../components/Buttons';
+import FightStatistics from './fight-statistics';
 import LoadingCircle from './loading-circle';
 import {colors} from '../context/theme-context';
 
@@ -87,9 +88,9 @@ const VoteComponent = props => {
           <VoteCountBar percent={f1Percent} moreThan={f1Votes > f2Votes} direction="left" />
         </VoteBarContainer>
       </VoteDisplay>
-      <div>
+      <TotalVotesText>
         Total Votes
-      </div>
+      </TotalVotesText>
       <VoteDisplay>
         <VoteBarContainer direction="right">
           <VoteCountBar percent={f2Percent} moreThan={f1Votes < f2Votes} direction="right" />
@@ -156,6 +157,8 @@ const PredictOnFighter = props => {
 
 export default function SeasonSummaryItem(props){
   const [isPredicting, setIsPredicting] = useState(false);
+  const [statsHidden, setStatsHidden] = useState(true);
+
   const weightClass = convertWeightClass(props.weightClass);
 
   const submitPrediction = async index => {
@@ -177,6 +180,10 @@ export default function SeasonSummaryItem(props){
       setIsPredicting(false);
       console.error(err);
     }
+  };
+
+  const toggleStatsHidden = () => {
+    setStatsHidden(!statsHidden);
   };
 
 
@@ -235,7 +242,7 @@ export default function SeasonSummaryItem(props){
   };
 
   return (
-    <SummaryContainer canceled={props.canceled}>
+    <SummaryContainer canceled={props.canceled} statsHidden={statsHidden}>
       <FightersContainer>
         <FighterNames direction="left"><div>{convertName(props.competitors[0].name, true)}</div></FighterNames>
         <VSContainer>
@@ -272,6 +279,17 @@ export default function SeasonSummaryItem(props){
           <WinnerDescription />
         ) : null
       }
+      {
+        props.statistics ? (
+          <FightStatistics
+            periods={props.statistics.periods}
+            fighterOneTotals={props.statistics.totals.competitors[0].statistics}
+            fighterTwoTotals={props.statistics.totals.competitors[1].statistics}
+            toggleStatsHidden={toggleStatsHidden}
+            statsHidden={statsHidden}
+          />
+        ) : null
+      }
     </SummaryContainer>
   );
 }
@@ -302,6 +320,10 @@ const UserPickedFighter = styled.div`
   margin-bottom: .3rem;
   background-color: lightgrey;
   /* background-color: ${props => !props.winner ? 'lightgrey' : props.winner === props.predictedFighter ? colors.pCol2 : colors.s1Col1}; */
+`;
+
+const TotalVotesText = styled.div`
+  margin: auto .3rem;
 `;
 
 const DropdownContainer = styled.span`
@@ -359,6 +381,9 @@ const SummaryContainer = styled.div`
   @media(max-width: 767px) {
     font-size: .95em;
   }
+  overflow: hidden;
+  max-height: ${props => props.statsHidden ? '400px': '1300px'};
+  transition: max-height .5s cubic-bezier(1, 0, 0, 1);
 `;
 
 const MiniLoading = styled.div`
@@ -389,6 +414,7 @@ SeasonSummaryItem.propTypes = {
   weightClass: PropTypes.string,
   isDraw: PropTypes.bool,
   isDayBefore: PropTypes.bool,
+  statistics: PropTypes.object,
   winner: PropTypes.string,
   predictionID: PropTypes.number,
   predictedFighter: PropTypes.string,
