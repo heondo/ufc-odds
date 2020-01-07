@@ -37,7 +37,7 @@ const RoundStatistics = props => {
   };
 
   return (
-    <div>
+    <RoundContainer>
       {
         props.periods.map(round => {
           const { statistics: statisticsOne } = round.competitors[0];
@@ -108,148 +108,157 @@ const RoundStatistics = props => {
                   </tbody>
                 </table>
               </RoundStatsTable>
+              <Divider />
             </div>
           );
         })
       }
-      <RoundLabel>
-        TOTALS
-      </RoundLabel>
-      <RoundStatsTable>
-        <table cellspacing="0">
-          <tbody>
-            <tr>
-              <td>
-                {props.fighterOneTotals.knockdowns}
-              </td>
-              <StatType>
-                Knockdowns
-              </StatType>
-              <td>
-                {props.fighterTwoTotals.knockdowns}
-              </td>
-            </tr>
-            <tr>
-              <td>
-                {props.fighterOneTotals.significant_strike_percentage}
-              </td>
-              <StatType>
-                Sig. Strike Percentage
-              </StatType>
-              <td>
-                {props.fighterTwoTotals.significant_strike_percentage}
-              </td>
-            </tr>
-            <tr>
-              <td>
-                {props.fighterOneTotals.significant_strikes}
-              </td>
-              <StatType>
-                Significant Strikes
-              </StatType>
-              <td>
-                {props.fighterTwoTotals.significant_strikes}
-              </td>
-            </tr>
-            <tr>
-              <td>
-                {props.fighterOneTotals.significant_strikes_attempted}
-              </td>
-              <StatType>
-                Sig. Strikes Attempted
-              </StatType>
-              <td>
-                {props.fighterTwoTotals.significant_strikes_attempted}
-              </td>
-            </tr>
-            <tr>
-              <td>
-                {props.fighterOneTotals.submission_attempts}
-              </td>
-              <StatType>
-                Submission Attempts
-              </StatType>
-              <td>
-                {props.fighterTwoTotals.submission_attempts}
-              </td>
-            </tr>
-            <tr>
-              <td>
-                {props.fighterOneTotals.takedown_percentage}
-              </td>
-              <StatType>
-                Takedown Percentage
-              </StatType>
-              <td>
-                {props.fighterTwoTotals.takedown_percentage}
-              </td>
-            </tr>
-            <tr>
-              <td>
-                {props.fighterOneTotals.takedowns}
-              </td>
-              <StatType>
-                Takedowns
-              </StatType>
-              <td>
-                {props.fighterTwoTotals.takedowns}
-              </td>
-            </tr>
-            <tr>
-              <td>
-                {props.fighterOneTotals.takedowns_attempted}
-              </td>
-              <StatType>
-                Takedowns Attempted
-              </StatType>
-              <td>
-                {props.fighterTwoTotals.takedowns_attempted}
-              </td>
-            </tr>
-            <tr>
-              <td>
-                {props.fighterOneTotals.total_strike_percentage}
-              </td>
-              <StatType>
-                Total Strike Percentage
-              </StatType>
-              <td>
-                {props.fighterTwoTotals.total_strike_percentage}
-              </td>
-            </tr>
-            <tr>
-              <td>
-                {props.fighterOneTotals.total_strikes}
-              </td>
-              <StatType>
-                Total Strikes
-              </StatType>
-              <td>
-                {props.fighterTwoTotals.total_strikes}
-              </td>
-            </tr>
-            <tr>
-              <td>
-                {props.fighterOneTotals.total_strikes_attempted}
-              </td>
-              <StatType>
-                Total Strikes Attempted
-              </StatType>
-              <td>
-                {props.fighterTwoTotals.total_strikes_attempted}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </RoundStatsTable>
-    </div>
+      <div>
+        <RoundLabel>
+          TOTALS
+        </RoundLabel>
+        <RoundStatsTable>
+          <table cellspacing="0">
+            <tbody>
+              <tr>
+                <StatNumber more={moreLessOrEven(props.fighterOneTotals.knockdowns, props.fighterTwoTotals.knockdowns)}>
+                  {props.fighterOneTotals.knockdowns}
+                </StatNumber>
+                <StatType>
+                  Knockdowns
+                </StatType>
+                <StatNumber more={moreLessOrEven(props.fighterTwoTotals.knockdowns, props.fighterOneTotals.knockdowns)}>
+                  {props.fighterTwoTotals.knockdowns}
+                </StatNumber>
+              </tr>
+              <tr>
+                <StatNumber more={moreLessOrEven(props.fighterOneTotals.significant_strike_percentage, props.fighterTwoTotals.significant_strike_percentage)}>
+                  {props.fighterOneTotals.significant_strike_percentage}
+                </StatNumber>
+                <StatType>
+                  Sig. Strike Percentage
+                </StatType>
+                <StatNumber more={moreLessOrEven(props.fighterTwoTotals.significant_strike_percentage, props.fighterOneTotals.significant_strike_percentage)}>
+                  {props.fighterTwoTotals.significant_strike_percentage}
+                </StatNumber>
+              </tr>
+              <tr>
+                <StatNumber more={moreLessOrEven(props.fighterOneTotals.significant_strikes, props.fighterTwoTotals.significant_strikes)}>
+                  {props.fighterOneTotals.significant_strikes}
+                </StatNumber>
+                <StatType>
+                  Significant Strikes
+                </StatType>
+                <StatNumber more={moreLessOrEven(props.fighterTwoTotals.significant_strikes, props.fighterOneTotals.significant_strikes)}>
+                  {props.fighterTwoTotals.significant_strikes}
+                </StatNumber>
+              </tr>
+              <tr>
+                <StatNumber more={moreLessOrEven(props.fighterOneTotals.significant_strikes_attempted, props.fighterTwoTotals.significant_strikes_attempted)}>
+                  {props.fighterOneTotals.significant_strikes_attempted}
+                </StatNumber>
+                <StatType>
+                  Sig. Strikes Attempted
+                </StatType>
+                <StatNumber more={moreLessOrEven(props.fighterTwoTotals.significant_strikes_attempted, props.fighterOneTotals.significant_strikes_attempted)}>
+                  {props.fighterTwoTotals.significant_strikes_attempted}
+                </StatNumber>
+              </tr>
+              <tr>
+                <StatNumber more={moreLessOrEven(props.fighterOneTotals.submission_attempts, props.fighterTwoTotals.submission_attempts)}>
+                  {props.fighterOneTotals.submission_attempts}
+                </StatNumber>
+                <StatType>
+                  Submission Attempts
+                </StatType>
+                <StatNumber more={moreLessOrEven(props.fighterTwoTotals.submission_attempts, props.fighterOneTotals.submission_attempts)}>
+                  {props.fighterTwoTotals.submission_attempts}
+                </StatNumber>
+              </tr>
+              <tr>
+                <StatNumber more={moreLessOrEven(props.fighterOneTotals.takedown_percentage, props.fighterTwoTotals.takedown_percentage)}>
+                  {props.fighterOneTotals.takedown_percentage}
+                </StatNumber>
+                <StatType>
+                  Takedown Percentage
+                </StatType>
+                <StatNumber more={moreLessOrEven(props.fighterTwoTotals.takedown_percentage, props.fighterOneTotals.takedown_percentage)}>
+                  {props.fighterTwoTotals.takedown_percentage}
+                </StatNumber>
+              </tr>
+              <tr>
+                <StatNumber more={moreLessOrEven(props.fighterOneTotals.takedowns, props.fighterTwoTotals.takedowns)}>
+                  {props.fighterOneTotals.takedowns}
+                </StatNumber>
+                <StatType>
+                  Takedowns
+                </StatType>
+                <StatNumber more={moreLessOrEven(props.fighterTwoTotals.takedowns, props.fighterOneTotals.takedowns)}>
+                  {props.fighterTwoTotals.takedowns}
+                </StatNumber>
+              </tr>
+              <tr>
+                <StatNumber more={moreLessOrEven(props.fighterOneTotals.takedowns_attempted, props.fighterTwoTotals.takedowns_attempted)}>
+                  {props.fighterOneTotals.takedowns_attempted}
+                </StatNumber>
+                <StatType>
+                  Takedowns Attempted
+                </StatType>
+                <StatNumber more={moreLessOrEven(props.fighterTwoTotals.takedowns_attempted, props.fighterOneTotals.takedowns_attempted)}>
+                  {props.fighterTwoTotals.takedowns_attempted}
+                </StatNumber>
+              </tr>
+              <tr>
+                <StatNumber more={moreLessOrEven(props.fighterOneTotals.total_strike_percentage, props.fighterTwoTotals.total_strike_percentage)}>
+                  {props.fighterOneTotals.total_strike_percentage}
+                </StatNumber>
+                <StatType>
+                  Total Strike Percentage
+                </StatType>
+                <StatNumber more={moreLessOrEven(props.fighterTwoTotals.total_strike_percentage, props.fighterOneTotals.total_strike_percentage)}>
+                  {props.fighterTwoTotals.total_strike_percentage}
+                </StatNumber>
+              </tr>
+              <tr>
+                <StatNumber more={moreLessOrEven(props.fighterOneTotals.total_strikes, props.fighterTwoTotals.total_strikes)}>
+                  {props.fighterOneTotals.total_strikes}
+                </StatNumber>
+                <StatType>
+                  Total Strikes
+                </StatType>
+                <StatNumber more={moreLessOrEven(props.fighterTwoTotals.total_strikes, props.fighterOneTotals.total_strikes)}>
+                  {props.fighterTwoTotals.total_strikes}
+                </StatNumber>
+              </tr>
+              <tr>
+                <StatNumber more={moreLessOrEven(props.fighterOneTotals.total_strikes_attempted, props.fighterTwoTotals.total_strikes_attempted)}>
+                  {props.fighterOneTotals.total_strikes_attempted}
+                </StatNumber>
+                <StatType>
+                  Total Strikes Attempted
+                </StatType>
+                <StatNumber more={moreLessOrEven(props.fighterTwoTotals.total_strikes_attempted, props.fighterOneTotals.total_strikes_attempted)}>
+                  {props.fighterTwoTotals.total_strikes_attempted}
+                </StatNumber>
+              </tr>
+            </tbody>
+          </table>
+        </RoundStatsTable>
+      </div>
+    </RoundContainer>
   );
 };
 
+const RoundContainer = styled.div`
+  background-color: white;
+  color: black;
+  border-radius: 3px;
+`;
 
 const StatNumber = styled.td`
-  font-size: .9rem;
+  font-size: .92rem;
   color: ${props => props.more === 'even' ? 'black' : props.more === 'more' ? colors.s2Col3 : colors.pCol2 };
+  font-weight: 600;
 `;
 
 const RoundLabel = styled.div`
@@ -265,10 +274,10 @@ const RoundStatsTable = styled.div`
   display: flex;
   justify-content: center;
   tr {
+    text-decoration: none !important;
     td {
       border-bottom: 1px solid black;
     }
-    /*  */
   }
   tbody {
     tr:last-child {
@@ -277,9 +286,11 @@ const RoundStatsTable = styled.div`
       }
     }
   }
-  /* tr:nth-child(odd) {
-    background-color: ${colors.s2Col0};
-  }; */
+`;
+
+const Divider = styled.div`
+  border-bottom: 2px solid grey;
+  margin: .3rem auto;
 `;
 
 // TODO: make the stats transition when you hide or unhide the section. Bug happening here....

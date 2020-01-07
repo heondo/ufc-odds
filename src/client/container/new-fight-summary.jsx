@@ -233,7 +233,7 @@ export default function SeasonSummaryItem(props){
   const WinnerDescription = () => {
     return (
       <div>
-        Winner: {props.isDraw ? "Draw" : fighterIDtoName(props.winner, props.competitors)}
+        {props.isDraw ? "Draw" : null}
         <div>
           {conditionalWinDescription(props.winMethod, props.finalRound, props.finalRoundTime)}
         </div>
@@ -242,45 +242,45 @@ export default function SeasonSummaryItem(props){
   };
 
   return (
-    <SummaryContainer canceled={props.canceled} statsHidden={statsHidden}>
-      <FightersContainer>
+    <SummaryContainer statsHidden={statsHidden}>
+      <FightersContainer canceled={props.canceled}>
         <FighterNames direction="left">
           {
             !props.winner ? null : props.winner === props.competitors[0].id ? (
-              <span>
+              <WinLossText type="W">
                 W
-              </span>
+              </WinLossText>
             ) : (
-              <span>
+              <WinLossText type="L">
                   L
-              </span>
+              </WinLossText>
             )
           }
-          <div>
+          <FighterName>
             {convertName(props.competitors[0].name, true)}
-          </div>
+          </FighterName>
         </FighterNames>
         <VSContainer>
           {' vs '}
         </VSContainer>
         <FighterNames direction="right">
-          <div>
+          <FighterName>
             {convertName(props.competitors[1].name, true)}
-          </div>
+          </FighterName>
           {
             !props.winner ? null : props.winner === props.competitors[1].id ? (
-              <span>
+              <WinLossText type="W">
                 W
-              </span>
+              </WinLossText>
             ) : (
-              <span>
+              <WinLossText type="L">
                 L
-              </span>
+              </WinLossText>
             )
           }
         </FighterNames>
       </FightersContainer>
-      <WeightClass>
+      <WeightClass canceled={props.canceled}>
         <div>
           <em>{weightClass[0]}</em> - {weightClass[1]}
         </div>
@@ -324,9 +324,18 @@ export default function SeasonSummaryItem(props){
   );
 }
 
+const WinLossText = styled.span`
+  color: ${props => props.type === "W" ? colors.s2Col3 : colors.pCol0}
+  font-size: 1.06rem;
+`;
+
+const FighterName = styled.div`
+  margin: auto .4rem;
+`;
+
 const VSContainer = styled.div`
   width: 1rem;
-  margin: auto .4rem;
+  margin: auto;
 `;
 
 const FighterNames = styled.div`
@@ -341,6 +350,7 @@ const FightersContainer = styled.div`
   font-size: 1.03rem;
   display: flex;
   justify-content: center;
+  text-decoration: ${props => props.canceled ? 'line-through' : null};
 `;
 
 const UserPickedFighter = styled.div`
@@ -398,6 +408,7 @@ const VoteContainer = styled.div`
 
 const WeightClass = styled.div`
   font-size: .85rem;
+  text-decoration: ${props => props.canceled ? 'line-through' : null};
 `;
 
 const SummaryContainer = styled.div`
@@ -407,13 +418,14 @@ const SummaryContainer = styled.div`
   border-radius: 5px;
   margin: .2rem 0;
   padding: .3rem .7rem;
-  text-decoration: ${props => props.canceled ? 'line-through' : null};
   @media(max-width: 767px) {
     font-size: .95em;
   }
-  overflow: hidden;
+  /* overflow: hidden; */
+  overflow: ${props => props.statsHidden ? null : "hidden"}
   max-height: ${props => props.statsHidden ? '400px': '1300px'};
   transition: max-height .5s cubic-bezier(1, 0, 0, 1);
+  /* background-color: lightgre  ; */
 `;
 
 const MiniLoading = styled.div`
