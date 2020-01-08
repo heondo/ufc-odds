@@ -45,7 +45,16 @@ export default function SeasonPage(props) {
   };
 
   const currentDate = new Date();
-  const seasonDate = summaries && summaries.length ? new Date(summaries[0].sport_event.start_time) : null;
+  // const seasonDate = summaries && summaries.length ? new Date(summaries[0].sport_event.start_time) : null;
+  let seasonDate;
+  if (summaries) {
+    if (summariesCount && summaries.length) {
+      seasonDate = new Date(summaries[0].sport_event.start_time);
+    }
+    else if (summariesCount && summaries['Main Card']) {
+      seasonDate = new Date(summaries['Main Card'][0].sport_event.start_time);
+    }
+  }
 
   const isDayBefore = (seasonDate - currentDate) / 1000 < 86400;
 
