@@ -158,6 +158,7 @@ const PredictOnFighter = props => {
 export default function SeasonSummaryItem(props){
   const [isPredicting, setIsPredicting] = useState(false);
   const [statsHidden, setStatsHidden] = useState(true);
+  const {user} = useContext(UserContext);
 
   const weightClass = convertWeightClass(props.weightClass);
 
@@ -300,14 +301,14 @@ export default function SeasonSummaryItem(props){
             Your pick: {fighterIDtoName(props.predictedFighter, props.competitors)} {fighterIDtoOdds(props.predictedFighter, props.competitors, fighterOdds)}
           </UserPickedFighter>
         ) : isPredicting ? <MiniLoading />
-          : (
+          : user ? (
             <PredictOnFighter
               isDayBefore={props.isDayBefore}
               competitors={props.competitors}
               submitPrediction={submitPrediction}
               fighterOdds={fighterOdds}
             />
-          )
+          ) : null
       }
       {
         props.statistics ? (
