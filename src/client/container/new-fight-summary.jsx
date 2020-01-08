@@ -288,6 +288,11 @@ export default function SeasonSummaryItem(props){
           {props.scheduledRounds} Rounds
         </div>
       </WeightClass>
+      {
+        props.winner || props.winMethod ? (
+          <WinnerDescription />
+        ) : null
+      }
       <VoteComponent voteCount={props.voteCount} competitors={props.competitors} />
       {
         props.predictedFighter ? (
@@ -303,11 +308,6 @@ export default function SeasonSummaryItem(props){
               fighterOdds={fighterOdds}
             />
           )
-      }
-      {
-        props.winner || props.winMethod ? (
-          <WinnerDescription />
-        ) : null
       }
       {
         props.statistics ? (

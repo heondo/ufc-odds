@@ -3,251 +3,129 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import {colors} from '../context/theme-context';
 
+const moreLessOrEven = (num1, num2) => {
+  if (num1 === num2) {
+    return 'even';
+  }
+  if (num1 > num2) {
+    return 'more';
+  }
+  return 'less';
+};
+
 export default function FightStatistics(props){
   return (
     <FightStatsContainer>
-      {props.statsHidden ? (
-        <div>
-          Statistics
-        </div>
-      ) : null}
       {
         props.statsHidden ? null : (
           <RoundStatistics periods={props.periods} fighterOneTotals={props.fighterOneTotals} fighterTwoTotals={props.fighterTwoTotals}/>
         )
       }
-      <div onClick={props.toggleStatsHidden}>
-        {
-          props.statsHidden ? (<i className="fas fa-sort-down" />) : (<i className="fas fa-sort-up" />)
-        }
-      </div>
+      {props.statsHidden ? (
+        <OpenStatistics onClick={props.toggleStatsHidden}>
+          <span>
+            <div>
+              Statistics
+            </div>
+            <div>
+              <i style={{marginBottom: '.25rem'}}className="fas fa-sort-down" />
+            </div>
+          </span>
+        </OpenStatistics>
+      ) : (
+        <OpenStatistics onClick={props.toggleStatsHidden}>
+          <span>
+            <div>
+                Statistics
+            </div>
+            <div>
+              <i className="fas fa-sort-up" />
+            </div>
+          </span>
+        </OpenStatistics>
+      )
+      }
     </FightStatsContainer>
   );
 }
 
+const TableStatistics  = ({statsObjectOne, statsObjectTwo, roundNumber, total}) => {
+  const keys = Object.keys(statsObjectOne);
+  console.log(keys);
+  return (
+    <div>
+      <RoundLabel>
+        ROUND {roundNumber}
+      </RoundLabel>
+      <RoundStatsTable>
+        <table cellSpacing="0">
+          <tbody>
+            {
+              keys.map(key => (
+                <tr>
+                  <StatNumber more={moreLessOrEven(statsObjectOne[key], statsObjectTwo[key])}>
+                    {statsObjectOne[key]}
+                  </StatNumber>
+                  <StatType>
+                    {key}
+                  </StatType>
+                  <StatNumber more={moreLessOrEven(statsObjectTwo[key], statsObjectOne[key])}>
+                    {statsObjectTwo[key]}
+                  </StatNumber>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </RoundStatsTable>
+      {
+        total ? null : <Divider />
+      }
+    </div>
+  );
+};
+
+
 const RoundStatistics = props => {
-  const moreLessOrEven = (num1, num2) => {
-    if (num1 === num2) {
-      return 'even';
-    }
-    if (num1 > num2) {
-      return 'more';
-    }
-    return 'less';
-  };
 
   return (
     <RoundContainer>
       {
         props.periods.map(round => {
-          const { statistics: statisticsOne } = round.competitors[0];
-          const { statistics: statisticsTwo } = round.competitors[1];
+          const { statistics: roundStatisticsOne } = round.competitors[0];
+          const { statistics: roundStatisticsTwo } = round.competitors[1];
           return (
-            <div>
-              <RoundLabel>
-                ROUND {round.number}
-              </RoundLabel>
-              <RoundStatsTable>
-                <table cellspacing="0">
-                  <tbody>
-                    <tr>
-                      <StatNumber more={moreLessOrEven(statisticsOne.knockdowns, statisticsTwo.knockdowns)}>
-                        {statisticsOne.knockdowns || 0}
-                      </StatNumber>
-                      <StatType>
-                        Knockdowns
-                      </StatType>
-                      <StatNumber more={moreLessOrEven(statisticsTwo.knockdowns, statisticsOne.knockdowns)}>
-                        {statisticsTwo.knockdowns || 0}
-                      </StatNumber>
-                    </tr>
-                    <tr>
-                      <StatNumber more={moreLessOrEven(statisticsOne.significant_strikes, statisticsTwo.significant_strikes)}>
-                        {statisticsOne.significant_strikes || 0}
-                      </StatNumber>
-                      <StatType>
-                        Significant Strikes
-                      </StatType>
-                      <StatNumber more={moreLessOrEven(statisticsTwo.significant_strikes, statisticsOne.significant_strikes)}>
-                        {statisticsTwo.significant_strikes || 0}
-                      </StatNumber>
-                    </tr>
-                    <tr>
-                      <StatNumber more={moreLessOrEven(statisticsOne.submission_attempts, statisticsTwo.submission_attempts)}>
-                        {statisticsOne.submission_attempts || 0}
-                      </StatNumber>
-                      <StatType>
-                        Submission Attempts
-                      </StatType>
-                      <StatNumber more={moreLessOrEven(statisticsTwo.submission_attempts, statisticsOne.submission_attempts)}>
-                        {statisticsTwo.submission_attempts || 0}
-                      </StatNumber>
-                    </tr>
-                    <tr>
-                      <StatNumber more={moreLessOrEven(statisticsOne.takedowns, statisticsTwo.takedowns)}>
-                        {statisticsOne.takedowns || 0}
-                      </StatNumber>
-                      <StatType>
-                        Takedowns
-                      </StatType>
-                      <StatNumber more={moreLessOrEven(statisticsTwo.takedowns, statisticsOne.takedowns)}>
-                        {statisticsTwo.takedowns || 0}
-                      </StatNumber>
-                    </tr>
-                    <tr>
-                      <StatNumber more={moreLessOrEven(statisticsOne.total_strikes, statisticsTwo.total_strikes)}>
-                        {statisticsOne.total_strikes || 0}
-                      </StatNumber>
-                      <StatType>
-                        Total Strikes
-                      </StatType>
-                      <StatNumber more={moreLessOrEven(statisticsTwo.total_strikes, statisticsOne.total_strikes)}>
-                        {statisticsTwo.total_strikes || 0}
-                      </StatNumber>
-                    </tr>
-                  </tbody>
-                </table>
-              </RoundStatsTable>
-              <Divider />
-            </div>
+            <TableStatistics key={round.number} roundNumber={round.number} statsObjectOne={roundStatisticsOne} statsObjectTwo={roundStatisticsTwo} total={false}/>
           );
         })
       }
-      <div>
-        <RoundLabel>
-          TOTALS
-        </RoundLabel>
-        <RoundStatsTable>
-          <table cellspacing="0">
-            <tbody>
-              <tr>
-                <StatNumber more={moreLessOrEven(props.fighterOneTotals.knockdowns, props.fighterTwoTotals.knockdowns)}>
-                  {props.fighterOneTotals.knockdowns}
-                </StatNumber>
-                <StatType>
-                  Knockdowns
-                </StatType>
-                <StatNumber more={moreLessOrEven(props.fighterTwoTotals.knockdowns, props.fighterOneTotals.knockdowns)}>
-                  {props.fighterTwoTotals.knockdowns}
-                </StatNumber>
-              </tr>
-              <tr>
-                <StatNumber more={moreLessOrEven(props.fighterOneTotals.significant_strike_percentage, props.fighterTwoTotals.significant_strike_percentage)}>
-                  {props.fighterOneTotals.significant_strike_percentage}
-                </StatNumber>
-                <StatType>
-                  Sig. Strike Percentage
-                </StatType>
-                <StatNumber more={moreLessOrEven(props.fighterTwoTotals.significant_strike_percentage, props.fighterOneTotals.significant_strike_percentage)}>
-                  {props.fighterTwoTotals.significant_strike_percentage}
-                </StatNumber>
-              </tr>
-              <tr>
-                <StatNumber more={moreLessOrEven(props.fighterOneTotals.significant_strikes, props.fighterTwoTotals.significant_strikes)}>
-                  {props.fighterOneTotals.significant_strikes}
-                </StatNumber>
-                <StatType>
-                  Significant Strikes
-                </StatType>
-                <StatNumber more={moreLessOrEven(props.fighterTwoTotals.significant_strikes, props.fighterOneTotals.significant_strikes)}>
-                  {props.fighterTwoTotals.significant_strikes}
-                </StatNumber>
-              </tr>
-              <tr>
-                <StatNumber more={moreLessOrEven(props.fighterOneTotals.significant_strikes_attempted, props.fighterTwoTotals.significant_strikes_attempted)}>
-                  {props.fighterOneTotals.significant_strikes_attempted}
-                </StatNumber>
-                <StatType>
-                  Sig. Strikes Attempted
-                </StatType>
-                <StatNumber more={moreLessOrEven(props.fighterTwoTotals.significant_strikes_attempted, props.fighterOneTotals.significant_strikes_attempted)}>
-                  {props.fighterTwoTotals.significant_strikes_attempted}
-                </StatNumber>
-              </tr>
-              <tr>
-                <StatNumber more={moreLessOrEven(props.fighterOneTotals.submission_attempts, props.fighterTwoTotals.submission_attempts)}>
-                  {props.fighterOneTotals.submission_attempts}
-                </StatNumber>
-                <StatType>
-                  Submission Attempts
-                </StatType>
-                <StatNumber more={moreLessOrEven(props.fighterTwoTotals.submission_attempts, props.fighterOneTotals.submission_attempts)}>
-                  {props.fighterTwoTotals.submission_attempts}
-                </StatNumber>
-              </tr>
-              <tr>
-                <StatNumber more={moreLessOrEven(props.fighterOneTotals.takedown_percentage, props.fighterTwoTotals.takedown_percentage)}>
-                  {props.fighterOneTotals.takedown_percentage}
-                </StatNumber>
-                <StatType>
-                  Takedown Percentage
-                </StatType>
-                <StatNumber more={moreLessOrEven(props.fighterTwoTotals.takedown_percentage, props.fighterOneTotals.takedown_percentage)}>
-                  {props.fighterTwoTotals.takedown_percentage}
-                </StatNumber>
-              </tr>
-              <tr>
-                <StatNumber more={moreLessOrEven(props.fighterOneTotals.takedowns, props.fighterTwoTotals.takedowns)}>
-                  {props.fighterOneTotals.takedowns}
-                </StatNumber>
-                <StatType>
-                  Takedowns
-                </StatType>
-                <StatNumber more={moreLessOrEven(props.fighterTwoTotals.takedowns, props.fighterOneTotals.takedowns)}>
-                  {props.fighterTwoTotals.takedowns}
-                </StatNumber>
-              </tr>
-              <tr>
-                <StatNumber more={moreLessOrEven(props.fighterOneTotals.takedowns_attempted, props.fighterTwoTotals.takedowns_attempted)}>
-                  {props.fighterOneTotals.takedowns_attempted}
-                </StatNumber>
-                <StatType>
-                  Takedowns Attempted
-                </StatType>
-                <StatNumber more={moreLessOrEven(props.fighterTwoTotals.takedowns_attempted, props.fighterOneTotals.takedowns_attempted)}>
-                  {props.fighterTwoTotals.takedowns_attempted}
-                </StatNumber>
-              </tr>
-              <tr>
-                <StatNumber more={moreLessOrEven(props.fighterOneTotals.total_strike_percentage, props.fighterTwoTotals.total_strike_percentage)}>
-                  {props.fighterOneTotals.total_strike_percentage}
-                </StatNumber>
-                <StatType>
-                  Total Strike Percentage
-                </StatType>
-                <StatNumber more={moreLessOrEven(props.fighterTwoTotals.total_strike_percentage, props.fighterOneTotals.total_strike_percentage)}>
-                  {props.fighterTwoTotals.total_strike_percentage}
-                </StatNumber>
-              </tr>
-              <tr>
-                <StatNumber more={moreLessOrEven(props.fighterOneTotals.total_strikes, props.fighterTwoTotals.total_strikes)}>
-                  {props.fighterOneTotals.total_strikes}
-                </StatNumber>
-                <StatType>
-                  Total Strikes
-                </StatType>
-                <StatNumber more={moreLessOrEven(props.fighterTwoTotals.total_strikes, props.fighterOneTotals.total_strikes)}>
-                  {props.fighterTwoTotals.total_strikes}
-                </StatNumber>
-              </tr>
-              <tr>
-                <StatNumber more={moreLessOrEven(props.fighterOneTotals.total_strikes_attempted, props.fighterTwoTotals.total_strikes_attempted)}>
-                  {props.fighterOneTotals.total_strikes_attempted}
-                </StatNumber>
-                <StatType>
-                  Total Strikes Attempted
-                </StatType>
-                <StatNumber more={moreLessOrEven(props.fighterTwoTotals.total_strikes_attempted, props.fighterOneTotals.total_strikes_attempted)}>
-                  {props.fighterTwoTotals.total_strikes_attempted}
-                </StatNumber>
-              </tr>
-            </tbody>
-          </table>
-        </RoundStatsTable>
-      </div>
+      <TableStatistics key="totalStats" roundNumber="Totals" statsObjectOne={props.fighterOneTotals} statsObjectTwo={props.fighterTwoTotals} total={true} />
     </RoundContainer>
   );
 };
+
+const OpenStatistics = styled.div`
+  display: flex;
+  justify-content: center;
+  margin: .3rem auto;
+  /* background-color: white; */
+  span {
+    display: flex;
+    background-color: white;
+    color: black;
+    border-radius: 3px;
+    padding: .3rem;
+    align-items: center;
+    cursor: pointer;
+    &:hover {
+      background-color: lightgrey;
+    };
+    transition: all .2s ease;
+    div:first-child {
+      margin-right: .5rem;
+    };
+  };
+`;
 
 const RoundContainer = styled.div`
   background-color: white;
