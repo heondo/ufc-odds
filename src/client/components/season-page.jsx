@@ -98,6 +98,9 @@ export default function SeasonPage(props) {
   };
 
   const createVenueLocation = venue => {
+    if (!venue) {
+      return null;
+    }
     const venueString = `${venue.name}`;
     //  - ${venue.city_name}, ${venue.country_name}`;
     return venueString;
