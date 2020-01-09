@@ -169,8 +169,8 @@ export default function SeasonPage(props) {
               </EditButton>
             ) : (null)}
           </SeasonTitle>
-          <div>{summaries[0].sport_event.venue.country_name}</div>
-          <ArenaName>{createVenueLocation(summaries[0].sport_event.venue)}</ArenaName>
+          <div>{summaries[0].sport_event.venue.country_name || null}</div>
+          <ArenaName>{createVenueLocation(summaries[0].sport_event.venue) || null}</ArenaName>
           <div>{moment(summaries[0].sport_event.start_time).format('hh:mm A MMM Do, YYYY')}</div>
           {isEnded && user ? <UsersVotesResults summaries={summaries} isCanceled={isCanceled} /> : null}
           <TotalPredictions returnFighterWinnings={returnFighterWinnings} isEnded={isEnded} summariesArray={summaries} />
@@ -220,8 +220,8 @@ export default function SeasonPage(props) {
             </EditButton>
           ) : (null)}
         </SeasonTitle>
-        <div>{firstFight.sport_event.venue.country_name}</div>
-        <ArenaName>{createVenueLocation(firstFight.sport_event.venue)}</ArenaName>
+        <div>{firstFight.sport_event.venue.country_name || null}</div>
+        <ArenaName>{createVenueLocation(firstFight.sport_event.venue) || null}</ArenaName>
         <div>{moment(firstFight.sport_event.start_time).format('hh:mm A MMM Do, YYYY')}</div>
         <TotalPredictions returnFighterWinnings={returnFighterWinnings} isEnded={isEnded} summariesArray={flattenedObjectSummaries} />
         <Divider />
