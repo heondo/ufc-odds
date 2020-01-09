@@ -13,6 +13,35 @@ const moreLessOrEven = (num1, num2) => {
   return 'less';
 };
 
+const convertStat = stat => {
+  switch(stat){
+  case 'knockdowns':
+    return 'Knockdowns';
+  case 'total_strikes_attempted':
+    return 'Total Strikes ATT';
+  case 'total_strikes':
+    return 'Total Strikes';
+  case 'significant_strikes_attempted':
+    return 'Significant Strikes ATT';
+  case 'significant_strikes':
+    return 'Significant Strikes';
+  case 'takedowns_attempted':
+    return 'Takedowns ATT';
+  case 'takedowns':
+    return 'Takedowns';
+  case 'submission_attempts':
+    return 'Submission ATTs';
+  case 'total_strike_percentage':
+    return 'Total Strike %';
+  case 'significant_strike_percentage':
+    return 'Significant Strike %';
+  case 'takedown_percentage':
+    return 'Takedown %';
+  default:
+    return stat;
+  }
+};
+
 export default function FightStatistics(props){
   return (
     <FightStatsContainer>
@@ -49,13 +78,13 @@ export default function FightStatistics(props){
   );
 }
 
-const TableStatistics  = ({statsObjectOne, statsObjectTwo, roundNumber, total}) => {
+const TableStatistics = ({ statsObjectOne, statsObjectTwo, roundNumber, total}) => {
   const keys = Object.keys(statsObjectOne);
   console.log(keys);
   return (
     <div>
       <RoundLabel>
-        ROUND {roundNumber}
+        {!total ? "ROUND" : null} {roundNumber}
       </RoundLabel>
       <RoundStatsTable>
         <table cellSpacing="0">
@@ -67,7 +96,7 @@ const TableStatistics  = ({statsObjectOne, statsObjectTwo, roundNumber, total}) 
                     {statsObjectOne[key]}
                   </StatNumber>
                   <StatType>
-                    {key}
+                    {convertStat(key)}
                   </StatType>
                   <StatNumber more={moreLessOrEven(statsObjectTwo[key], statsObjectOne[key])}>
                     {statsObjectTwo[key]}
@@ -99,7 +128,7 @@ const RoundStatistics = props => {
           );
         })
       }
-      <TableStatistics key="totalStats" roundNumber="Totals" statsObjectOne={props.fighterOneTotals} statsObjectTwo={props.fighterTwoTotals} total={true} />
+      <TableStatistics key="totalStats" roundNumber="Totals" statsObjectOne={props.fighterOneTotals} statsObjectTwo={props.fighterTwoTotals} total={true}/>
     </RoundContainer>
   );
 };
@@ -111,14 +140,14 @@ const OpenStatistics = styled.div`
   /* background-color: white; */
   span {
     display: flex;
-    background-color: white;
+    background-color: #DCDCDC;
     color: black;
     border-radius: 3px;
     padding: .3rem;
     align-items: center;
     cursor: pointer;
     &:hover {
-      background-color: lightgrey;
+      background-color: #BDBDBD;
     };
     transition: all .2s ease;
     div:first-child {
@@ -128,14 +157,14 @@ const OpenStatistics = styled.div`
 `;
 
 const RoundContainer = styled.div`
-  background-color: white;
+  background-color: #BDBDBD;
   color: black;
   border-radius: 3px;
 `;
 
 const StatNumber = styled.td`
   font-size: .92rem;
-  color: ${props => props.more === 'even' ? 'black' : props.more === 'more' ? colors.s2Col3 : colors.pCol2 };
+  color: ${props => props.more === 'even' ? '#858585' : props.more === 'more' ? colors.s2Col3 : colors.pCol2 };
   font-weight: 600;
 `;
 

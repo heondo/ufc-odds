@@ -9,29 +9,29 @@ export default function UpcomingSeasonItem(props) {
     return [split[1], split[0]].join(' ');
   };
 
-  const Fights = () => {
+  const Fights = (iProps) => {
     return (
       <div>
-        {props.eventsArray.map(e => {
-          if (e.match_status !== 'cancelled') {
-            return (
-              <FighterNames key={e.id}>
-                {convertName(e.sport_event.competitors[0].name)} vs {convertName(e.sport_event.competitors[1].name)}
-              </FighterNames>);
-          }
+        {iProps.eventsArray.map(e => {
+          return (
+            <FighterNames key={e.id}>
+              {convertName(e.sport_event.competitors[0].name)} vs {convertName(e.sport_event.competitors[1].name)}
+            </FighterNames>);
         })}
       </div>
     );
   };
+
+  const newArray = props.eventsArray.filter(f => f.match_status !== 'cancelled');
 
   return (
     <SeasonItemContainer onClick={() => props.history.push(`/season/${props.id}`)}>
       <SeasonName>{props.name.replace(/\d{4}\s*$/, '')}</SeasonName>
       <SeasonDate>{moment(props.startDate).format('MMM Do, YYYY')}</SeasonDate>
       {
-        props.eventsArray.length ? <FiveRoundHeader>5 Round Fights</FiveRoundHeader> : undefined
+        newArray.length ? <FiveRoundHeader>{newArray.length === 1 ? "Main Event" : "5 Round Fights"}</FiveRoundHeader> : undefined
       }
-      <Fights />
+      <Fights eventsArray={newArray}/>
       <Arrow><i className="fas fa-caret-right"></i></Arrow>
     </SeasonItemContainer>
   );
@@ -39,7 +39,7 @@ export default function UpcomingSeasonItem(props) {
 
 const Arrow = styled.div`
   position: absolute;
-  right: .3rem;
+  right: 1rem;
 `;
 
 const SeasonName = styled.div`
@@ -63,7 +63,8 @@ const SeasonItemContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   padding: .3rem;
-  border: 1px solid lightgrey;
+  border: 1px solid #DCDCDC;
+  margin: .2rem 0;
   position: relative;
 `;
 

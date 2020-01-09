@@ -2,10 +2,102 @@ import React, { useState, useContext } from 'react';
 import Cookies from 'universal-cookie';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import { UserContext } from '../context/user-context';
+import Dropdown, { MenuItem } from '../components/Dropdown';
+import { Button, ButtonGroup, ButtonToolbar } from '../components/Buttons';
+
 
 const cookies = new Cookies();
+
+export default function Header(props) {
+  const { user, setUser } = useContext(UserContext);
+  const [menuVisible, setMenuVisible] = useState(false);
+
+  const toggleMenu = () => {
+    setMenuVisible(!menuVisible);
+  };
+
+  return (
+    <HeaderContainer>
+      <Link to="/">
+        <LogoAndText>
+          <LogoContainer />
+          <div>Guesser</div>
+        </LogoAndText>
+      </Link>
+      <LogoAndText>
+        <DropdownContainer>
+          <HeaderButton>
+            <Button>
+              Account
+            </Button>
+          </HeaderButton>
+          <Dropdown
+          >
+            <Dropdown.Toggle
+            >
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <MenuItem
+              >
+              </MenuItem>
+              <MenuItem
+              >
+              </MenuItem>
+            </Dropdown.Menu>
+          </Dropdown>
+        </DropdownContainer>
+        {/* {user ? (
+          <Link to="/account">
+            Account
+          </Link>
+        ) : (
+          <LogoAndText>
+            <Link to="/login">
+              <div>Login</div>
+            </Link>
+          </LogoAndText>
+        )}
+        <DownArrow onClick={toggleMenu}>
+          <i className="fas fa-sort-down" />
+        </DownArrow>
+        <AccountMenu menuVisible={menuVisible}>
+          {user ? (
+            <Link to="/" onClick={() => {
+              window.localStorage.removeItem('userData');
+              cookies.remove('token');
+              setUser(null);
+            }}>
+              Signout
+            </Link>
+          ) : (
+            <Link to="/signup" style={{ marginLeft: '1rem' }}>
+              <div>Signup</div>
+            </Link>
+          )}
+        </AccountMenu> */}
+      </LogoAndText>
+    </HeaderContainer>
+  );
+}
+
+const HeaderButton = styled.div`
+  button {
+    background-color: black;
+    background-image: none;
+    color: white;
+    border: none;
+    &:hover {
+      background-color: grey;
+    }
+  }
+`;
+
+const DropdownContainer = styled.div`
+  width: 5rem;
+  margin-right: 1rem;
+  display: flex;
+`;
 
 const LogoAndText = styled.span`
   display: flex;
@@ -37,11 +129,11 @@ const DownArrow = styled.i`
 `;
 
 const AccountMenu = styled.div`
-  display: ${props => props.menuVisible ? 'flex': 'none'};
+  display: ${props => props.menuVisible ? 'flex' : 'none'};
   position: absolute;
   flex-direction: column;
   color: black;
-  background-color: lightgrey;
+  background-color: #DCDCDC;
   margin-top: 4rem;
   margin-right: .5rem;
   z-index: 2;
@@ -57,58 +149,3 @@ const LogoContainer = styled.div`
   background-repeat: no-repeat;
   background-position: center;
 `;
-
-export default function Header(props) {
-  const { user, setUser } = useContext(UserContext);
-  const [menuVisible, setMenuVisible] = useState(false);
-
-  const toggleMenu = () => {
-    setMenuVisible(!menuVisible);
-  };
-
-  return (
-    <HeaderContainer>
-      <Link to="/">
-        <LogoAndText>
-          <LogoContainer />
-          <div>Guesser</div>
-        </LogoAndText>
-      </Link>
-      <LogoAndText>
-        {user ? (
-          <Link to="/account">
-            Account
-          </Link>
-        ) : (
-          <LogoAndText>
-            <Link to="/login">
-              <div>Login</div>
-            </Link>
-          </LogoAndText>
-        )}
-        <DownArrow onClick={toggleMenu}>
-          <i className="fas fa-sort-down" />
-        </DownArrow>
-        <AccountMenu menuVisible={menuVisible}>
-          {user ? (
-            <Link to="/" onClick={() => {
-              window.localStorage.removeItem('userData');
-              cookies.remove('token');
-              setUser(null);
-            }}>
-              Signout
-            </Link>
-          ) : (
-            <Link to="/signup" style={{ marginLeft: '1rem' }}>
-              <div>Signup</div>
-            </Link>
-          )}
-        </AccountMenu>
-      </LogoAndText>
-    </HeaderContainer>
-  );
-}
-
-Header.propTypes = {
-  user: PropTypes.object
-};

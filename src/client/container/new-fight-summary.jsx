@@ -297,7 +297,7 @@ export default function SeasonSummaryItem(props){
       <VoteComponent voteCount={props.voteCount} competitors={props.competitors} />
       {
         props.predictedFighter ? (
-          <UserPickedFighter winner={props.winner} predictedFighter={props.predictedFighter}>
+          <UserPickedFighter winner={props.winner} predictedFighter={props.predictedFighter} color={true}>
             Your pick: {fighterIDtoName(props.predictedFighter, props.competitors)} {fighterIDtoOdds(props.predictedFighter, props.competitors, fighterOdds)}
           </UserPickedFighter>
         ) : isPredicting ? <MiniLoading />
@@ -336,7 +336,8 @@ const FighterName = styled.div`
 
 const VSContainer = styled.div`
   width: 1rem;
-  margin: auto;
+  margin: auto .1rem;
+  /* margin: auto; */
 `;
 
 const FighterNames = styled.div`
@@ -359,8 +360,8 @@ const UserPickedFighter = styled.div`
   border: 1px solid grey;
   border-radius: 3px;
   margin-bottom: .3rem;
-  background-color: lightgrey;
-  /* background-color: ${props => !props.winner ? 'lightgrey' : props.winner === props.predictedFighter ? colors.pCol2 : colors.s1Col1}; */
+  /* background-color: ${props => props.color ? colors.s1col3 : null}; */
+  background-color: ${props => !props.winner ? '#7A7A7A' : props.winner === props.predictedFighter ? colors.pCol3 : colors.pCol3};
 `;
 
 const TotalVotesText = styled.div`
