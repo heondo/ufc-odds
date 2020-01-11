@@ -143,7 +143,7 @@ const OpenStatistics = styled.div`
     background-color: #DCDCDC;
     color: black;
     border-radius: 3px;
-    padding: .3rem;
+    padding: .3rem .6rem;
     align-items: center;
     cursor: pointer;
     &:hover {
@@ -164,7 +164,7 @@ const RoundContainer = styled.div`
 
 const StatNumber = styled.td`
   font-size: .92rem;
-  color: ${props => props.more === 'even' ? '#858585' : props.more === 'more' ? colors.s2Col3 : colors.pCol2 };
+  color: ${props => props.more === 'even' ? '2#02020' : props.more === 'more' ? colors.s2Col3 : colors.pCol2 };
   font-weight: 600;
 `;
 

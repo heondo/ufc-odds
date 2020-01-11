@@ -3,8 +3,6 @@ import Cookies from 'universal-cookie';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { UserContext } from '../context/user-context';
-import Dropdown, { MenuItem } from '../components/Dropdown';
-import { Button, ButtonGroup, ButtonToolbar } from '../components/Buttons';
 
 
 const cookies = new Cookies();
@@ -26,37 +24,14 @@ export default function Header(props) {
         </LogoAndText>
       </Link>
       <LogoAndText>
-        <DropdownContainer>
-          <HeaderButton>
-            <Button>
-              Account
-            </Button>
-          </HeaderButton>
-          <Dropdown
-          >
-            <Dropdown.Toggle
-            >
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              <MenuItem
-              >
-              </MenuItem>
-              <MenuItem
-              >
-              </MenuItem>
-            </Dropdown.Menu>
-          </Dropdown>
-        </DropdownContainer>
-        {/* {user ? (
+        {user ? (
           <Link to="/account">
             Account
           </Link>
         ) : (
-          <LogoAndText>
-            <Link to="/login">
-              <div>Login</div>
-            </Link>
-          </LogoAndText>
+          <Link to="/login">
+            <div>Login</div>
+          </Link>
         )}
         <DownArrow onClick={toggleMenu}>
           <i className="fas fa-sort-down" />
@@ -75,29 +50,11 @@ export default function Header(props) {
               <div>Signup</div>
             </Link>
           )}
-        </AccountMenu> */}
+        </AccountMenu>
       </LogoAndText>
     </HeaderContainer>
   );
 }
-
-const HeaderButton = styled.div`
-  button {
-    background-color: black;
-    background-image: none;
-    color: white;
-    border: none;
-    &:hover {
-      background-color: grey;
-    }
-  }
-`;
-
-const DropdownContainer = styled.div`
-  width: 5rem;
-  margin-right: 1rem;
-  display: flex;
-`;
 
 const LogoAndText = styled.span`
   display: flex;

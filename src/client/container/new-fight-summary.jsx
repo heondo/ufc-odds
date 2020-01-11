@@ -297,7 +297,7 @@ export default function SeasonSummaryItem(props){
       <VoteComponent voteCount={props.voteCount} competitors={props.competitors} />
       {
         props.predictedFighter ? (
-          <UserPickedFighter winner={props.winner} predictedFighter={props.predictedFighter} color={true}>
+          <UserPickedFighter winner={props.winner} predictedFighter={props.predictedFighter}>
             Your pick: {fighterIDtoName(props.predictedFighter, props.competitors)} {fighterIDtoOdds(props.predictedFighter, props.competitors, fighterOdds)}
           </UserPickedFighter>
         ) : isPredicting ? <MiniLoading />
@@ -360,7 +360,6 @@ const UserPickedFighter = styled.div`
   border: 1px solid grey;
   border-radius: 3px;
   margin-bottom: .3rem;
-  /* background-color: ${props => props.color ? colors.s1col3 : null}; */
   background-color: ${props => !props.winner ? '#7A7A7A' : props.winner === props.predictedFighter ? colors.pCol3 : colors.pCol3};
 `;
 
@@ -416,18 +415,16 @@ const WeightClass = styled.div`
 const SummaryContainer = styled.div`
   display: block;
   text-align: center;
-  border: 1px solid grey;
-  border-radius: 5px;
+  border: 1px solid #4d4d4d;
+  box-shadow: 2px 2px 3px #7A7A7A;
   margin: .2rem 0;
   padding: .3rem .7rem;
   @media(max-width: 767px) {
     font-size: .95em;
   }
-  /* overflow: hidden; */
   overflow: ${props => props.statsHidden ? null : "hidden"}
   max-height: ${props => props.statsHidden ? '400px': '1300px'};
   transition: max-height .5s cubic-bezier(1, 0, 0, 1);
-  /* background-color: lightgre  ; */
 `;
 
 const MiniLoading = styled.div`

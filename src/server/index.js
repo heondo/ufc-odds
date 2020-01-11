@@ -15,11 +15,6 @@ const summariesRoute = require('./api/routes/summaries');
 const app = express();
 
 app.use(cookies());
-// fetchInsert(`https://api.sportradar.us/ufc/trial/v2/en/competitions.json?api_key=${process.env.SR_UFC_KEY}`)
-// getInsertSeasons();
-// getInsertSummaries();
-// getInsertProbabilities();
-// app.use(express.json());
 
 app.use('/api/users', usersRoute);
 app.use('/api/seasons', seasonsRoute);

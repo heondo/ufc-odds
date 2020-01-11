@@ -63,7 +63,11 @@ const SeasonItemContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   padding: .3rem;
-  border: 1px solid #DCDCDC;
+  border: 1px solid #4d4d4d;
+  box-shadow: 2px 2px 3px #7A7A7A;
+  &:hover {
+    cursor: pointer;
+  }
   margin: .2rem 0;
   position: relative;
 `;
