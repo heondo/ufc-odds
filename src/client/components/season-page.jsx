@@ -22,6 +22,15 @@ export default function SeasonPage(props) {
   const [isEnded, setIsEnded] = useState(null);
   const possibleStages = ['Main Card', 'Prelims', 'Early Prelims'];
   const { user, setUser } = useContext(UserContext);
+  const currentDate = new Date();
+
+  const cacheDataToLocalStorage = (data, type, id, time) => {
+    const lsName = `${type+'-'+id}`;
+    window.localStorage.setItem(lsName, JSON.stringify({
+      data,
+      time
+    }));
+  };
 
   useEffect(() => {
     getSeasonData();
@@ -29,10 +38,26 @@ export default function SeasonPage(props) {
 
   const getSeasonData = async () => {
     try {
-      const response = await axios.get(`/api/seasons/${seasonID}`);
-      setIsEnded(response.data.isEnded);
-      setSummaries(response.data.summaries);
-      setSummariesCount(response.data.summariesCount);
+      const localData = JSON.parse(window.localStorage.getItem(`season-${seasonID}`) || null);
+      if (localData) {
+        if (currentDate - localData.time > 43200) {
+          const response = await axios.get(`/api/seasons/${seasonID}`);
+          setIsEnded(response.data.isEnded);
+          setSummaries(response.data.summaries);
+          setSummariesCount(response.data.summariesCount);
+          cacheDataToLocalStorage(response.data, 'season', seasonID, currentDate);
+        } else {
+          setIsEnded(localData.data.isEnded);
+          setSummaries(localData.data.summaries);
+          setSummariesCount(localData.data.summariesCount);
+        }
+      } else {
+        const response = await axios.get(`/api/seasons/${seasonID}`);
+        setIsEnded(response.data.isEnded);
+        setSummaries(response.data.summaries);
+        setSummariesCount(response.data.summariesCount);
+        cacheDataToLocalStorage(response.data, 'season', seasonID, currentDate);
+      }
     }
     catch(err){
       // console.log(Object.keys(err));
@@ -44,7 +69,7 @@ export default function SeasonPage(props) {
     }
   };
 
-  const currentDate = new Date();
+
   // const seasonDate = summaries && summaries.length ? new Date(summaries[0].sport_event.start_time) : null;
   let seasonDate;
   if (summaries) {
