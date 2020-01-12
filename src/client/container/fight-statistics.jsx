@@ -153,6 +153,7 @@ const OpenStatistics = styled.div`
     div:first-child {
       margin-right: .5rem;
     };
+    padding: .3rem auto;
   };
 `;
 
@@ -164,8 +165,8 @@ const RoundContainer = styled.div`
 
 const StatNumber = styled.td`
   font-size: .92rem;
-  color: ${props => props.more === 'even' ? '2#02020' : props.more === 'more' ? colors.s2Col3 : colors.pCol2 };
-  font-weight: 600;
+  color: ${props => props.more === 'even' ? '#202020' : props.more === 'more' ? colors.s2Col4 : colors.pCol0 };
+  font-weight: 700;
 `;
 
 const RoundLabel = styled.div`

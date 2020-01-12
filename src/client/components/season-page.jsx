@@ -75,6 +75,9 @@ export default function SeasonPage(props) {
   };
 
   const returnFighterWinnings = (bet, winner, competitors, outcomes) => {
+    if (!winner) {
+      return null;
+    }
     const winnerPercentage = returnWinnerPercentage(winner, competitors, outcomes);
     const payout =  calculateWinnings(winnerPercentage);
     return payout;
@@ -178,32 +181,37 @@ export default function SeasonPage(props) {
           {isEnded && user ? <UsersVotesResults summaries={summaries} isCanceled={isCanceled} /> : null}
           <TotalPredictions returnFighterWinnings={returnFighterWinnings} isEnded={isEnded} summariesArray={summaries} />
           <Divider />
-          {summaries.map((s, i) => (
-            <SeasonSummaryItem
-              key={s.id}
-              {...props}
-              id={s.id}
-              index={i}
-              seasonID={seasonID}
-              competitors={s.sport_event.competitors}
-              summaryOrder={s.s_order}
-              scheduledRounds={s.sport_event_status.scheduled_length}
-              canceled={isCanceled(s.sport_event_status)}
-              weightClass={s.sport_event_status.weight_class}
-              isDraw={s.sport_event_status.winner === 'draw'}
-              winner={s.sport_event_status.winner_id || null}
-              isDayBefore={isDayBefore}
-              predictionID={s.prediction_id}
-              predictedFighter={s.predicted_fighter}
-              addPredictionHandler={addPredictionHandler}
-              voteCount={s.votecount}
-              markets={s.markets}
-              plusMinusOdds={plusMinusOdds}
-              winMethod={s.sport_event_status.method}
-              finalRound={s.sport_event_status.final_round}
-              finalRoundTime={s.sport_event_status.final_round_length}
-            />
-          ))
+          {summaries.map((s, i) => {
+            const outcomes = s.markets ? s.markets[0].outcomes : null;
+            return (
+              <SeasonSummaryItem
+                key={s.id}
+                {...props}
+                id={s.id}
+                index={i}
+                seasonID={seasonID}
+                betAmount={betAmount}
+                competitors={s.sport_event.competitors}
+                payout={returnFighterWinnings(betAmount, s.sport_event_status.winner_id, s.sport_event.competitors, outcomes)}
+                summaryOrder={s.s_order}
+                scheduledRounds={s.sport_event_status.scheduled_length}
+                canceled={isCanceled(s.sport_event_status)}
+                weightClass={s.sport_event_status.weight_class}
+                isDraw={s.sport_event_status.winner === 'draw'}
+                winner={s.sport_event_status.winner_id || null}
+                isDayBefore={isDayBefore}
+                predictionID={s.prediction_id}
+                predictedFighter={s.predicted_fighter}
+                addPredictionHandler={addPredictionHandler}
+                voteCount={s.votecount}
+                markets={s.markets}
+                plusMinusOdds={plusMinusOdds}
+                winMethod={s.sport_event_status.method}
+                finalRound={s.sport_event_status.final_round}
+                finalRoundTime={s.sport_event_status.final_round_length}
+              />
+            );
+          })
           }
         </SummariesContainer>
       );
@@ -237,34 +245,39 @@ export default function SeasonPage(props) {
                     {stage.toUpperCase()}
                   </StageText>
                   {
-                    summaries[stage].map((s, i) => (
-                      <SeasonSummaryItem
-                        key={s.id}
-                        {...props}
-                        id={s.id}
-                        index={i}
-                        stage={stage}
-                        seasonID={seasonID}
-                        scheduledRounds={s.sport_event_status.scheduled_length}
-                        competitors={s.sport_event.competitors}
-                        summaryOrder={s.s_order}
-                        canceled={isCanceled(s.sport_event_status)}
-                        weightClass={s.sport_event_status.weight_class}
-                        isDraw={s.sport_event_status.winner === 'draw'}
-                        winner={s.sport_event_status.winner_id || null}
-                        isDayBefore={isDayBefore}
-                        predictionID={s.prediction_id}
-                        predictedFighter={s.predicted_fighter}
-                        addPredictionHandler={addPredictionHandler}
-                        voteCount={s.votecount}
-                        statistics={s.statistics}
-                        markets={s.markets}
-                        plusMinusOdds={plusMinusOdds}
-                        winMethod={s.sport_event_status.method}
-                        finalRound={s.sport_event_status.final_round}
-                        finalRoundTime={s.sport_event_status.final_round_length}
-                      />
-                    ))
+                    summaries[stage].map((s, i) => {
+                      const outcomes = s.markets ? s.markets[0].outcomes : null;
+                      return (
+                        <SeasonSummaryItem
+                          key={s.id}
+                          {...props}
+                          id={s.id}
+                          index={i}
+                          stage={stage}
+                          betAmount={betAmount}
+                          seasonID={seasonID}
+                          scheduledRounds={s.sport_event_status.scheduled_length}
+                          competitors={s.sport_event.competitors}
+                          summaryOrder={s.s_order}
+                          payout={returnFighterWinnings(betAmount, s.sport_event_status.winner_id, s.sport_event.competitors, outcomes)}
+                          canceled={isCanceled(s.sport_event_status)}
+                          weightClass={s.sport_event_status.weight_class}
+                          isDraw={s.sport_event_status.winner === 'draw'}
+                          winner={s.sport_event_status.winner_id || null}
+                          isDayBefore={isDayBefore}
+                          predictionID={s.prediction_id}
+                          predictedFighter={s.predicted_fighter}
+                          addPredictionHandler={addPredictionHandler}
+                          voteCount={s.votecount}
+                          statistics={s.statistics}
+                          markets={s.markets}
+                          plusMinusOdds={plusMinusOdds}
+                          winMethod={s.sport_event_status.method}
+                          finalRound={s.sport_event_status.final_round}
+                          finalRoundTime={s.sport_event_status.final_round_length}
+                        />
+                      );
+                    })
                   }
                 </div>
               );

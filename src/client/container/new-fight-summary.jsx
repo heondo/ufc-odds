@@ -212,6 +212,15 @@ export default function SeasonSummaryItem(props){
     }
   };
 
+  const Earnings = ({correct}) => {
+    return (
+      <div>
+        {correct ? `You earned $${(props.payout - props.betAmount).toFixed(2)}`:
+          `You lost your $${props.betAmount}`}
+      </div>
+    );
+  };
+
   const fighterOdds = props.markets ? [
     props.plusMinusOdds(props.markets[0].outcomes[0].probability),
     props.plusMinusOdds(props.markets[0].outcomes[1].probability)
@@ -299,6 +308,7 @@ export default function SeasonSummaryItem(props){
         props.predictedFighter ? (
           <UserPickedFighter winner={props.winner} predictedFighter={props.predictedFighter}>
             Your pick: {fighterIDtoName(props.predictedFighter, props.competitors)} {fighterIDtoOdds(props.predictedFighter, props.competitors, fighterOdds)}
+            <Earnings correct={props.predictedFighter === props.winner}/>
           </UserPickedFighter>
         ) : isPredicting ? <MiniLoading />
           : user ? (
@@ -360,7 +370,7 @@ const UserPickedFighter = styled.div`
   border: 1px solid grey;
   border-radius: 3px;
   margin-bottom: .3rem;
-  background-color: ${props => !props.winner ? '#7A7A7A' : props.winner === props.predictedFighter ? colors.pCol3 : colors.pCol3};
+  background-color: ${props => !props.winner ? '#7A7A7A' : props.winner === props.predictedFighter ? colors.s2Col4 : colors.pCol0};
 `;
 
 const TotalVotesText = styled.div`
@@ -451,6 +461,7 @@ SeasonSummaryItem.propTypes = {
   scheduledRounds: PropTypes.number,
   competitors: PropTypes.array,
   summaryOrder: PropTypes.number,
+  payout: PropTypes.number,
   canceled: PropTypes.bool,
   weightClass: PropTypes.string,
   isDraw: PropTypes.bool,
