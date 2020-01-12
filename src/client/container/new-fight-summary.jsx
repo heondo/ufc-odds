@@ -308,7 +308,9 @@ export default function SeasonSummaryItem(props){
         props.predictedFighter ? (
           <UserPickedFighter winner={props.winner} predictedFighter={props.predictedFighter}>
             Your pick: {fighterIDtoName(props.predictedFighter, props.competitors)} {fighterIDtoOdds(props.predictedFighter, props.competitors, fighterOdds)}
-            <Earnings correct={props.predictedFighter === props.winner}/>
+            {
+              props.finalRound && !props.canceled ? <Earnings correct={props.predictedFighter === props.winner} /> : null
+            }
           </UserPickedFighter>
         ) : isPredicting ? <MiniLoading />
           : user ? (
