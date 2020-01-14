@@ -7,7 +7,7 @@ import moment from 'moment';
 import styled from 'styled-components';
 import { UserContext } from '../context/user-context';
 import LoadingCircle from '../container/loading-circle';
-import SeasonSummaryItem from '../container/new-fight-summary';
+import SeasonSummaryItem from '../container/season-summary-item';
 
 const betAmount = 100;
 
