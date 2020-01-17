@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import axios from 'axios';
 import {UserContext} from '../context/user-context';
 import LoadingCircle from '../container/loading-circle';
-import AccountsSummaries from '../container/accounts-summaries';
+import AccountSummaryItem from '../container/account-summary-item';
 
 export default function AccountPage(props){
   const {user, setUser} = useContext(UserContext);
@@ -95,6 +95,7 @@ export default function AccountPage(props){
         <div>
           Good for {percentageChange}% of initial earnings
         </div>
+        <Divider />
       </div>
     );
   };
@@ -124,7 +125,7 @@ export default function AccountPage(props){
         predictionData.length ? (
           predictionData.map(s => {
             return (
-              <AccountsSummaries
+              <AccountSummaryItem
                 key={s.id}
                 id={s.id}
                 name={s.name}
@@ -142,6 +143,13 @@ export default function AccountPage(props){
     </AccountContainer>
   ) : <LoadingCircle />;
 }
+
+const Divider = styled.div`
+  border-bottom: 2px solid grey;
+  width: 85%;
+  margin: .3rem auto;
+`;
+
 
 
 const AccountContainer = styled.div`

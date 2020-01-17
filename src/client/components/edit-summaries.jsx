@@ -160,6 +160,7 @@ const SummariesContainer = styled.div`
   text-align: center;
   position: relative;
   flex-direction: column;
+  color: black;
   margin: auto;
   max-width: 768px;
   padding: .5rem;

@@ -137,7 +137,6 @@ const OpenStatistics = styled.div`
   display: flex;
   justify-content: center;
   margin: .3rem auto;
-  /* background-color: white; */
   span {
     display: flex;
     background-color: #DCDCDC;
@@ -161,6 +160,7 @@ const RoundContainer = styled.div`
   background-color: #BDBDBD;
   color: black;
   border-radius: 3px;
+  padding: .25rem 0;
 `;
 
 const StatNumber = styled.td`
