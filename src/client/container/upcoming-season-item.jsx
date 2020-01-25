@@ -29,7 +29,7 @@ export default function UpcomingSeasonItem(props) {
       <SeasonName>{props.name.replace(/\d{4}\s*$/, '')}</SeasonName>
       <SeasonDate>{moment(props.startDate).format('MMM Do, YYYY')}</SeasonDate>
       {
-        newArray.length ? <FiveRoundHeader>{newArray.length === 1 ? "Main Event" : "5 Round Fights"}</FiveRoundHeader> : undefined
+        newArray.length ? <FiveRoundHeader>{newArray.length === 1 ? "Main Event" : "Championship Bouts"}</FiveRoundHeader> : undefined
       }
       <Fights eventsArray={newArray}/>
       <Arrow><i className="fas fa-caret-right"></i></Arrow>

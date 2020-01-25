@@ -44,6 +44,7 @@ const style = {
   padding: '0.5rem 1rem',
   marginBottom: '.5rem',
   backgroundColor: 'white',
+  color: 'black',
   cursor: 'move'
 };
 
