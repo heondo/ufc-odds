@@ -13,7 +13,7 @@ const Middle = styled.div`
 `;
 
 const Fighter = styled.div`
-  width: 45%
+  width: 45%;
   display: flex;
 `;
 

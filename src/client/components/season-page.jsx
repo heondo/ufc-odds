@@ -36,6 +36,21 @@ export default function SeasonPage(props) {
     getSeasonData();
   }, []);
 
+  const hardRefreshData = async () => {
+    try {
+      const response = await axios.get(`/api/seasons/${seasonID}`);
+      setIsEnded(response.data.isEnded);
+      setSummaries(response.data.summaries);
+      setSummariesCount(response.data.summariesCount);
+      cacheDataToLocalStorage(response.data, 'season', seasonID, currentDate);
+    } catch {
+      setIsEnded(false);
+      setSummaries([]);
+      setSummariesCount(0);
+      console.log(err.response.data.message);
+    }
+  }
+
   const getSeasonData = async () => {
     try {
       const localData = JSON.parse(window.localStorage.getItem(`season-${seasonID}`) || null);
@@ -82,7 +97,7 @@ export default function SeasonPage(props) {
   }
 
   const isDayBefore = (seasonDate - currentDate) / 1000 < 86400;
-
+  
 
   const returnWinnerPercentage = (winner, competitors, outcomes) => {
     // I need the sportEvents competitors, get the index for the predictedCompetitor, get the odds for that fighter
@@ -193,11 +208,16 @@ export default function SeasonPage(props) {
           <SeasonTitle>
             {summaries[0].sport_event.sport_event_context.season.name.replace(/\d{4}\s*$/, '')}
             {user && user.userID === 35 ? (
-              <EditButton>
-                <Link to={`/edit/${seasonID}`}>
-                  Edit
-                </Link>
-              </EditButton>
+              <>
+                <EditButton>
+                  <Link to={`/edit/${seasonID}`}>
+                    Edit
+                  </Link>
+                  <div onClick={hardRefreshData}>
+                    Reload
+                  </div>
+                </EditButton>
+              </>
             ) : (null)}
           </SeasonTitle>
           <div>{summaries[0].sport_event.venue ? summaries[0].sport_event.venue.country_name : null}</div>
@@ -249,11 +269,16 @@ export default function SeasonPage(props) {
         <SeasonTitle>
           {firstFight.sport_event.sport_event_context.season.name.replace(/\d{4}\s*$/, '')}
           {user && user.userID === 35 ? (
-            <EditButton>
-              <Link to={`/edit/${seasonID}`}>
+            <>
+              <EditButton>
+                <Link to={`/edit/${seasonID}`}>
                   Edit
-              </Link>
-            </EditButton>
+                </Link>
+                <div>
+                  Reload
+                </div>
+              </EditButton>
+            </>
           ) : (null)}
         </SeasonTitle>
         <div>{firstFight.sport_event.venue ? firstFight.sport_event.venue.country_name : null}</div>
