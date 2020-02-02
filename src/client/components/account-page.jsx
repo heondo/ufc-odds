@@ -87,12 +87,10 @@ export default function AccountPage(props){
     return (
       <div>
         <div>
-          {correct}/{passedFights} so far
+          You have made {passedFights} bets with {correct} predictions
         </div>
         <div>
-          ${inputMoney} in, ${winnings.toFixed(2)} in yo pocket
-        </div>
-        <div>
+          That is ${inputMoney} in, ${winnings.toFixed(2)} {winnings < inputMoney ? 'left' : 'total in winnings'}.
           Good for {percentageChange}% of initial earnings
         </div>
       </div>
@@ -117,7 +115,7 @@ export default function AccountPage(props){
   return user && predictionData  ? (
     <AccountContainer>
       <AccountTitle>
-        Account
+        PROFILE
       </AccountTitle>
       <TotalPredictions seasonsArray={predictionData}/>
       {
@@ -146,7 +144,7 @@ export default function AccountPage(props){
 
 const AccountContainer = styled.div`
   display: flex;
-  text-align: center;
+  /* text-align: center; */
   flex-direction: column;
   margin: auto;
   max-width: 768px;
@@ -154,8 +152,9 @@ const AccountContainer = styled.div`
 `;
 
 const AccountTitle = styled.div`
-  text-align: center;
-  font-size: 1.2em;
+  text-align: start;
+  font-size: 2em;
+  font-style: italic;
   font-weight: bold;
   position: relative;
 `;
