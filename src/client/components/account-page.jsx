@@ -83,6 +83,9 @@ export default function AccountPage(props){
         inputMoney += betAmount;
       }
     }
+    if (!correct && !passedFights && !winnings && !inputMoney) {
+      return null;
+    }
     const percentageChange = (winnings * 100 / inputMoney).toFixed(2);
     return (
       <div>
@@ -93,6 +96,9 @@ export default function AccountPage(props){
           That is ${inputMoney} in, ${winnings.toFixed(2)} {winnings < inputMoney ? 'left' : 'total in winnings'}.
           Good for {percentageChange}% of initial earnings
         </div>
+        <AccountSummariesText>
+          Event Summaries
+        </AccountSummariesText>
       </div>
     );
   };
@@ -158,3 +164,8 @@ const AccountTitle = styled.div`
   font-weight: bold;
   position: relative;
 `;
+
+const AccountSummariesText = styled(AccountTitle)`
+  font-size: 1.5em;
+  margin: .3rem 0;
+`
