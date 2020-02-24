@@ -27,7 +27,7 @@ router.get('/:id', async (req, res, next) => {
     };
     const queryResponse = await client.query(userPredictionsQuery);
     res.json({
-      success: false,
+      success: true,
       seasons: queryResponse.rows
     });
   } catch (err) {
