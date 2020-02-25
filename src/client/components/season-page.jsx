@@ -43,11 +43,11 @@ export default function SeasonPage(props) {
       setSummaries(response.data.summaries);
       setSummariesCount(response.data.summariesCount);
       cacheDataToLocalStorage(response.data, 'season', seasonID, currentDate);
-    } catch {
+    } catch (err) {
       setIsEnded(false);
       setSummaries([]);
       setSummariesCount(0);
-      console.log(err.response.data.message);
+      console.error(err.response.data.message);
     }
   }
 
@@ -75,12 +75,11 @@ export default function SeasonPage(props) {
       }
     }
     catch(err){
-      // console.log(Object.keys(err));
       // if (err.response.data.message === "No data available")
       setIsEnded(false);
       setSummaries([]);
       setSummariesCount(0);
-      console.log(err.response.data.message);
+      console.error(err.response.data.message);
     }
   };
 
@@ -263,7 +262,6 @@ export default function SeasonPage(props) {
     }
     const flattenedObjectSummaries = Object.values(summaries).reduce((a, b) => [...a, ...b]);
     const firstFight = flattenedObjectSummaries[0];
-    // console.log(Object.values(summaries));
     return (
       <SummariesContainer>
         <SeasonTitle>

@@ -8,6 +8,10 @@ const convertName = name => {
 };
 
 export default function SummaryPredictions(props){
+  // so for this page, if there is a markets object I want to see if the user got it right. Calculate the winnings and display
+  // given winner id, predicted fighter ID, match indeces for it and use market functions from before
+
+
   return (
     <SummaryContainer>
       <FighterNames>
@@ -19,6 +23,13 @@ export default function SummaryPredictions(props){
           {convertName(props.competitors[1].name)}
         </FighterTwo>
       </FighterNames>
+        {/* {
+          props.markets ? (
+            <div>
+              odds
+            </div>
+          ) : null
+        } */}
     </SummaryContainer>
   );
 }
@@ -29,7 +40,8 @@ const Middle = styled.div`
 
 const Fighter = styled.div`
   border: ${props => props.winner ? props.winner === props.competitorID ? ' 1px solid #498a77;' : '1px solid #bd6574' : 'none'};
-  color: ${props => props.predictedFighter === props.competitorID ? '#498a77;' : '#bd6574'};
+  text-decoration: ${props => props.predictedFighter === props.competitorID ? 'underline' : null};
+  font-weight: ${props => props.predictedFighter === props.competitorID ? '600' : 'inherit'};
   width: 47.5%;
   padding: .2rem;
 `;
@@ -52,7 +64,7 @@ const FighterNames = styled.div`
 const SummaryContainer = styled.div`
   display: flex;
   text-align: center;
-  justify-content: center;
+  /* justify-content: center; */
   margin: .2rem auto;
   @media(max-width: 767px) {
     font-size: .95em;
@@ -62,5 +74,8 @@ const SummaryContainer = styled.div`
 SummaryPredictions.propTypes = {
   competitors: PropTypes.array,
   predictedFighter: PropTypes.string,
-  winner: PropTypes.string
+  winner: PropTypes.string,
+  selectedFighterPerc:PropTypes.number,
+  selectedFighterOdds:PropTypes.string,
+  winningsIfWinner:PropTypes.number
 };

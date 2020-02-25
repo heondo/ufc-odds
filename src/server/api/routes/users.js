@@ -98,7 +98,6 @@ router.post('/signup', async (req, res, next) => {
       username
     });
   } catch (err) {
-    // console.log(err);
     if (err.constraint && err.constraint === 'users_username_key') {
       res.status(404);
       return next({

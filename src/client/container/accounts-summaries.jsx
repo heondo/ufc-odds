@@ -33,12 +33,24 @@ export default function AccountsSummaries(props) {
       <GeneratePredictionTotals eventsArray={props.eventsArray}/>
       {props.eventsArray ? (
         props.eventsArray.map(p => {
+          const {markets, sportEvent, sportEventStatus, predictedFighter} = p;
+          const {competitors} = sportEvent;
+          const {winner_id: winner} = sportEventStatus;
+          const outcomes = markets ? markets[0].outcomes : null;
+          const selectedFighterPerc = predictedFighter ? props.returnWinnerPercentage(predictedFighter, competitors, outcomes) : null; // can be winners odds
+          const selectedFighterOdds = selectedFighterPerc ? props.plusMinusOdds(selectedFighterPerc) : null;
+          const winningsIfWinner = winner ? props.calculateWinnings(props.returnWinnerPercentage(winner, competitors, outcomes)) : null;
+          console.log(selectedFighterPerc, selectedFighterOdds, winningsIfWinner)
           return (
             <SummaryPredictions
               key={p.summaryID}
-              competitors={p.sportEvent.competitors}
+              competitors={competitors}
               predictedFighter={p.predictedFighter}
-              winner={p.sportEventStatus.winner_id}
+              winner={winner}
+              selectedFighterPerc={selectedFighterPerc}
+              selectedFighterOdds={selectedFighterOdds}
+              winningsIfWinner={winningsIfWinner}
+              // markets={p.markets ? p.markets[0].outcomes : null}
             />
           );
         })
@@ -63,5 +75,8 @@ AccountsSummaries.propTypes = {
   id: PropTypes.string,
   name: PropTypes.string,
   startDate: PropTypes.string,
-  eventsArray: PropTypes.array
+  eventsArray: PropTypes.array,
+  returnWinnerPercentage:PropTypes.func,
+  calculateWinnings:PropTypes.func,
+  plusMinusOdds: PropTypes.func
 };

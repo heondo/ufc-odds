@@ -85,7 +85,6 @@ const EditSummaries = props => {
       // if (nowTime > startTime) { // fights that have happened
       // I want to say the
       // }
-      // console.log(startTime > nowTime);
     };
 
     const moveCard = (dragIndex, hoverIndex) => {

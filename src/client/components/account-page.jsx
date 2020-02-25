@@ -69,7 +69,7 @@ export default function AccountPage(props){
       if (!seasonsArray[[i]].seasonsummaries[0].sportEventStatus.winner){
         continue;
       }
-      const seasonSummaries = seasonsArray[i].seasonsummaries;
+      const {seasonSummaries} = seasonsArray[i];
       for (let j in seasonSummaries){
         if (seasonSummaries[j].predictedFighter === seasonSummaries[j].sportEventStatus.winner_id){
           // this is the winning conditional, if you win, find the winners probabilities in outcome.
@@ -134,6 +134,9 @@ export default function AccountPage(props){
                 name={s.name}
                 startDate={s.start_date}
                 eventsArray={s.seasonsummaries}
+                returnWinnerPercentage={returnWinnerPercentage}
+                calculateWinnings={calculateWinnings}
+                plusMinusOdds={plusMinusOdds}
               />
             );
           })
