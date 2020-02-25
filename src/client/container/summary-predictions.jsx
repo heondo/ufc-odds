@@ -23,6 +23,9 @@ export default function SummaryPredictions(props){
           {convertName(props.competitors[1].name)}
         </FighterTwo>
       </FighterNames>
+      {
+        props.winningsIfWinner
+      }
         {/* {
           props.markets ? (
             <div>
@@ -75,7 +78,7 @@ SummaryPredictions.propTypes = {
   competitors: PropTypes.array,
   predictedFighter: PropTypes.string,
   winner: PropTypes.string,
-  selectedFighterPerc:PropTypes.number,
   selectedFighterOdds:PropTypes.string,
-  winningsIfWinner:PropTypes.number
+  winningsIfWinner:PropTypes.number,
+  betAmount: PropTypes.number
 };

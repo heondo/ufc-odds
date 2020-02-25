@@ -39,18 +39,17 @@ export default function AccountsSummaries(props) {
           const outcomes = markets ? markets[0].outcomes : null;
           const selectedFighterPerc = predictedFighter ? props.returnWinnerPercentage(predictedFighter, competitors, outcomes) : null; // can be winners odds
           const selectedFighterOdds = selectedFighterPerc ? props.plusMinusOdds(selectedFighterPerc) : null;
+          // just calculate selected winners fightings if you want to display that instead of only the winner percentage, or both!
           const winningsIfWinner = winner ? props.calculateWinnings(props.returnWinnerPercentage(winner, competitors, outcomes)) : null;
-          console.log(selectedFighterPerc, selectedFighterOdds, winningsIfWinner)
           return (
             <SummaryPredictions
               key={p.summaryID}
               competitors={competitors}
               predictedFighter={p.predictedFighter}
               winner={winner}
-              selectedFighterPerc={selectedFighterPerc}
               selectedFighterOdds={selectedFighterOdds}
               winningsIfWinner={winningsIfWinner}
-              // markets={p.markets ? p.markets[0].outcomes : null}
+              betAmount={props.betAmount}
             />
           );
         })
@@ -78,5 +77,6 @@ AccountsSummaries.propTypes = {
   eventsArray: PropTypes.array,
   returnWinnerPercentage:PropTypes.func,
   calculateWinnings:PropTypes.func,
-  plusMinusOdds: PropTypes.func
+  plusMinusOdds: PropTypes.func,
+  betAmount: PropTypes.number
 };

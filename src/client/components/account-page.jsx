@@ -137,6 +137,7 @@ export default function AccountPage(props){
                 returnWinnerPercentage={returnWinnerPercentage}
                 calculateWinnings={calculateWinnings}
                 plusMinusOdds={plusMinusOdds}
+                betAmount={betAmount}
               />
             );
           })
