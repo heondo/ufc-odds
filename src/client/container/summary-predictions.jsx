@@ -11,6 +11,26 @@ export default function SummaryPredictions(props){
   // so for this page, if there is a markets object I want to see if the user got it right. Calculate the winnings and display
   // given winner id, predicted fighter ID, match indeces for it and use market functions from before
 
+  const PotentialWinnings = () => {
+    let text;
+    if (!props.winningsIfWinner) {
+      text = props.selectedFighterOdds;
+    }
+    else if (props.predictedFighter === props.winner) {
+      text = '+' + props.winningsIfWinner.toFixed(2)
+    } else {
+      text = '-' + props.betAmount.toFixed(2);
+    }
+    
+    return (
+      <div className="winnings">
+        {
+          text
+        }
+      </div>
+    )
+  }
+
 
   return (
     <SummaryContainer>
@@ -23,16 +43,7 @@ export default function SummaryPredictions(props){
           {convertName(props.competitors[1].name)}
         </FighterTwo>
       </FighterNames>
-      {
-        props.winningsIfWinner
-      }
-        {/* {
-          props.markets ? (
-            <div>
-              odds
-            </div>
-          ) : null
-        } */}
+      <PotentialWinnings></PotentialWinnings>
     </SummaryContainer>
   );
 }
@@ -42,7 +53,7 @@ const Middle = styled.div`
 `;
 
 const Fighter = styled.div`
-  border: ${props => props.winner ? props.winner === props.competitorID ? ' 1px solid #498a77;' : '1px solid #bd6574' : 'none'};
+  /* border: ${props => props.winner ? props.winner === props.competitorID ? ' 1px solid #498a77;' : '1px solid #bd6574' : 'none'}; */
   text-decoration: ${props => props.predictedFighter === props.competitorID ? 'underline' : null};
   font-weight: ${props => props.predictedFighter === props.competitorID ? '600' : 'inherit'};
   width: 47.5%;
@@ -67,10 +78,15 @@ const FighterNames = styled.div`
 const SummaryContainer = styled.div`
   display: flex;
   text-align: center;
+  align-items: center;
   /* justify-content: center; */
   margin: .2rem auto;
   @media(max-width: 767px) {
     font-size: .95em;
+  }
+
+  .winnings {
+    margin-left: .5rem;
   }
 `;
 

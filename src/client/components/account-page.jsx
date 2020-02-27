@@ -66,10 +66,10 @@ export default function AccountPage(props){
       if (!seasonsArray[i].seasonsummaries){
         continue;
       }
-      if (!seasonsArray[[i]].seasonsummaries[0].sportEventStatus.winner){
+      if (!seasonsArray[i].seasonsummaries[0].sportEventStatus.winner){
         continue;
       }
-      const {seasonSummaries} = seasonsArray[i];
+      const {seasonsummaries: seasonSummaries} = seasonsArray[i];
       for (let j in seasonSummaries){
         if (seasonSummaries[j].predictedFighter === seasonSummaries[j].sportEventStatus.winner_id){
           // this is the winning conditional, if you win, find the winners probabilities in outcome.
