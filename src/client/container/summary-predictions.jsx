@@ -20,10 +20,10 @@ export default function SummaryPredictions(props){
     }
     else if (props.predictedFighter === props.winner) {
       color = 'correct'
-      text = '+' + props.winningsIfWinner.toFixed(2)
+      text = '+$' + props.winningsIfWinner.toFixed(2)
     } else {
       color = 'incorrect'
-      text = '-' + props.betAmount.toFixed(2);
+      text = '-$' + props.betAmount.toFixed(2);
     }
     return (
       <div className={`winnings ${color}`}>

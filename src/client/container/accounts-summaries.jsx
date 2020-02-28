@@ -5,21 +5,47 @@ import styled from 'styled-components';
 import {Link} from 'react-router-dom';
 
 export default function AccountsSummaries(props) {
+  const selectedOddsAndWinnings = (event) => {
+    const {markets, sportEvent, sportEventStatus, predictedFighter} = event;
+          const {competitors} = sportEvent;
+          const outcomes = markets ? markets[0].outcomes : null;
+          const selectedFighterPerc = predictedFighter ? props.returnWinnerPercentage(predictedFighter, competitors, outcomes) : null; // can be winners odds
+          const selectedFighterOdds = selectedFighterPerc ? props.plusMinusOdds(selectedFighterPerc) : null;
+          const selectedFighterWinnings = predictedFighter ? props.calculateWinnings(props.returnWinnerPercentage(predictedFighter, competitors, outcomes)) : null;
+          return [selectedFighterOdds, selectedFighterWinnings];
+  }
+
   const GeneratePredictionTotals = innerProps => {
     let correct = 0;
     let total = 0;
+    let totalWinnings = null;
     if (innerProps.eventsArray) {
       innerProps.eventsArray.forEach(e => {
-        if (e.predictedFighter === e.sportEventStatus.winner_id) {
-          correct += 1;
+        const [selectedFighterOdds, selectedFighterWinnings] = selectedOddsAndWinnings(e);
+        if (e.sportEventStatus.winner_id) {
+          if (e.predictedFighter === e.sportEventStatus.winner_id) {
+            correct += 1;
+            totalWinnings += selectedFighterWinnings - props.betAmount;
+          } else {
+            totalWinnings -= props.betAmount;
+          }
         }
         total += 1;
       });
+    };
+
+    if (totalWinnings) {
+      if (totalWinnings > 0) {
+        totalWinnings = `+$${totalWinnings.toFixed(2)}`
+      } else {
+        totalWinnings = `-$${totalWinnings.toFixed(2)}`
+      }
     }
     return (
-      <div>
-        {correct}/{total}
-      </div>
+      <BetTotals>
+        <span>{correct}/{total}</span>
+        <span>{totalWinnings ? totalWinnings : null}</span>
+      </BetTotals>
     );
   };
 
@@ -33,14 +59,10 @@ export default function AccountsSummaries(props) {
       <GeneratePredictionTotals eventsArray={props.eventsArray}/>
       {props.eventsArray ? (
         props.eventsArray.map(p => {
-          const {markets, sportEvent, sportEventStatus, predictedFighter} = p;
+          const [selectedFighterOdds, winningsIfWinner] = selectedOddsAndWinnings(p);
+          const {sportEvent, sportEventStatus} = p;
           const {competitors} = sportEvent;
           const {winner_id: winner} = sportEventStatus;
-          const outcomes = markets ? markets[0].outcomes : null;
-          const selectedFighterPerc = predictedFighter ? props.returnWinnerPercentage(predictedFighter, competitors, outcomes) : null; // can be winners odds
-          const selectedFighterOdds = selectedFighterPerc ? props.plusMinusOdds(selectedFighterPerc) : null;
-          // just calculate selected winners fightings if you want to display that instead of only the winner percentage, or both!
-          const winningsIfWinner = predictedFighter ? props.calculateWinnings(props.returnWinnerPercentage(predictedFighter, competitors, outcomes)) : null;
           return (
             <SummaryPredictions
               key={p.summaryID}
@@ -59,6 +81,14 @@ export default function AccountsSummaries(props) {
     </SeasonsContainer>
   );
 }
+
+const BetTotals = styled.div`
+  display: flex;
+  span {
+    margin-right: .5rem;
+  }
+`
+
 
 const SeasonName = styled.div`
   font-weight: bold;
