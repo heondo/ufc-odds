@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { colors } from '../context/theme-context';
 
 const convertName = name => {
   const split = name.split(', ');
@@ -13,17 +14,19 @@ export default function SummaryPredictions(props){
 
   const PotentialWinnings = () => {
     let text;
-    if (!props.winningsIfWinner) {
+    let color = null;
+    if (!props.winner) {
       text = props.selectedFighterOdds;
     }
     else if (props.predictedFighter === props.winner) {
+      color = 'correct'
       text = '+' + props.winningsIfWinner.toFixed(2)
     } else {
+      color = 'incorrect'
       text = '-' + props.betAmount.toFixed(2);
     }
-    
     return (
-      <div className="winnings">
+      <div className={`winnings ${color}`}>
         {
           text
         }
@@ -83,6 +86,13 @@ const SummaryContainer = styled.div`
   margin: .2rem auto;
   @media(max-width: 767px) {
     font-size: .95em;
+  }
+  .correct {
+    color: ${colors.s2Col3};
+  }
+
+  .incorrect {
+    color: ${colors.pCol0};
   }
 
   .winnings {

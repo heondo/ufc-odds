@@ -40,7 +40,7 @@ export default function AccountsSummaries(props) {
           const selectedFighterPerc = predictedFighter ? props.returnWinnerPercentage(predictedFighter, competitors, outcomes) : null; // can be winners odds
           const selectedFighterOdds = selectedFighterPerc ? props.plusMinusOdds(selectedFighterPerc) : null;
           // just calculate selected winners fightings if you want to display that instead of only the winner percentage, or both!
-          const winningsIfWinner = winner ? props.calculateWinnings(props.returnWinnerPercentage(winner, competitors, outcomes)) : null;
+          const winningsIfWinner = predictedFighter ? props.calculateWinnings(props.returnWinnerPercentage(predictedFighter, competitors, outcomes)) : null;
           return (
             <SummaryPredictions
               key={p.summaryID}
