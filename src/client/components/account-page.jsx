@@ -73,7 +73,7 @@ export default function AccountPage(props){
       for (let j in seasonSummaries){
         if (seasonSummaries[j].predictedFighter === seasonSummaries[j].sportEventStatus.winner_id){
           // this is the winning conditional, if you win, find the winners probabilities in outcome.
-          const {outcomes} = seasonSummaries[j].markets ? seasonSummaries[j].markets[0] : null;
+          const outcomes = seasonSummaries[j].markets ? seasonSummaries[j].markets[0].outcomes : null;
           const predictedPercentage = returnWinnerPercentage(seasonSummaries[j].sportEventStatus.winner_id, seasonSummaries[j].sportEvent.competitors , outcomes);
           const payout = calculateWinnings(predictedPercentage);
           winnings += payout;
