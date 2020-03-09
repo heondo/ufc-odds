@@ -17,7 +17,7 @@ This is the first time I am really working with data that I am not creating so I
 * dealing with null values from external data and inserting into Postgres
 
 #### Languages/Frameworks
-* Postgres
+* PostgreSQL
 * NodeJS
 * Express
 * Styled Components, Axios, Hooks
