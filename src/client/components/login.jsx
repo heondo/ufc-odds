@@ -36,8 +36,8 @@ export default function Login(props) {
       <h2>Login</h2>
       <Formik
         initialValues={{
-          username: '',
-          password: ''
+          username: 'guest_account',
+          password: 'Password1'
         }}
         validationSchema={validationSchema}
         onSubmit={submitLogin}
@@ -78,7 +78,7 @@ const InputField = styled(Field)`
 `;
 
 const LoginFailError = styled.div`
-  display: ${props => props.error ? 'block' : 'none'}
+  display: ${props => props.error ? 'block' : 'none'};
   position: absolute;
   bottom: -1rem;
   font-size: .8em;

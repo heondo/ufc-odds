@@ -22,7 +22,7 @@ yup.addMethod(yup.string, 'equalTo', equalTo);
 
 const validationSchema = yup.object().shape({
   username: yup.string().min(6, 'Username must be at least 6 characters long').max(32, 'Username limited to 32 characters').required('Username Required'),
-  password: yup.string().min(8, 'Password must be at least 6 characters long').max(32, 'Password limited to 32 characters')
+  password: yup.string().min(8, 'Password must be at least 8 characters long').max(32, 'Password limited to 32 characters')
     .matches(/\d/, 'One digit required').matches(/[A-Z]/, 'One capital letter required').matches(/[a-z]/, 'One lowercase letter required').required('Password Required'),
   confirmPassword: yup.string().equalTo(yup.ref('password'), 'Passwords must match')
 });

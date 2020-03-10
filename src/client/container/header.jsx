@@ -91,7 +91,7 @@ const AccountMenu = styled.div`
   flex-direction: column;
   color: black;
   background-color: #DCDCDC;
-  margin-top: 4rem;
+  margin-top: 36px;
   margin-right: .5rem;
   z-index: 2;
   padding: .5rem;
