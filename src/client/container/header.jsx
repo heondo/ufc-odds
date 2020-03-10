@@ -15,6 +15,10 @@ export default function Header(props) {
     setMenuVisible(!menuVisible);
   };
 
+  const closeMenu = () => {
+    setMenuVisible(false);
+  }
+
   return (
     <HeaderContainer>
       <Link to="/">
@@ -25,16 +29,16 @@ export default function Header(props) {
       </Link>
       <LogoAndText>
         {user ? (
-          <Link to="/account">
+          <Link to="/account" onClick={closeMenu}>
             Account
           </Link>
         ) : (
-          <Link to="/login">
+          <Link to="/login" onClick={closeMenu}>
             <div>Login</div>
           </Link>
         )}
         <DownArrow onClick={toggleMenu}>
-          <i className="fas fa-sort-down" />
+          <i className="fas fa-sort-down"/>
         </DownArrow>
         <AccountMenu menuVisible={menuVisible}>
           {user ? (
@@ -42,12 +46,13 @@ export default function Header(props) {
               window.localStorage.removeItem('userData');
               cookies.remove('token');
               setUser(null);
+              closeMenu();
             }}>
               Signout
             </Link>
           ) : (
-            <Link to="/signup" style={{ marginLeft: '1rem' }}>
-              <div>Signup</div>
+            <Link to="/signup" onClick={closeMenu}>
+              Signup
             </Link>
           )}
         </AccountMenu>
