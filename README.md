@@ -12,9 +12,9 @@ This is the first time I am really working with data that I am not creating so I
 
 #### Lessons Learned
 * Setting up cron jobs and dealing with missing data from API requests
-* caching API requests so I don't theoretically overload my backend with the same season data request
-* using cookies to store web tokens and then also obtaining those cookies from the request in the backend
-* dealing with null values from external data and inserting into Postgres
+* Caching API requests so I don't theoretically overload my backend with the same season data request
+* Using cookies to store web tokens and then also obtaining those cookies from the request in the backend
+* Dealing with null/inconsistent values from external API and inserting and preparing all of that into PostgreSQL
 
 #### Languages/Frameworks
 * PostgreSQL
