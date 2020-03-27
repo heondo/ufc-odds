@@ -3,6 +3,7 @@ import Cookies from 'universal-cookie';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { UserContext } from '../context/user-context';
+import Dropdown, { DropdownButton, MenuItem } from "../components/Dropdown";
 
 
 const cookies = new Cookies();
@@ -22,6 +23,49 @@ export default function Header(props) {
   return (
     <HeaderContainer>
       <Link to="/">
+        <LogoAndText>
+          <LogoContainer />
+          <div>Guesser</div>
+        </LogoAndText>
+      </Link> 
+      <DropdownContainer>
+        <Dropdown.Toggle
+          btnStyle="flat"
+        >
+          Profile
+        </Dropdown.Toggle>
+        <Dropdown.Menu>
+        {user ? (
+          <>
+            <MenuItem>
+              <Link to="/account" onClick={closeMenu}>
+                Account
+              </Link>
+            </MenuItem>
+            <MenuItem>
+              <Link to="/" onClick={() => {
+                window.localStorage.removeItem('userData');
+                cookies.remove('token');
+                setUser(null);
+                closeMenu();
+              }}>
+                Signout
+              </Link>
+            </MenuItem>
+          </>
+        ) : (
+          <MenuItem>
+            <Link to="/login" onClick={closeMenu}>
+              <div>Login</div>
+            </Link>
+          </MenuItem>
+        )}
+          {/* <MenuItem>
+            Logout
+          </MenuItem> */}
+        </Dropdown.Menu>
+      </DropdownContainer>
+      {/* <Link to="/">
         <LogoAndText>
           <LogoContainer />
           <div>Guesser</div>
@@ -56,10 +100,34 @@ export default function Header(props) {
             </Link>
           )}
         </AccountMenu>
-      </LogoAndText>
+      </LogoAndText> */}
     </HeaderContainer>
   );
 }
+
+const DropdownContainer = styled(Dropdown)`
+  /* button {
+    background: none;
+    background-color: black;
+    color: white;
+    &:hover, &:active {
+      background: none;
+      background-color: black;
+      color: white;
+    } */
+  };
+
+  
+  /* background: none;
+  background-color: black;
+  color: white; */
+`
+
+// const CustomDropdownToggle = styled(Dropdown.Toggle)`
+//   background: none;
+//   background-color: black;
+//   color: white;
+// `
 
 const LogoAndText = styled.span`
   display: flex;
