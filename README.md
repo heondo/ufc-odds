@@ -1,4 +1,4 @@
-## UFC Guesser
+## UFC Better
 
 ### Disclaimer
 

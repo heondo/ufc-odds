@@ -1,10 +1,9 @@
-import React, { useState, useContext } from 'react';
-import Cookies from 'universal-cookie';
-import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import { UserContext } from '../context/user-context';
+import React, { useState, useContext } from "react";
+import Cookies from "universal-cookie";
+import styled from "styled-components";
+import { Link } from "react-router-dom";
+import { UserContext } from "../context/user-context";
 import Dropdown, { DropdownButton, MenuItem } from "../components/Dropdown";
-
 
 const cookies = new Cookies();
 
@@ -18,89 +17,49 @@ export default function Header(props) {
 
   const closeMenu = () => {
     setMenuVisible(false);
-  }
+  };
 
   return (
     <HeaderContainer>
       <Link to="/">
         <LogoAndText>
           <LogoContainer />
-          <div>Guesser</div>
-        </LogoAndText>
-      </Link> 
-      <DropdownContainer>
-        <Dropdown.Toggle
-          btnStyle="flat"
-        >
-          Profile
-        </Dropdown.Toggle>
-        <Dropdown.Menu>
-        {user ? (
-          <>
-            <MenuItem>
-              <Link to="/account" onClick={closeMenu}>
-                Account
-              </Link>
-            </MenuItem>
-            <MenuItem>
-              <Link to="/" onClick={() => {
-                window.localStorage.removeItem('userData');
-                cookies.remove('token');
-                setUser(null);
-                closeMenu();
-              }}>
-                Signout
-              </Link>
-            </MenuItem>
-          </>
-        ) : (
-          <MenuItem>
-            <Link to="/login" onClick={closeMenu}>
-              <div>Login</div>
-            </Link>
-          </MenuItem>
-        )}
-          {/* <MenuItem>
-            Logout
-          </MenuItem> */}
-        </Dropdown.Menu>
-      </DropdownContainer>
-      {/* <Link to="/">
-        <LogoAndText>
-          <LogoContainer />
-          <div>Guesser</div>
+          <h2>Better</h2>
         </LogoAndText>
       </Link>
-      <LogoAndText>
-        {user ? (
-          <Link to="/account" onClick={closeMenu}>
-            Account
-          </Link>
-        ) : (
-          <Link to="/login" onClick={closeMenu}>
-            <div>Login</div>
-          </Link>
-        )}
-        <DownArrow onClick={toggleMenu}>
-          <i className="fas fa-sort-down"/>
-        </DownArrow>
-        <AccountMenu menuVisible={menuVisible}>
+      <DropdownContainer>
+        <Dropdown.Toggle btnStyle="flat">Profile</Dropdown.Toggle>
+        <Dropdown.Menu>
           {user ? (
-            <Link to="/" onClick={() => {
-              window.localStorage.removeItem('userData');
-              cookies.remove('token');
-              setUser(null);
-              closeMenu();
-            }}>
-              Signout
-            </Link>
+            <>
+              <MenuItem>
+                <Link to="/account" onClick={closeMenu}>
+                  Account
+                </Link>
+              </MenuItem>
+              <MenuItem>
+                <Link
+                  to="/"
+                  onClick={() => {
+                    window.localStorage.removeItem("userData");
+                    cookies.remove("token");
+                    setUser(null);
+                    closeMenu();
+                  }}
+                >
+                  Signout
+                </Link>
+              </MenuItem>
+            </>
           ) : (
-            <Link to="/signup" onClick={closeMenu}>
-              Signup
-            </Link>
+            <MenuItem>
+              <Link to="/login" onClick={closeMenu}>
+                <div>Login</div>
+              </Link>
+            </MenuItem>
           )}
-        </AccountMenu>
-      </LogoAndText> */}
+        </Dropdown.Menu>
+      </DropdownContainer>
     </HeaderContainer>
   );
 }
@@ -121,7 +80,7 @@ const DropdownContainer = styled(Dropdown)`
   /* background: none;
   background-color: black;
   color: white; */
-`
+`;
 
 // const CustomDropdownToggle = styled(Dropdown.Toggle)`
 //   background: none;
@@ -138,7 +97,7 @@ const LogoAndText = styled.span`
 const HeaderContainer = styled.div`
   background-color: black;
   color: white;
-  padding: .5rem 2rem .5rem 1rem;
+  padding: 0.5rem 2rem 0.5rem 1rem;
   display: flex;
   height: 4rem;
   align-items: center;
@@ -152,22 +111,22 @@ const DownArrow = styled.i`
   height: 15px;
   padding: 3px;
   background-color: black;
-  transition: all ease .5s;
+  transition: all ease 0.5s;
   /* :hover {
     background-color: white;
   } */
 `;
 
 const AccountMenu = styled.div`
-  display: ${props => props.menuVisible ? 'flex' : 'none'};
+  display: ${(props) => (props.menuVisible ? "flex" : "none")};
   position: absolute;
   flex-direction: column;
   color: black;
-  background-color: #DCDCDC;
+  background-color: #dcdcdc;
   margin-top: 36px;
-  margin-right: .5rem;
+  margin-right: 0.5rem;
   z-index: 2;
-  padding: .5rem;
+  padding: 0.5rem;
   border-radius: 5px;
 `;
 
