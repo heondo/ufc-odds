@@ -24,7 +24,7 @@ export default function Header(props) {
       <Link to="/">
         <LogoAndText>
           <LogoContainer />
-          <h2>Better</h2>
+          <HeaderTitle>BETTER</HeaderTitle>
         </LogoAndText>
       </Link>
       <DropdownContainer>
@@ -64,29 +64,7 @@ export default function Header(props) {
   );
 }
 
-const DropdownContainer = styled(Dropdown)`
-  /* button {
-    background: none;
-    background-color: black;
-    color: white;
-    &:hover, &:active {
-      background: none;
-      background-color: black;
-      color: white;
-    } */
-  };
-
-  
-  /* background: none;
-  background-color: black;
-  color: white; */
-`;
-
-// const CustomDropdownToggle = styled(Dropdown.Toggle)`
-//   background: none;
-//   background-color: black;
-//   color: white;
-// `
+const DropdownContainer = styled(Dropdown)``;
 
 const LogoAndText = styled.span`
   display: flex;
@@ -103,6 +81,11 @@ const HeaderContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   display: flex;
+`;
+
+const HeaderTitle = styled.h2`
+  font-style: italic;
+  font-weight: bolder;
 `;
 
 const DownArrow = styled.i`
